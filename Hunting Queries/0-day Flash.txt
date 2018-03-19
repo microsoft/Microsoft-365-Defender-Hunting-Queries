@@ -1,0 +1,7 @@
+// This query checks for specific processes and URLs used in the CVE-2018-4878 attack.  
+NetworkCommunicationEvents 
+| where EventTime > ago(14d) 
+| where InitiatingProcessFileName =~ "cmd.exe" and InitiatingProcessParentName =~ "excel.exe" 
+| where RemoteUrl endswith ".kr" 
+| project EventTime, ComputerName, RemoteIP, RemoteUrl  
+| top 100 by EventTime
