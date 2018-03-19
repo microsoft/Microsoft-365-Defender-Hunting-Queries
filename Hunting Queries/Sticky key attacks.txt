@@ -1,0 +1,16 @@
+// This query looks for attempts to launch cmd.exe in place of accessibility programs
+let PrevalentCmdExeHash = ProcessCreationEvents  
+| where EventTime > ago(14d)  
+| where FileName =~ 'cmd.exe' 
+| summarize NumberOfEvents = count() by SHA1  
+| where NumberOfEvents > 1000;
+PrevalentCmdExeHash 
+| join kind=inner 
+( 
+    ProcessCreationEvents 
+    | project EventTime, ComputerName, ProcessCommandLine, FileName, SHA1 
+    | where EventTime > ago(7d) 
+    | where FileName in~ ("utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe") 
+) 
+on SHA1 
+| project-away NumberOfEvents, SHA1 
