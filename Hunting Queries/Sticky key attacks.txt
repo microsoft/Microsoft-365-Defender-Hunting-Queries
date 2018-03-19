@@ -1,3 +1,4 @@
+// This query looks for attempts to launch cmd.exe in place of accessibility programs
 let PrevalentCmdExeHash = ProcessCreationEvents  
 | where EventTime > ago(14d)  
 | where FileName =~ 'cmd.exe' 
