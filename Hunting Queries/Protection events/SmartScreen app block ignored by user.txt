@@ -1,5 +1,6 @@
 // Query for SmartScreen application blocks on files with "Malicious" reputation, where the user has decided to run the malware nontheless.
 // Read more about SmartScreen here: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-smartscreen/windows-defender-smartscreen-overview
+// Data availability: These events are available only on Windows 10 version 1703 and onwards.
 // Tags: #SmartScreen
 let smartscreenAppBlocks = 
     MiscEvents
