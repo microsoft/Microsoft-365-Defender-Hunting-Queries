@@ -1,0 +1,34 @@
+// This query looks for links opened from Office Outlook app, or from apps from the Windows store - including the Windows Mail app.
+// This signal is a noisy one, and should be joined with other signals, such as suspicious processes, network connections, etc.
+// In this example, we query for alerts that might be related to links sent via email - which could be indicative of a phishing or spear-phishing attacks.
+// Tags: #EmailLink, #Phishing, #GetNearbyAlerts
+// Explaining the underlying data:
+//     This query uses the ShellStart event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
+//     For this event, RemoteUrl contains the opened URL.
+let minTimeRange = ago(7d);
+let outlookLinks = 
+    MiscEvents
+    // Filter on click on links from outlook
+    | where EventTime > minTimeRange and ActionType == "ShellStart" and isnotempty(RemoteUrl)
+	| where 
+			// outlook.exe is the Office Outlook app
+			InitiatingProcessFileName =~ "outlook.exe" 
+			// RuntimeBroker.exe opens links for all apps from the Windows store, including the Windows Mail app (HxOutlook.exe).
+			// However, it will also include some links opened from other apps.			
+	        or InitiatingProcessFileName =~ "runtimebroker.exe"
+    | project EventTime, MachineId, ComputerName, RemoteUrl, InitiatingProcessFileName, ParsedUrl=parse_url(RemoteUrl)
+    // When applicable, parse the link sent via email from the clicked O365 ATP SafeLink
+    | extend WasOutlookSafeLink=(tostring(ParsedUrl.Host) endswith "safelinks.protection.outlook.com")
+    | project EventTime, MachineId, ComputerName, WasOutlookSafeLink, InitiatingProcessFileName,
+            OpenedLink=iff(WasOutlookSafeLink, url_decode(tostring(ParsedUrl["Query Parameters"]["url"])), RemoteUrl);
+let alerts =
+    AlertEvents
+    | summarize (FirstDetectedActivity, Title)=argmin(EventTime, Title) by AlertId, MachineId
+    // Filter alerts that include events from before the queried time period
+    | where FirstDetectedActivity > minTimeRange;
+// Join the two together - looking for alerts that are right after an abnormal network logon
+alerts | join kind=inner (outlookLinks) on MachineId | where FirstDetectedActivity - EventTime between (0min..3min)
+// If there are multiple alerts close to a single click-on-link, aggregate them together to a single row
+// Note: bin(EventTime, 1tick) is used because when summarizing by a datetime field, the default "bin" used is 1-hour.
+| summarize FirstDetectedActivity=min(FirstDetectedActivity), AlertTitles=makeset(Title) by OpenedLink, InitiatingProcessFileName, EventTime=bin(EventTime, 1tick), ComputerName, MachineId, WasOutlookSafeLink
+
