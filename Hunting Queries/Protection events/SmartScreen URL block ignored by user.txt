@@ -1,5 +1,5 @@
 // Query for SmartScreen URL blocks, where the user has decided to run the malware nontheless.
-// An additional optional filter is applied to query only for cases where Edge has downloaded a file shortly after the ignored block.
+// An additional optional filter is applied to query only for cases where Microsoft Edge has downloaded a file shortly after the ignored block.
 // Read more about SmartScreen here: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-smartscreen/windows-defender-smartscreen-overview
 // Data availability: These events are available only on Windows 10 version 1703 and onwards.
 // Tags: #SmartScreen
@@ -17,9 +17,12 @@ let userIgnoredWarning=
     | project ComputerName, ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
 // Join the block and user decision event using an ActivityId
 let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
-// Optional additional filter - look only for cases where a file was downloaded from Edge following the URL block being ignored 
+// Optional additional filter - look only for cases where a file was downloaded from Microsoft Edge following the URL block being ignored 
 let edgeDownloads = 
     FileCreationEvents
     | where EventTime > minTimeRange and InitiatingProcessFileName =~ "browser_broker.exe"
     | summarize (DownloadTime, SHA1) = argmax(EventTime, SHA1) by FileName, ComputerName, FileOriginUrl, FileOriginReferrerUrl;
-ignoredBlocks | join kind=inner (edgeDownloads) on ComputerName | where DownloadTime - EventTime between (0min .. 2min) | project-away ComputerName1
+ignoredBlocks
+| join kind=inner (edgeDownloads) on ComputerName
+| where DownloadTime - EventTime between (0min .. 2min)
+| project-away ComputerName1
