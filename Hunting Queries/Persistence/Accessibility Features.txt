@@ -6,6 +6,7 @@
 // Read more here: https://attack.mitre.org/wiki/Technique/T1015
 // Tags: #AccessibilityFeatures, #StickyKeys, #ImageFileExecutionOptions, #Debugger, #PriviledgeEscalation, #Persistence
 let minTime = ago(7d);
+let accessibilityProcessNames = dynamic(["utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe"]);
 // Query for debuggers attached using a Registry setting to the accessibility processes
 let attachedDebugger =
     RegistryEvents
@@ -14,13 +15,13 @@ let attachedDebugger =
     and RegistryKeyValueName contains "debugger"
 	// Parse the debugged process name from the registry key
     | parse RegistryKey with @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" FileName
-    | where FileName in~ ("utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe") and isnotempty(RegistryKeyValueData)
+    | where FileName in~ (accessibilityProcessNames) and isnotempty(RegistryKeyValueData)
     | project Technique="AttachedDebugger", FileName, AttachedDebuggerCommandline=RegistryKeyValueData, InitiatingProcessCommandLine, EventTime, ComputerName;
 // Query for overwrites of the accessibility files
 let fileOverwiteOfAccessibilityFiles =
     FileCreationEvents
     | where EventTime > minTime
-        and FileName in~ ("utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe") 
+        and FileName in~ (accessibilityProcessNames)
         and FolderPath contains @"Windows\System32" 
     | project Technique="OverwriteFile", EventTime, ComputerName, FileName, SHA1, InitiatingProcessCommandLine;
 // Query for unexpected hashes of processes with names matching the accessibility processes.
@@ -29,7 +30,7 @@ let executedProcessIsPowershellOrCmd =
     ProcessCreationEvents 
     | project Technique="PreviousOverwriteFile", EventTime, ComputerName, FileName, SHA1 
     | where EventTime > minTime
-    | where FileName in~ ("utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe") 
+    | where FileName in~ (accessibilityProcessNames)
     | join kind=leftsemi(
         ProcessCreationEvents  
         | where EventTime > ago(14d) and (FileName =~ "cmd.exe" or FileName =~ "powershell.exe")
