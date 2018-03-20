@@ -1,0 +1,19 @@
+// Query for SmartScreen application blocks on files with "Malicious" reputation, where the user has decided to run the malware nontheless.
+// Read more about SmartScreen here: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-smartscreen/windows-defender-smartscreen-overview
+// Tags: #SmartScreen
+let smartscreenAppBlocks = 
+    MiscEvents
+    | where ActionType == "AppLookup" 
+            // Filter out SmartScreen test files downloaded from https://demo.smartscreen.msft.net/
+            and not (FileName startswith "knownmalicious" and FileName endswith ".exe")
+    | project EventTime, ComputerName, BlockedFileName=FileName, SHA1, Experience=tostring(parse_json(AdditionalFields).Experience), ActivityId=tostring(parse_json(AdditionalFields).ActivityId), InitiatingProcessFileName;
+// Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
+let userIgnoredWarning=
+    MiscEvents
+    | where ActionType == "UserDecision"
+    | project ComputerName, ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
+// Join the block and user decision event using an ActivityId
+let ignoredBlocks = smartscreenAppBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
+// Select only blocks on "Malicious" files.
+// To hunt over Unknown/Untrusted files, remove the following filter - but you might want to join with additional signals.
+ignoredBlocks | where Experience == "Malicious"

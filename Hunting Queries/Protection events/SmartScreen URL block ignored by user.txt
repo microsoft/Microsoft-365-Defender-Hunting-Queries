@@ -1,0 +1,24 @@
+// Query for SmartScreen URL blocks, where the user has decided to run the malware nontheless.
+// An additional optional filter is applied to query only for cases where Edge has downloaded a file shortly after the ignored block.
+// Read more about SmartScreen here: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-smartscreen/windows-defender-smartscreen-overview
+// Tags: #SmartScreen
+let minTimeRange = ago(7d);
+let smartscreenUrlBlocks = 
+    MiscEvents
+    | where ActionType == "UriLookup" and EventTime > minTimeRange
+            // Filter out SmartScreen test URLs under https://demo.smartscreen.msft.net/
+            and RemoteUrl !startswith "https://demo.smartscreen.msft.net/" 
+    | project EventTime, ComputerName, BlockedUrl=RemoteUrl, Recommendation=tostring(parse_json(AdditionalFields).Recommendation), Experience=tostring(parse_json(AdditionalFields).Experience), ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
+// Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
+let userIgnoredWarning=
+    MiscEvents
+    | where ActionType == "UserDecision" and EventTime > minTimeRange
+    | project ComputerName, ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
+// Join the block and user decision event using an ActivityId
+let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
+// Optional additional filter - look only for cases where a file was downloaded from Edge following the URL block being ignored 
+let edgeDownloads = 
+    FileCreationEvents
+    | where EventTime > minTimeRange and InitiatingProcessFileName =~ "browser_broker.exe"
+    | summarize (DownloadTime, SHA1) = argmax(EventTime, SHA1) by FileName, ComputerName, FileOriginUrl, FileOriginReferrerUrl;
+ignoredBlocks | join kind=inner (edgeDownloads) on ComputerName | where DownloadTime - EventTime between (0min .. 2min) | project-away ComputerName1
