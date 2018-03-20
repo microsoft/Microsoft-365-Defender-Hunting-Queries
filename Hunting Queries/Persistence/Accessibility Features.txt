@@ -4,6 +4,7 @@
 // Note: some developers might use such hacks for all sort of troubleshooting and testing purposes,
 //       but this better be prohibited, as it allows any account with access to the machine to run processes as SYSTEM.
 // Read more here: https://attack.mitre.org/wiki/Technique/T1015
+// Tags: #AccessibilityFeatures, #StickyKeys, #ImageFileExecutionOptions, #Debugger, #PriviledgeEscalation, #Persistence
 let minTime = ago(7d);
 // Query for debuggers attached using a Registry setting to the accessibility processes
 let attachedDebugger =
