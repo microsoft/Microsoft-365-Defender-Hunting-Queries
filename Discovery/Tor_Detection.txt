@@ -1,0 +1,7 @@
+NetworkCommunicationEvents  
+| where EventTime < ago(3d) and InitiatingProcessFileName == "meek-client.exe" or InitiatingProcessFileName == "tor.exe"
+| project ComputerName , RemoteUrl , InitiatingProcessFileName, InitiatingProcessMD5  , InitiatingProcessCommandLine 
+| limit 10000
+| where isnotempty(RemoteUrl)
+| order by InitiatingProcessMD5 asc 
+| summarize makelist(ComputerName) by InitiatingProcessMD5
