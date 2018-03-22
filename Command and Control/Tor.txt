@@ -7,7 +7,6 @@
 // Tags: #Tor, #MultiHopProxy, #CnC
 NetworkCommunicationEvents  
 | where EventTime < ago(3d) and InitiatingProcessFileName in~ ("tor.exe", "meek-client.exe")
-| where isnotempty(RemoteUrl)
 // Returns MD5 hashes of files used by Tor, to enable you to block them.
 // We count how prevalent each file is (by machines) and show examples for some of them (up to 5 machine names per hash).
 | summarize MachineCount=dcount(ComputerName), MachineNames=makeset(ComputerName, 5) by InitiatingProcessMD5
