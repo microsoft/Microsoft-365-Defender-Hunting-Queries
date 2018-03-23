@@ -6,7 +6,7 @@
 // Read more here: https://attack.mitre.org/wiki/Technique/T1015
 // Tags: #AccessibilityFeatures, #StickyKeys, #ImageFileExecutionOptions, #Debugger, #PriviledgeEscalation, #Persistence
 let minTime = ago(7d);
-let accessibilityProcessNames = dynamic(["utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe"]);
+let accessibilityProcessNames = dynamic(["utilman.exe","osk.exe","magnify.exe","narrator.exe","displayswitch.exe","atbroker.exe","sethc.exe", "helppane.exe"]);
 // Query for debuggers attached using a Registry setting to the accessibility processes
 let attachedDebugger =
     RegistryEvents
