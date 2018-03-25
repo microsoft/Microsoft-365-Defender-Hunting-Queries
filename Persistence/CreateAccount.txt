@@ -1,0 +1,21 @@
+// User accounts may be created to achieve persistence on a machine.
+// Read more here: https://attack.mitre.org/wiki/Technique/T1136
+
+// Query #1: Query for users being created using "net user" command
+ProcessCreationEvents
+// Pro-tip: 
+// There are many different ways to run a process from a file - e.g. by using full path, env. variables, ~1 annotation, more...
+// So, to find executions of a known filename, better filter on the filename (and possibly on folder path) than on the commandline.
+| where FileName =~ "net.exe" and EventTime > ago(3d)
+// Parse the user name from the commandline. To have case-insensitive parsing, use: "kind=regex flags=i"
+| parse kind=regex flags=i ProcessCommandLine with * "user " CreatedUser " " * "/add"
+| where isnotempty(CreatedUser)
+| project ComputerName, CreatedUser, CreatedOnLocalMachine=(ProcessCommandLine !contains "/domain"), EventTime
+| limit 100
+
+// Query #2: Query for all accounts created on machines onboarded with Sense.
+// For this event we do not know the details of the process / account that was used to create this new account.
+MiscEvents
+| where EventTime > ago(1d) and ActionType == "CreateUser"
+| project AccountName, AccountDomain, ComputerName, EventTime, InitiatingProcessFileName
+| limit 100
