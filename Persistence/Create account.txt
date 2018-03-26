@@ -26,7 +26,7 @@ ProcessCreationEvents
 | summarize MachineCount=dcount(ComputerName) by CreatedUser, CreatedOnLocalMachine, InitiatingProcessFileName, FileName, ProcessCommandLine, InitiatingProcessCommandLine 
 
 
-// Query #2: Query for accounts created on machines onboarded with Sense".
+// Query #2: Query for accounts created on machines onboarded with Sense.
 // Create account event is noisy, so we need to join it with some other signal.
 // E.g. In this query we look for accounts created which name resembles "administrator".
 //      Using account names similar to known common account names is a common way to be evade the human analyst eye.
