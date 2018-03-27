@@ -1,0 +1,6 @@
+// Finding base64 encoded PE files header seen in the command line parameters
+// Tags: #fileLess  #powershell
+ProcessCreationEvents
+| where EventTime > ago(7d)
+| where ProcessCommandLine contains "TVqQAAMAAAAEAAA"
+| top 1000 by EventTime
