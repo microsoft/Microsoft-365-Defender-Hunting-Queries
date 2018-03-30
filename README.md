@@ -10,7 +10,7 @@ We maintain a backlog of suggested sample queries in this project [Issues page](
 
 We value your feedback, let us know about any problems you run into or send suggestions to help us improve: wdatpqueriesfeedback@microsoft.com
 
-# Contributing`
+# Contributing
 
 <b>This project welcomes contributions and suggestions.</b>
 
