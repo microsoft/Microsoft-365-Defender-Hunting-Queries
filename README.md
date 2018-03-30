@@ -1,13 +1,14 @@
 # About
-This repository contains Windows Defender ATP Advanced hunting's example queries.
+This repo contains [Windows Defender ATP](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp) Advanced hunting's samples.
+WDATP users can run these queries in the [Advanced hunting page](https://securitycenter.windows.com/hunting).
+These queries can help users to get started with WDATP advanced hunting, to learn about its query and data capabilities, to get familiar with some attack techinques or to get new hunting ideas.
 
 For more information on query language documentation, see [Query language](https://go.microsoft.com/fwlink/?linkid=866515).
 
+We maintain a backlog of suggested sample queries in this project [Issues page](https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/issues) - you are welcome to comment, rate or add new suggestions.
 We value your feedback, let us know about any problems you run into or send suggestions to help us improve: wdatpqueriesfeedback@microsoft.com
 
-For now, contributions are limited to Microsoft employees. Going forward we plan to enable sample code contributions from the broader community.
-
-# Contributing
+# Contributing`
 
 <b>This project welcomes contributions and suggestions.</b>
 
