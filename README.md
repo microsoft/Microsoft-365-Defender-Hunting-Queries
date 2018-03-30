@@ -5,7 +5,9 @@ These queries can help users to get started with WDATP advanced hunting, to lear
 
 For more information on query language documentation, see [Query language](https://go.microsoft.com/fwlink/?linkid=866515).
 
+# Suggestions and feedback
 We maintain a backlog of suggested sample queries in this project [Issues page](https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/issues) - you are welcome to comment, rate or add new suggestions.
+
 We value your feedback, let us know about any problems you run into or send suggestions to help us improve: wdatpqueriesfeedback@microsoft.com
 
 # Contributing`
