@@ -25,3 +25,8 @@ instructions provided by the bot. You will only need to do this once across all 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
 or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+# Coding guidelines
+The samples in this repo should include some comments that explain the attack technique or anomaly, or link to a related document.
+In addition, these queries should adhere to the published WDATP Advanced hunting performance best practices.
+
