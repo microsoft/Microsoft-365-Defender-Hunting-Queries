@@ -1,16 +1,17 @@
 # About
-This repo contains [Windows Defender ATP](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp) Advanced hunting's samples.
-WDATP users can run these queries in the [Advanced hunting page](https://securitycenter.windows.com/hunting).
-These queries can help users to get started with WDATP advanced hunting, to learn about its query and data capabilities, to get familiar with some attack techniques or to get new hunting ideas.
+This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Windows Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
+With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through Advanced hunting.
 
-For more information on query language documentation, see [Query language](https://go.microsoft.com/fwlink/?linkid=866515).
+We are in the process of providing more documentation about Advanced hunting and its data schema. In the meantime, you can access the full list of tables and columns in the portal. [Read here to understand the query language](https://go.microsoft.com/fwlink/?linkid=866515).
+
+*Not using Windows Defender ATP?* If you haven't yet, experience how you can effectively scale your organization's incident response capabilities by signing up for a [free Windows Defender ATP trial](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit). 
 
 # Suggestions and feedback
-We maintain a backlog of suggested sample queries in this project [Issues page](https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/issues) - you are welcome to comment, rate or add new suggestions.
+We maintain a backlog of suggested sample queries in the project [issues page](https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/issues). Feel free to comment, rate, or provide suggestions.
 
-We value your feedback, let us know about any problems you run into or send suggestions to help us improve: wdatpqueriesfeedback@microsoft.com
+We value your feedback. Let us know if you run into any problems or share your suggestions by sending email to wdatpqueriesfeedback@microsoft.com.
 
-# Contributing
+# Contributions
 
 <b>This project welcomes contributions and suggestions.</b>
 
@@ -27,6 +28,6 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 # Coding guidelines
-The samples in this repo should include some comments that explain the attack technique or anomaly, or link to a related document.
-In addition, these queries should adhere to the published WDATP Advanced hunting performance best practices.
+The samples in this repo should include comments that explain the attack technique or anomaly being hunted. Whenever possible, provide links to related documentation.
 
+In addition, queries should adhere to the published Windows Defender ATP Advanced hunting performance best practices.
