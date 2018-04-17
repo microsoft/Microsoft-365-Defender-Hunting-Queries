@@ -30,4 +30,4 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 # Coding guidelines
 The samples in this repo should include comments that explain the attack technique or anomaly being hunted. Whenever possible, provide links to related documentation.
 
-<!--In addition, queries should adhere to the published Windows Defender ATP Advanced hunting performance best practices.-->
+In addition, queries should adhere to the published [Windows Defender ATP Advanced hunting performance best practices](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-reference-windows-defender-advanced-threat-protection)
