@@ -1,0 +1,11 @@
+// Process executed from binary hidden in Base64 encoded file.  Encoding malicious software is a 
+// technique to obfuscate files from detection.
+ProcessCreationEvents 
+| where EventTime > ago(14d) 
+| where ProcessCommandLine contains ".decode('base64')"
+        or ProcessCommandLine contains "base64 --decode"
+        or ProcessCommandLine contains ".decode64(" 
+| project EventTime , ComputerName , FileName , FolderPath , ProcessCommandLine , InitiatingProcessCommandLine 
+| top 100 by EventTime 
+
+
