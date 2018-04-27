@@ -4,6 +4,6 @@
 //     
 ProcessCreationEvents
 | where EventTime > ago(14d)
-| where FileName in ("screenassistantd","spellagentd")
+| where FileName in~ ("screenassistantd","spellagentd")
 | top 100 by EventTime 
 
