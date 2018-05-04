@@ -1,6 +1,6 @@
 // This query looks for a Word document attachment, from which a link was clicked, and after which there was a browser download.
 // This query is not noisy, but most of its results are clean.
-// It can serve as reference for other queries on email attachments, on browser downloads or for queries that join multiple events by time.
+// It can also hserve as reference for other queries on email attachments, on browser downloads or for queries that join multiple events by time.
 // Tags: #EmailAttachment, #WordLink, #BrowserDownload, #Phishing, #DedupFileCreate
 // Implementation comment #1: Matching events by time
 //      Matching the 3 different events (saving attachment, clicking on link, downloading file) is done purely by time difference - so could sometimes link together unrelated events.
