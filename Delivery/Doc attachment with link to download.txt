@@ -24,17 +24,17 @@ let docAttachments =
 			// Query for common document file extensions
             and (FileName endswith ".docx" or FileName endswith ".docm" or FileName endswith ".doc")
 			// Query for files saved from email clients such as the Office Outlook app or the Windows Mail app
-            and (InitiatingProcessFileName in~ ("outlook.exe", "hxoutlook.exe")
+            and InitiatingProcessFileName in~ ("outlook.exe", "hxoutlook.exe")
     | summarize AttachmentSaveTime=min(EventTime) by AttachmentName=FileName, MachineId;
 let browserDownloads = 
     FileCreationEvents
     | where EventTime > minTimeRange 
 			// Query for files created by common browsers
-            and (InitiatingProcessFileName in~ ("browser_broker.exe", "chrome.exe", "iexplore.exe", "firefox.exe")
+            and InitiatingProcessFileName in~ ("browser_broker.exe", "chrome.exe", "iexplore.exe", "firefox.exe")
             // Exclude JS files that are used for loading sites (but still query for JS files that are known to be downloaded)
             and not (FileName endswith ".js" and isempty(FileOriginUrl))
     // Further filter to exclude file extensions that are less indicative of an attack (when there were already previously a doc attachment that included a link)
-    | where FileName !endswith ".partial" and FileName !endswith ".docx" and 
+    | where FileName !endswith ".partial" and FileName !endswith ".docx"
     | summarize (EventTime, SHA1) = argmax(EventTime, SHA1) by FileName, MachineId, FileOriginUrl;
 // Perf tip: start the joins from the smallest table (put it on the left-most side of the joins)
 wordLinks
