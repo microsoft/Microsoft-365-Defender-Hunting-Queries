@@ -12,7 +12,7 @@ let attachedDebugger =
     RegistryEvents
     | where EventTime > minTime
     and RegistryKey startswith @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\"
-    and RegistryValueName contains "debugger"
+    and RegistryValueName =~ "debugger"
 	// Parse the debugged process name from the registry key
     | parse RegistryKey with @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\" FileName
     | where FileName in~ (accessibilityProcessNames) and isnotempty(RegistryValueData)
