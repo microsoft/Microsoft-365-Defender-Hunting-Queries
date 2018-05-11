@@ -1,0 +1,14 @@
+// Query for processes that accessed more than 10 IP addresses over port 445 (SMB) - possibly scanning for network shares.
+// To read more about Network Share Discover, see: https://attack.mitre.org/wiki/Technique/T1135
+// Tags: #SMB, #NetworkScanning, #UniqueProcessId
+NetworkCommunicationEvents
+| where RemotePort == 445 and EventTime > ago(12h) 
+    // Exclude Kernel processes, as they are too noisy in this query
+    and InitiatingProcessId !in (0, 4)
+| summarize RemoteIPCount=dcount(RemoteIP) by ComputerName, InitiatingProcessFileName, InitiatingProcessId, InitiatingProcessCreationTime
+| where RemoteIPCount > 10
+
+// Implementation comment:
+// Process IDs are recycled and reused, so are not a unique identifier for a process.
+// For this reason we use a combination of ProcessId and ProcessCreationTime together with the ComputerName or MachineId.
+// Read more here: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-best-practices-windows-defender-advanced-threat-protection
