@@ -8,4 +8,5 @@ project ComputerName, ActionType, FileName, InitiatingProcessFileName, EventTime
           FileName = iff(SHA1 == fileHash, FileName, InitiatingProcessFileName),
           MatchedSide=iff(SHA1 == fileHash, iff(InitiatingProcessSHA1 == fileHash, "Both", "Child"), "Parent")
 | summarize makeset(ActionType), FirstEventTime=min(EventTime), (LastEventTime, LastActionType)=arg_max(EventTime, ActionType) by FileName, MatchedSide, ComputerName
+| top 1000 by LastEventTime desc
 | sort by ComputerName, LastEventTime desc
