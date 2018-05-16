@@ -1,0 +1,11 @@
+// Find the machines on which this file was seen
+// TODO - set file hash to be a SHA1 hash of your choice...
+let fileHash = "e152f7ce2d3a4349ac583580c2caf8f72fac16ba";
+find in (FileCreationEvents, ProcessCreationEvents, MiscEvents, RegistryEvents, NetworkCommunicationEvents, ImageLoadEvents)
+where SHA1 == fileHash or InitiatingProcessSHA1 == fileHash
+project ComputerName, ActionType, FileName, InitiatingProcessFileName, EventTime, SHA1, InitiatingProcessSHA1
+| project ComputerName, ActionType, EventTime, 
+          FileName = iff(SHA1 == fileHash, FileName, InitiatingProcessFileName),
+          MatchedSide=iff(SHA1 == fileHash, iff(InitiatingProcessSHA1 == fileHash, "Both", "Child"), "Parent")
+| summarize makeset(ActionType), FirstEventTime=min(EventTime), (LastEventTime, LastActionType)=arg_max(EventTime, ActionType) by FileName, MatchedSide, ComputerName
+| sort by ComputerName, LastEventTime desc
