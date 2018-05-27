@@ -17,7 +17,7 @@ let wordLinks =
     MiscEvents
     // Filter on click on links from WinWord
     | where EventTime > minTimeRange and ActionType == "ShellStart" and isnotempty(RemoteUrl) and InitiatingProcessFileName =~ "winword.exe"
-	| project ClickTime=EventTime, MachineId, ComputerName, ClickUrl=RemoteUrl;
+    | project ClickTime=EventTime, MachineId, ComputerName, ClickUrl=RemoteUrl;
 let docAttachments = 
     FileCreationEvents
     | where EventTime > minTimeRange 
@@ -38,7 +38,7 @@ let browserDownloads =
     | summarize (EventTime, SHA1) = argmax(EventTime, SHA1) by FileName, MachineId, FileOriginUrl;
 // Perf tip: start the joins from the smallest table (put it on the left-most side of the joins)
 wordLinks
-| join kind= inner (docAttachments) on MachineId | where AttachmentSaveTime - ClickTime between (0min..3min)
+| join kind= inner (docAttachments) on MachineId | where ClickTime - AttachmentSaveTime between (0min..3min)
 | join kind= inner (browserDownloads) on MachineId | where EventTime - ClickTime between (0min..3min) 
 // Aggregating multiple "attachments" together - because oftentimes the same file is stored multiple times under different names
 | summarize Attachments=makeset(AttachmentName), AttachmentSaveTime=min(AttachmentSaveTime), ClickTime=min(ClickTime)
