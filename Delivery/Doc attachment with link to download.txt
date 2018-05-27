@@ -15,7 +15,7 @@
 let minTimeRange = ago(7d);
 let wordLinks = 
     MiscEvents
-    // Filter on click on links from outlook
+    // Filter on click on links from WinWord
     | where EventTime > minTimeRange and ActionType == "ShellStart" and isnotempty(RemoteUrl) and InitiatingProcessFileName =~ "winword.exe"
 	| project ClickTime=EventTime, MachineId, ComputerName, ClickUrl=RemoteUrl;
 let docAttachments = 
