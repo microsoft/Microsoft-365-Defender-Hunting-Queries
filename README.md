@@ -2,6 +2,8 @@
 This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Windows Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
 With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through Advanced hunting.
 
+To get started, simply paste a sample query into the query builder and run the query. If you get syntax errors, try removing empty lines introduced when pasting. If a query returns no results, try expanding the time range. 
+
 We are continually building up documentation about Advanced hunting and its data schema. You can access the full list of tables and columns in the portal or reference the following resources:
 
 - [Feature overview, tables, and common operators](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-windows-defender-advanced-threat-protection)
