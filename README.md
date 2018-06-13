@@ -2,7 +2,13 @@
 This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Windows Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
 With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through Advanced hunting.
 
-We are in the process of providing more documentation about Advanced hunting and its data schema. In the meantime, you can access the full list of tables and columns in the portal. [Read here to understand the query language](https://go.microsoft.com/fwlink/?linkid=866515).
+To get started, simply paste a sample query into the query builder and run the query. If you get syntax errors, try removing empty lines introduced when pasting. If a query returns no results, try expanding the time range. 
+
+We are continually building up documentation about Advanced hunting and its data schema. You can access the full list of tables and columns in the portal or reference the following resources:
+
+- [Feature overview, tables, and common operators](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-windows-defender-advanced-threat-protection)
+- [Table columns and descriptions](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-reference-windows-defender-advanced-threat-protection)
+- [Query language reference](https://go.microsoft.com/fwlink/?linkid=866515)
 
 *Not using Windows Defender ATP?* If you haven't yet, experience how you can effectively scale your organization's incident response capabilities by signing up for a [free Windows Defender ATP trial](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit). 
 
@@ -27,7 +33,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
 or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-# Coding guidelines
+# Coding guidelines and references
 The samples in this repo should include comments that explain the attack technique or anomaly being hunted. Whenever possible, provide links to related documentation.
 
-<!--In addition, queries should adhere to the published Windows Defender ATP Advanced hunting performance best practices.-->
+In addition, construct queries that adhere to the published [Windows Defender ATP Advanced hunting performance best practices](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-best-practices-windows-defender-advanced-threat-protection).

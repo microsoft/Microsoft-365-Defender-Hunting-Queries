@@ -31,7 +31,7 @@ ProcessCreationEvents
 // E.g. In this query we look for accounts created which name resembles "administrator".
 //      Using account names similar to known common account names is a common way to be evade the human analyst eye.
 MiscEvents
-| where EventTime > ago(30d) and ActionType == "CreateUser"
+| where ActionType == "CreateUser"
 // To look for account names similar to administrator, we'll simply query for the prefix and suffix,
 // because these letters matter most to the human perception: https://en.wikipedia.org/wiki/Typoglycemia
 // Calculating distance functions is possible but will be much more complicated - 
