@@ -12,7 +12,8 @@ LogonEvents
         and LogonType == "Network"
 
 // Modified query: instead of copy-pasting the timestamp, get the timestamp of some event you can filter
-// In this example, take the time of the first detected event in an alert
+// In this example, take the time of the first detected event in an alert.
+// We filter on alertId - which you can get from all our APIs (SIEM, Graph API, PowerBI, AlertEvents table) or from the UI (the last part of the link to the alert page)
 let alertId = "636641078490537577_-1905871543";
 let alert = AlertEvents | where AlertId == alertId | summarize AlertFirstEventTime=min(EventTime) by MachineId;
 let machineId = toscalar(alert | project MachineId);
