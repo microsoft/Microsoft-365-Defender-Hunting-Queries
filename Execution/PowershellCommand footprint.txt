@@ -1,8 +1,13 @@
 // Find all machines running a given Powersehll cmdlet.
 // This covers all Powershell commands executed in the Powershell engine by any process.
 let powershellCommandName = "Invoke-RickAscii";
-MiscEvents | where ActionType == "PowerShellCommand" and AdditionalFields contains powershellCommandName
+MiscEvents
+| where ActionType == "PowerShellCommand"
+// This filter improves query performance, as it avoids needing to parse Command from all rows and only then applying a filter
+| where AdditionalFields contains powershellCommandName
+// Extract the powershell command name from the Command field in the AdditionalFields JSON column
 | project PowershellCommand=extractjson("$.Command", AdditionalFields, typeof(string)), InitiatingProcessCommandLine, InitiatingProcessParentFileName, EventTime, MachineId
+// Do an exact case-insensitive match on the command name field
 | where PowershellCommand =~ powershellCommandName
 
 // Related query - find uncommon Powershell commands executed on a machine in a certain time-range:
