@@ -4,7 +4,9 @@ let machineId = "474908f457a1dc4c1fab568f808d5f77bf3bb951";
 let timestamp = datetime(2018-06-09T02:23:26.6832917Z);
 // Query for Powershell cmdlets
 let powershellCommands =
-    MiscEvents | where ActionType == "PowerShellCommand"
+    MiscEvents
+    | where ActionType == "PowerShellCommand"
+    // Extract the powershell command name from the Command field in the AdditionalFields JSON column
     | project PowershellCommand=extractjson("$.Command", AdditionalFields, typeof(string)), InitiatingProcessCommandLine, InitiatingProcessParentFileName, EventTime, MachineId
     | where PowershellCommand !endswith ".ps1" and PowershellCommand !endswith ".exe";
 // Filter Powershell cmdlets executed on relevant machine and time period
