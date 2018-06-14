@@ -1,0 +1,9 @@
+// Find all machines running a given Powersehll cmdlet.
+// This covers all Powershell commands executed in the Powershell engine by any process.
+let powershellCommandName = "Invoke-RickAscii";
+MiscEvents | where ActionType == "PowerShellCommand" and AdditionalFields contains powershellCommandName
+| project PowershellCommand=extractjson("$.Command", AdditionalFields, typeof(string)), InitiatingProcessCommandLine, InitiatingProcessParentFileName, EventTime, MachineId
+| where PowershellCommand =~ powershellCommandName
+
+// Related query - find uncommon Powershell commands executed on a machine in a certain time-range:
+// https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/blob/master/Execution/PowershellCommand%20-%20uncommon%20commands%20on%20machine.txt
