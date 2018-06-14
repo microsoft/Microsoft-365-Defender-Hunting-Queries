@@ -1,0 +1,24 @@
+// These queries hunt on Powershell cmdlets executed in the Powershell engine - not matter if specified in the commandline, if run via powershell.exe, remote powershell (wsmprovhost.exe), and etc.
+
+// Query #1: 
+// Investigating a machine?
+// Using this query you can find which uncommon Powershell Cmdlets were executed on that machine in a certain time period.
+Queries/blob/master/General%20queries/Events%20surrounding%20alert.txt
+let machineId = "474908f457a1dc4c1fab568f808d5f77bf3bb951";
+let timestamp = datetime(2018-06-09T02:23:26.6832917Z);
+// Query for Powershell cmdlets
+let powershellCommands =
+    MiscEvents | where ActionType == "PowerShellCommand"
+    | project PowershellCommand=extractjson("$.Command", AdditionalFields, typeof(string)), InitiatingProcessCommandLine, InitiatingProcessParentFileName, EventTime, MachineId
+    | where PowershellCommand !endswith ".ps1" and PowershellCommand !endswith ".exe";
+// Filter Powershell cmdlets executed on relevant machine and time period
+powershellCommands | where MachineId == machineId and EventTime between ((timestamp-5min) .. 10min)
+// Filter out common powershell cmdlets
+| join kind=leftanti (powershellCommands | summarize MachineCount=dcount(MachineId) by PowershellCommand | where MachineCount > 20) on PowershellCommand
+
+// Query #2: Find all machines running a given Powersehll cmdlet
+let powershellCommandName = "Invoke-RickAscii";
+MiscEvents | where ActionType == "PowerShellCommand" and AdditionalFields contains powershellCommandName
+| project PowershellCommand=extractjson("$.Command", AdditionalFields, typeof(string)), InitiatingProcessCommandLine, InitiatingProcessParentFileName, EventTime, MachineId
+| where PowershellCommand =~ powershellCommandName
+
