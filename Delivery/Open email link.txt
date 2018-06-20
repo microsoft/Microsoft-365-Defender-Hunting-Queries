@@ -1,6 +1,6 @@
-// This query looks for links opened from Office Outlook app, or from apps from the Windows store - including the Windows Mail app.
-// This signal is a noisy one, and should be joined with other signals, such as suspicious processes, network connections, etc.
-// In this example, we query for alerts that might be related to links sent via email - which could be indicative of a phishing or spear-phishing attacks.
+// Query for links opened from mail apps – if a detection occurred right afterwards.
+// As there are many links opened from mails, to have a successful hunt we should have some filter or join with some other signal, such as suspicious processes, network connections, etc.
+// Therefore, in this example, we query for alerts that might be related to links sent via email - which could be indicative of a phishing or spear-phishing attacks.
 // Tags: #EmailLink, #Phishing, #GetNearbyAlerts
 // Explaining the underlying data:
 //     This query uses the ShellStart event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
