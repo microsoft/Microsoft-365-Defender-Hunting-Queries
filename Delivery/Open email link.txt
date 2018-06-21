@@ -1,6 +1,8 @@
 // Query for links opened from mail apps – if a detection occurred right afterwards.
-// As there are many links opened from mails, to have a successful hunt we should have some filter or join with some other signal, such as suspicious processes, network connections, etc.
-// Therefore, in this example, we query for alerts that might be related to links sent via email - which could be indicative of a phishing or spear-phishing attacks.
+// As there are many links opened from mails, to have a successful hunt we should have some filter or join with some other signal,
+// such as suspicious processes, network connections, etc.
+// Therefore, in this example, we query for alerts that might be related to links sent via email.
+// This could be indicative of a phishing or spear-phishing attacks.
 // Tags: #EmailLink, #Phishing, #GetNearbyAlerts
 // Explaining the underlying data:
 //     This query uses the ShellStart event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
