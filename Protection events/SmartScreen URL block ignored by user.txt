@@ -9,12 +9,13 @@ let smartscreenUrlBlocks =
     | where ActionType == "UriLookup" and EventTime > minTimeRange
             // Filter out SmartScreen test URLs under https://demo.smartscreen.msft.net/
             and RemoteUrl !startswith "https://demo.smartscreen.msft.net/" 
-    | project EventTime, ComputerName, BlockedUrl=RemoteUrl, Recommendation=tostring(parse_json(AdditionalFields).Recommendation), Experience=tostring(parse_json(AdditionalFields).Experience), ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
+    | extend ParsedFields=parse_json(AdditionalFields)
+    | project EventTime, ComputerName, BlockedUrl=RemoteUrl, Recommendation=tostring(ParsedFields.Recommendation), Experience=tostring(ParsedFields.Experience), ActivityId=tostring(ParsedFields.ActivityId);
 // Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
 let userIgnoredWarning=
     MiscEvents
     | where ActionType == "UserDecision" and EventTime > minTimeRange
-    | project ComputerName, ActivityId=tostring(parse_json(AdditionalFields).ActivityId);
+    | project ComputerName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
 // Join the block and user decision event using an ActivityId
 let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
 // Optional additional filter - look only for cases where a file was downloaded from Microsoft Edge following the URL block being ignored 
