@@ -9,8 +9,8 @@
 //      Oftentimes there are multiple FileCreationEvents for a single file - e.g. if the file keeps being appended into before being closed.
 //      So, we query only for the last reported file state to ignore intermediate file states.
 // Explaining the underlying data:
-//     ShellStart event:
-//         This query uses the ShellStart event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
+//     BrowserLaunchedToOpenUrl event:
+//         This query uses the BrowserLaunchedToOpenUrl event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
 //         For this event, RemoteUrl contains the opened URL.
 let minTimeRange = ago(7d);
 let wordLinks = 
