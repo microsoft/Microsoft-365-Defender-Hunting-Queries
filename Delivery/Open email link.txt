@@ -5,13 +5,13 @@
 // This could be indicative of a phishing or spear-phishing attacks.
 // Tags: #EmailLink, #Phishing, #GetNearbyAlerts
 // Explaining the underlying data:
-//     This query uses the ShellStart event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
+//     This query uses the BrowserLaunchedToOpenUrl event, that includes clicks on http:// or https:// links (clicks outside of browsers), or on .lnk files
 //     For this event, RemoteUrl contains the opened URL.
 let minTimeRange = ago(7d);
 let outlookLinks = 
     MiscEvents
     // Filter on click on links from outlook
-    | where EventTime > minTimeRange and ActionType == "ShellStart" and isnotempty(RemoteUrl)
+    | where EventTime > minTimeRange and ActionType == "BrowserLaunchedToOpenUrl" and isnotempty(RemoteUrl)
 	| where 
 			// outlook.exe is the Office Outlook app
 			InitiatingProcessFileName =~ "outlook.exe" 
