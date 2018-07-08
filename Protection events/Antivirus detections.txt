@@ -2,8 +2,7 @@
 
 // Query #1: Query for Antivirus detection events
 MiscEvents
-// TODO: in June 2018, both of these action types will be renamed to "AntivirusDetection"
-| where ActionType in ("WDAVDetection", "WDAVDefenderDataConsumer")
+| where ActionType == "AntivirusDetection"
 | extend ParsedFields=parse_json(AdditionalFields)
 | project ThreatName=tostring(ParsedFields.ThreatName),
           WasRemediated=tobool(ParsedFields.WasRemediated),
