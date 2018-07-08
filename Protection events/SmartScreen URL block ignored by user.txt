@@ -6,7 +6,7 @@
 let minTimeRange = ago(7d);
 let smartscreenUrlBlocks = 
     MiscEvents
-    | where ActionType == "UriLookup" and EventTime > minTimeRange
+    | where ActionType == "SmartScreenUrlWarning" and EventTime > minTimeRange
             // Filter out SmartScreen test URLs under https://demo.smartscreen.msft.net/
             and RemoteUrl !startswith "https://demo.smartscreen.msft.net/" 
     | extend ParsedFields=parse_json(AdditionalFields)
@@ -14,7 +14,7 @@ let smartscreenUrlBlocks =
 // Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
 let userIgnoredWarning=
     MiscEvents
-    | where ActionType == "UserDecision" and EventTime > minTimeRange
+    | where ActionType == "SmartScreenUserOverride" and EventTime > minTimeRange
     | project ComputerName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
 // Join the block and user decision event using an ActivityId
 let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
