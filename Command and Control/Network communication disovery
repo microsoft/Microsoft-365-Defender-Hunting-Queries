@@ -1,0 +1,18 @@
+// Query 1 shows you any network communication happened from endpoints to an specific Remote IP or Remote URL
+// Ensure to update RemoteIP and RemoteURL variable.
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == "IP ADDRESS GOES HERE"
+or RemoteUrl contains "URL GOES HERE"
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// Query 2 shows you any network communication that happened from endpoints through a specific file to an Remote IP or Remote URL
+//Ensure to update RemoteIP, RemoteURL and InitatingProcessFileName
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == " IP ADDRESS GOES HERE"
+or RemoteUrl contains " URL GOES HERE"
+and InitiatingProcessFileName == “FILENAME.EXE”
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
