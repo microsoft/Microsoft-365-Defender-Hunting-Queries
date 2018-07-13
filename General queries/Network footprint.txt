@@ -1,0 +1,42 @@
+// Query 1 shows you any network communication happened from endpoints to an specific Remote IP or Remote URL
+// Ensure to update RemoteIP and RemoteURL variable.
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == "IP ADDRESS GOES HERE"
+or RemoteUrl contains "URL GOES HERE"
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// Query 2 shows you any network communication that happened from endpoints through a specific file to an Remote IP or Remote URL
+//Ensure to update RemoteIP, RemoteURL and InitatingProcessFileName
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == " IP ADDRESS GOES HERE"
+or RemoteUrl contains " URL GOES HERE"
+and InitiatingProcessFileName == “FILENAME.EXE”
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// Query 3 allows you to find network communication from specific IP or URL across MiscEvents, AlertEvents and NetworkCommunicationEvents
+// Ensure to update RemoteIP and RemoteURL variable.
+find in (MiscEvents, AlertEvents, NetworkCommunicationEvents)
+where RemoteIP == "52.114.158.52" or RemoteUrl == "google.com"
+project ComputerName, ActionType, FileName, EventTime
+
+// Query 4 Search for specific network communication of a Remote IP or URL that also discovers related file creation events
+// Ensure to update RemoteIP and RemoteURL variable.
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == "52.169.82.131" or RemoteUrl =~ "URL GOES HERE"
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+| join kind=inner
+(
+   FileCreationEvents
+   | where EventTime > ago(30d) 
+   | project ComputerName, EventTime, FileOriginUrl, FileOriginReferrerUrl
+) on ComputerName, EventTime
+| join kind= inner (
+   MiscEvents
+   | where EventTime > ago(30d)
+   | project ComputerName, EventTime, ActionType, FileOriginIP, FileOriginUrl
+) on ComputerName, EventTime 
