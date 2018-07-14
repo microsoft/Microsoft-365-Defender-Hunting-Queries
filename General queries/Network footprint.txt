@@ -1,0 +1,30 @@
+// Query 1 shows you any network communication happened from endpoints to a specific Remote IP or Remote URL
+// Ensure to update RemoteIP and RemoteURL variable.
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where RemoteIP == "IP ADDRESS GOES HERE"
+or RemoteUrl contains "URL GOES HERE"
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// Query 2 shows you any network communication that happened from endpoints through a specific file to an Remote IP or Remote URL
+//Ensure to update RemoteIP, RemoteURL and InitatingProcessFileName
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+NetworkCommunicationEvents
+| where EventTime > ago(30d)
+| where (RemoteIP == " IP ADDRESS GOES HERE"
+or RemoteUrl contains " URL GOES HERE")
+and InitiatingProcessFileName =~ "filename.exe"
+| project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
+
+// Query 3 allows you to find network communication to an IP or URL in the NetworkCommunicationEvents table, as well as in MiscEvents for other events (SmartScreen, launch browser with URL, more)
+// Ensure to update RemoteIP and RemoteURL variable.
+find in (MiscEvents, NetworkCommunicationEvents)
+where RemoteIP == "IP ADDRESS GOES HERE" or RemoteUrl =~ "URL GOES HERE"
+project ComputerName, ActionType, FileName, EventTime
+
+// Query 4 Search for specific network communication of a Remote IP or URL that also discovers related file creation events
+// Ensure to update RemoteIP and RemoteURL variable.
+FileCreationEvents
+| where FileOriginUrl == "IP ADDRESS GOES HERE" or FileOriginUrl contains "URL GOES HERE" or FileOriginReferrerUrl contains "URL GOES HERE"
+| project ComputerName, EventTime, FileName, FileOriginUrl, FileOriginIP, FileOriginReferrerUrl, SHA1
