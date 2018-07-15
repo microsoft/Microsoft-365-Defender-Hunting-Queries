@@ -1,8 +1,8 @@
 // Sample query that search for .settingcontent-ms that has been downloaded from the web
-// through Microsoft Edge, Internet Explorer, Google Chrome and Mozilla Firefox
+// through Microsoft Edge, Internet Explorer, Google Chrome, Mozilla Firefox, Microsoft Outlook
 // Require Windows 10 Build 17686+ 
 // For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com
 FileCreationEvents
-| where InitiatingProcessFileName in~ ("browser_broker.exe", "chrome.exe", "iexplore.exe", "firefox.exe")
+| where InitiatingProcessFileName in~ ("browser_broker.exe", "chrome.exe", "iexplore.exe", "firefox.exe", "outlook.exe")
 | where FileName endswith ".settingcontent-ms"
 | project EventTime, ComputerName, FileName, FolderPath, FileOriginUrl, FileOriginReferrerUrl, FileOriginIP
