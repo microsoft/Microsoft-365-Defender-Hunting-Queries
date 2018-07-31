@@ -1,0 +1,39 @@
+// Pivot from downloads detected by Windows Defender Antivirus to other files downloaded from the same sites
+// To learn more about the download URL info that is available and see other sample queries,
+// check out this blog post: https://techcommunity.microsoft.com/t5/Threat-Intelligence/Hunting-tip-of-the-month-Browser-downloads/td-p/220454
+let detectedDownloads =
+    MiscEvents
+    | where ActionType == "AntivirusDetection" and isnotempty(FileOriginUrl)
+    | project EventTime, FileOriginUrl, FileName, MachineId,
+              ThreatName=tostring(parse_json(AdditionalFields).ThreatName)
+    // Filter out less severe threat categories on which we do not want to pivot
+    | where ThreatName !startswith "PUA"
+            and ThreatName !startswith "SoftwareBundler:" 
+            and FileOriginUrl != "about:internet";
+let detectedDownloadsSummary =
+    detectedDownloads
+    // Get a few examples for each detected Host:
+    // up to 4 filenames, up to 4 threat names, one full URL)
+    | summarize DetectedUrl=any(FileOriginUrl),
+                DetectedFiles=makeset(FileName, 4),
+                ThreatNames=makeset(ThreatName, 4)
+                by Host=tostring(parse_url(FileOriginUrl).Host);
+// Query for downloads from sites from which other downloads were detected by Windows Defender Antivirus
+FileCreationEvents
+| where isnotempty(FileOriginUrl)
+| project FileName, FileOriginUrl, MachineId, EventTime,
+          Host=tostring(parse_url(FileOriginUrl).Host)
+// Filter downloads from hosts serving detected files
+| join kind=inner(detectedDownloadsSummary) on Host
+// Filter out download file create events that were also detected.
+// This is needed because sometimes both of these events will be reported, 
+// and sometimes only the AntivirusDetection event - depending on timing.
+| join kind=leftanti(detectedDownloads) on MachineId, FileOriginUrl
+// Summarize a single row per host - with the machines count 
+// and an example event for a missed download (select the last event)
+| summarize MachineCount=dcount(MachineId), arg_max(EventTime, *) by Host
+// Filter out common hosts, as they probably ones that also serve benign files
+| where MachineCount < 20
+| project Host, MachineCount, MachineId, FileName, DetectedFiles, 
+          FileOriginUrl, DetectedUrl, ThreatNames, EventTime, SHA1
+| order by MachineCount desc 
