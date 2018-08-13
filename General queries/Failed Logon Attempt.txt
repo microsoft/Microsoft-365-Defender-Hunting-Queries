@@ -1,0 +1,10 @@
+// Sample query to detect within the last 7 days If there are more then 3 failed logon authentications on high value assets.
+// Update COMPUTERNAME to reflect your high value assets.
+// For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com
+LogonEvents
+| where ComputerName in ("COMPUTERNAME1","COMPUTERNAME2")
+| where ActionType == "LogonFailed"
+| summarize LogonFailures=count(EventTime) by ComputerName, LogonType, InitiatingProcessCommandLine
+| where LogonFailures > 3
+| project LogonFailures, ComputerName, LogonType, InitiatingProcessCommandLine
+| sort by LogonFailures desc
