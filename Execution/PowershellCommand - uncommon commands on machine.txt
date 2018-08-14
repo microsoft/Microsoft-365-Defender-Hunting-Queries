@@ -14,6 +14,7 @@ powershellCommands | where MachineId == machineId and EventTime between ((timest
 // Filter out common powershell cmdlets
 | join kind=leftanti (powershellCommands | summarize MachineCount=dcount(MachineId) by PowershellCommand | where MachineCount > 20) on PowershellCommand
 
+// To learn more about queries on Powershell commands, take a look this post: https://techcommunity.microsoft.com/t5/Threat-Intelligence/Hunting-tip-of-the-month-PowerShell-commands/m-p/210898#M30
 // Related queries:
 // 1. Found a suspicious command? Let's pivot to see on which other machines it was executed:
 //    https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/blob/master/Execution/PowershellCommand%20footprint.txt
