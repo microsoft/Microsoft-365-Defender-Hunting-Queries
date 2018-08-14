@@ -2,19 +2,18 @@
 // Ensure to update RemoteIP and RemoteURL variable.
 // For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
 NetworkCommunicationEvents
-| where EventTime > ago(30d)
 | where RemoteIP == "IP ADDRESS GOES HERE"
-or RemoteUrl contains "URL GOES HERE"
+or RemoteUrl endswith "DNS ENTRY GOES HERE"
 | project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
 
 // Query 2 shows you any network communication that happened from endpoints through a specific file to an Remote IP or Remote URL
 //Ensure to update RemoteIP, RemoteURL and InitatingProcessFileName
 // For questions @MiladMSFT on Twitter or milad.aslaner@microsoft.com by email
+let IP = "IP ADDRESS GOES HERE";
+let DNS = "DNS ENTRY GOES HERE";
+let FILENAME = "FILENAME GOES HERE";
 NetworkCommunicationEvents
-| where EventTime > ago(30d)
-| where (RemoteIP == " IP ADDRESS GOES HERE"
-or RemoteUrl contains " URL GOES HERE")
-and InitiatingProcessFileName =~ "filename.exe"
+| where (RemoteIP == IP or RemoteUrl endswith DNS) and InitiatingProcessFileName =~ FILENAME
 | project EventTime, ComputerName, ActionType, RemoteIP, RemoteUrl, InitiatingProcessFileName, InitiatingProcessCommandLine
 
 // Query 3 allows you to find network communication to an IP or URL in the NetworkCommunicationEvents table, as well as in MiscEvents for other events (SmartScreen, launch browser with URL, more)
