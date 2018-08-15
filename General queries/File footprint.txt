@@ -18,5 +18,5 @@ let filename = "FILENAME GOES HERE";
 // Builds table for distinct URLs based off filename
 NetworkCommunicationEvents 
 | where InitiatingProcessFileName =~ filename and ( isnotempty(RemoteIP) or isnotempty(RemoteUrl) )
-| project filename=InitiatingProcessFileName, DNS=RemoteUrl, IP=RemoteIP
+| project DNS=RemoteUrl, IP=RemoteIP
 | distinct IP, DNS
