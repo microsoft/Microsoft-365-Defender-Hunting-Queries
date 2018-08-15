@@ -1,0 +1,16 @@
+// Query # 1 - Determines MachineId from internal IP address and outputs all alerts in events table associated to the MachineId
+// Example use case is Firewall determines Internal IP with suspicious network activity. Query WDATP based on date/time and Internal IP and see associated alerts for the endpoint.  
+let PivotTime = datetime(2018-06-13 18:50:02); //Fill out time
+let TimeRangeStart = PivotTime-15m; // 15 Minutes Prior to Pivot Time
+let TimeRangeEnd = PivotTime+15m; // 15 Minutes After Pivot Time
+let IPAddress = "10.0.0.34";  // internal IP address to search
+// Locate MachineIDs associated with IP
+let FindMachineIDbyIP = MachineNetworkInfo
+| where EventTime between ((TimeRangeStart) ..TimeRangeEnd) 
+	and IPAddresses contains strcat("\"", IPAddress, "\"") 
+	and NetworkAdapterStatus == "Up"
+| project ComputerName, MachineId, EventTime, IPAddresses;
+// Query Alerts matching MachineIDs
+AlertEvents
+| join kind = leftsemi FindMachineIDbyIP on MachineId
+| sort by EventTime desc
