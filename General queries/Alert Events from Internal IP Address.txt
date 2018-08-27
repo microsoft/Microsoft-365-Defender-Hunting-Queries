@@ -14,4 +14,4 @@ let FindMachineIDbyIP = MachineNetworkInfo
 AlertEvents
 | join kind = leftsemi FindMachineIDbyIP on MachineId
 // Summarizes alerts by AlertId with min and max event times
-| summarize Title=any(Title), min(EventTime), max(EventTime), TotalAlerts=count(AlertId) by AlertId
+| summarize Title=any(Title), min(EventTime), max(EventTime), ComputerName=any(ComputerName) by AlertId
