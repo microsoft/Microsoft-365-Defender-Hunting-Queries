@@ -53,6 +53,11 @@ let ReturnSets=pack_array(
 let GetMachineId=(InComputerName: dynamic) {
     MachineInfo
     | where ComputerName in~ (InComputerName)
+    | distinct ComputerName, MachineId
+};
+// Function to consolidate all machine IDs into a single set
+let ConsolidateMachineId=(T:(MachineId: string)) {
+    T
     | summarize makeset(MachineId)
 };
 // Function to get network communications given a list of computer names and how far back to look
@@ -121,8 +126,6 @@ let GetLogonEvents=(InMachineId: dynamic, LeftEventTime: datetime) {
     | where MachineId in~ (InMachineId)
     // Remove logons made by WDM or UMFD
     | where AccountDomain !in ('font driver host', 'window manager')
-    // Replace qualys logons which cause a lot of noise
-    | extend AccountName=iff(AccountName matches regex @"qualys[0-9]{29}", "qualys", AccountName)
     | summarize EventTime=max(EventTime), Count=count(), LT_Set=makeset(LogonType) by AccountName, AccountDomain, MachineId
     | project EventTime, Entity=iff(AccountDomain == "", AccountName, strcat(AccountDomain, @"\", AccountName)), Count, AdditionalData=tostring(LT_Set), MachineId, DataType="Logon"
 };
@@ -172,9 +175,13 @@ let GoodLeftEventTime=ago(GoodTimeRange);
 // Calculate the left event time for suspected bad machines
 let SuspectedBadLeftEventTime=ago(SuspectedBadTimeRange);
 // Calculate the machine IDs for "good" machines
-let GoodHostMachineId=toscalar(GetMachineId(GoodHosts));
+let GoodHostNameMapping=GetMachineId(GoodHosts);
+// Reduce all of the good machine IDs into a single variable
+let GoodHostMachineId=toscalar(ConsolidateMachineId(GoodHostNameMapping));
 // Calculate the machine IDs for suspected bad machines
-let SuspectedBadHostMachineId=toscalar(GetMachineId(SuspectedBadHosts));
+let SuspectedBadHostNameMapping=GetMachineId(SuspectedBadHosts);
+// Reduce all of the suspected bad machine IDs into a single variable
+let SuspectedBadHostMachineId=toscalar(ConsolidateMachineId(SuspectedBadHostNameMapping));
 // Calculate the delta in network events, keeping the bad ones
 let NetworkDelta=GetNetworkEvents(SuspectedBadHostMachineId, SuspectedBadLeftEventTime)
 | join kind=leftanti (
@@ -223,18 +230,29 @@ let RawIPCommunicationDelta=GetRawIPCommunications(SuspectedBadHostMachineId, Su
 // Get the alerts for the bad machines (no delta, we care about all alerts)
 let Alerts=AlertEvents
 | where "Alert" in (ReturnSets)
+| where EventTime > SuspectedBadLeftEventTime
 | where MachineId in (SuspectedBadHostMachineId)
 | summarize EventTime=max(EventTime), Count=count() by Title, MachineId, FileName, RemoteUrl
-| project EventTime, Entity=Title, Count, AdditionalData=coalesce(FileName, RemoteUrl), DataType="Alert";
+| project EventTime, Entity=Title, Count, AdditionalData=coalesce(FileName, RemoteUrl), MachineId, DataType="Alert";
 // String everything together
-union NetworkDelta, ProcessDelta, PSDelta, FileDelta, Alerts, LogonDelta, RegistryDelta,
+let ResultDataWithoutMachineCount=union NetworkDelta, ProcessDelta, PSDelta, FileDelta, Alerts, LogonDelta, RegistryDelta,
       ConnectedNetworkDelta, ImageLoadDelta, RawIPCommunicationDelta
 // Join back against the machine info so the Computer Names can be reassociated
 | join kind=leftouter (
-    MachineInfo
-    | where MachineId in (GoodHostMachineId, SuspectedBadHostMachineId)
-    | distinct MachineId, ComputerName
+        SuspectedBadHostNameMapping
 ) on MachineId
-| project-away MachineId1
+// Remove duplicated column
+| project-away MachineId1;
+// This is the start of the final result set that is shown
+// Calculate the number of machines that each entity/datatype pair have and join that data back into the data to add
+// an additional column for the number of bad machines
+ResultDataWithoutMachineCount
+| join kind=leftouter (
+    ResultDataWithoutMachineCount
+    | summarize BadMachinesCount=dcount(MachineId) by Entity, DataType
+) on Entity, DataType
+// Remove duplicated columns
+| project-away Entity1, DataType1
 // and sort by Machine, DataType, Entity
-| order by MachineId asc, DataType asc, Entity asc
+| order by BadMachinesCount desc, MachineId asc, DataType asc, Entity asc
+//| where BadMachinesCount > 1
