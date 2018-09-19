@@ -6,7 +6,7 @@
 // This query supports multiple suspected bad machines and multiple "known good" machines
 // It also supports providing a timeframe for how far back in time to build a baseline as well as how far back in time to evaluate the suspected bad machines
 // Each of the links provided by machineid/computername will go to the most recent entry for whatever entity is listed
-// Average results for the pre-defined settings below with a single good host and a single bad host:
+// Average results for the pre-defined settings below with a single good host and a single bad host on a 'huge' tenant (300k+ machines):
 //   Compute Time: ~10-20 seconds
 //   Result Set Size: ~500 rows
 // The workflow is as follows:
