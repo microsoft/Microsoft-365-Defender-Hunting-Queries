@@ -49,7 +49,7 @@ let ReturnSets=pack_array(
     'Raw IP Communication'
 );
 // -------------End of variables, changing below this line will change query logic----------
-// Function to get a list of machine IDs given a list of computer names
+// Function to get a mapping of machine IDs given a list of computer names
 let GetMachineId=(InComputerName: dynamic) {
     MachineInfo
     | where ComputerName in~ (InComputerName)
