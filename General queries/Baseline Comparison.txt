@@ -67,7 +67,7 @@ let GetNetworkEvents=(InMachineId: dynamic, LeftEventTime: datetime) {
     // If there is only one level (for an internal communication that uses your DNS search suffix), then only use that level
     // Otherwise combine the top two levels and use those as the URLRoot
     | extend UrlRoot=iff(UrlSplit[-2] == "", UrlSplit[0], strcat(tostring(UrlSplit[-2]), ".", tostring(UrlSplit[-1])))
-    | summarize EventTime=max(EventTime), Count=sum(count_), AdditionalData=makeset(RemoteUrl) by UrlRoot, MachineId
+    | summarize EventTime=max(EventTime), Count=sum(count_), AdditionalData=makeset(RemoteUrl, 5) by UrlRoot, MachineId
     | project EventTime, Entity=UrlRoot, Count, AdditionalData=tostring(AdditionalData), MachineId, DataType="Network Communication"
 };
 // Function to get process creates given a list of computer names and how far back to look
