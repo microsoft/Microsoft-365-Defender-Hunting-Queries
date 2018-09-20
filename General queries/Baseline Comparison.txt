@@ -165,9 +165,13 @@ let GetRawIPCommunications=(InMachineId: dynamic, LeftEventTime: datetime) {
     | where 'Raw IP Communication' in (ReturnSets)
     | where EventTime > LeftEventTime
     | where MachineId in~ (InMachineId)
-    | summarize EventTime=max(EventTime), Set_FN=makeset(InitiatingProcessFileName), Set_URL=makeset(RemoteUrl), Count=count() by MachineId, RemoteIP
+    // Replace all v4 to v6 addresses with their v4 equivalent
+    | extend RemoteIP=replace("^::ffff:", "", RemoteIP)
+    | summarize EventTime=max(EventTime), Set_RPort=makeset(RemotePort), Set_LPort=makeset(LocalPort), Set_FN=makeset(InitiatingProcessFileName), Set_URL=makeset(RemoteUrl), Count=count() by MachineId, RemoteIP
     // Only include any IP addresses that do not have a resolved URL as resolved URLs are handled in network communications
     | where tostring(Set_URL) == '[""]'
+    // Do not include machines that are only doing WUDO
+    | where tostring(Set_RPort) != '[7680]' and tostring(Set_RPort) != '[7680]'
     | project EventTime, Entity=RemoteIP, Count, AdditionalData=tostring(Set_FN), MachineId, DataType='Raw IP Communication'
 };
 // Calculate the left event time for "good" machines
