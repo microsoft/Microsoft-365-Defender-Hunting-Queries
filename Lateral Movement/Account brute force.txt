@@ -2,8 +2,7 @@
 LogonEvents
 | where isnotempty(RemoteIP) 
     and AccountName !endswith "$"
-    and RemoteIPType == "Public" // Remove this line if you want to include Private IPs - and uncomment the next line
-    //and RemoteIPType != "Loopback"
+    and RemoteIPType == "Public"
 | extend Account=strcat(AccountDomain, "\\", AccountName)
 | summarize 
     Successful=countif(ActionType == "LogonSuccess"),
