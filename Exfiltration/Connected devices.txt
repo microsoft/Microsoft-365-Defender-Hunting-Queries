@@ -1,0 +1,45 @@
+// Action "PnpDeviceConnected" reports the connection of any plug and play device.
+// read more online on event 6416: https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/event-6416
+
+// Query #1: look for rare one-time devices connected to a specific machine
+let computerNameParam = "<replace this with full computer name>";
+// Query for device connection events
+let devices =
+    MiscEvents
+    | where ActionType == "PnpDeviceConnected"
+    | extend parsed=parse_json(AdditionalFields)
+    | project 
+        DeviceDescription=tostring(parsed.DeviceDescription),
+        ClassName=tostring(parsed.ClassName),
+        DeviceId=tostring(parsed.VendorIds),
+        VendorIds=tostring(parsed.VendorIds),
+        ComputerName, EventTime ;
+// Filter devices seen on the suspected machine
+devices | where ComputerName == computerNameParam
+// Get some stats on the device connections to that machine
+| summarize TimesConnected=count(), FirstTime=min(EventTime), LastTime=max(EventTime) by DeviceId, DeviceDescription, ClassName, VendorIds, ComputerName
+// Optional filter - looking for devices used in only within 24h
+| where LastTime - FirstTime < 1d
+// Filter out (antijoin) devices that are common in the organization.
+// We use here multiple identifiers, including a pseudo-unique device ID.
+// So, a specific disk-on-key device which model is common in the org will still be shown in the results,
+// while built-in software devices (often have constant device ID) as well as common network devices (e.g. printer queues) will be excluded.
+| join kind=leftanti 
+  (devices | summarize Machines=dcount(ComputerName) by DeviceId, DeviceDescription, VendorIds | where Machines > 5)
+  on DeviceId, DeviceDescription, VendorIds
+
+// Query #2: map uncommon storage devices across the org
+// This is a noisy query - but it can serve as reference for working with this event
+MiscEvents
+| where ActionType == "PnpDeviceConnected"
+| extend parsed=parse_json(AdditionalFields)
+| extend
+    DeviceDescription=tostring(parsed.DeviceDescription),
+    ClassName=tostring(parsed.ClassName)
+| where
+    ClassName in ("DiskDrive", "CDROM")
+    or ClassName contains "nas"
+    or ClassName contains "SCSI"
+    or (ClassName == "USB" and DeviceDescription contains "storage")
+| summarize ComputerCount=dcount(ComputerName) by ClassName, DeviceDescription
+| where ComputerCount < 5
