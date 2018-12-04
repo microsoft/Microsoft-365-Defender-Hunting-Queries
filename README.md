@@ -8,7 +8,7 @@ We are continually building up documentation about Advanced hunting and its data
 
 - [Feature overview, tables, and common operators](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-windows-defender-advanced-threat-protection)
 - [Table columns and descriptions](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-reference-windows-defender-advanced-threat-protection)
-- [Query language reference](https://go.microsoft.com/fwlink/?linkid=866515)
+- [Query language reference](https://docs.microsoft.com/en-us/azure/kusto/query/)
 
 *Not using Windows Defender ATP?* If you haven't yet, experience how you can effectively scale your organization's incident response capabilities by signing up for a [free Windows Defender ATP trial](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit). 
 
