@@ -7,5 +7,6 @@ ProcessCreationEvents
    or ProcessCommandLine has "Invoke-WebRequest"
    or ProcessCommandLine has "Invoke-Shellcode"
    or ProcessCommandLine contains "http:"
+   or ProcessCommandLine has "IEX"
 | project EventTime, ComputerName, InitiatingProcessFileName, FileName, ProcessCommandLine
 | top 100 by EventTime
