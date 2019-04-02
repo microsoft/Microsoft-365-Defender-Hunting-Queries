@@ -1,5 +1,5 @@
 # About
-This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Windows Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
+This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Microsoft Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
 With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through Advanced hunting.
 
 To get started, simply paste a sample query into the query builder and run the query. If you get syntax errors, try removing empty lines introduced when pasting. If a query returns no results, try expanding the time range. 
@@ -10,7 +10,7 @@ We are continually building up documentation about Advanced hunting and its data
 - [Table columns and descriptions](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-reference-windows-defender-advanced-threat-protection)
 - [Query language reference](https://docs.microsoft.com/en-us/azure/kusto/query/)
 
-*Not using Windows Defender ATP?* If you haven't yet, experience how you can effectively scale your organization's incident response capabilities by signing up for a [free Windows Defender ATP trial](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit). 
+*Not using Microsoft Defender ATP?* If you haven't yet, experience how you can effectively scale your organization's incident response capabilities by signing up for a [free Microsoft Defender ATP trial](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit). 
 
 # Suggestions and feedback
 We maintain a backlog of suggested sample queries in the project [issues page](https://github.com/Microsoft/WindowsDefenderATP-Hunting-Queries/issues). Feel free to comment, rate, or provide suggestions.
@@ -36,4 +36,4 @@ or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any addi
 # Coding guidelines and references
 The samples in this repo should include comments that explain the attack technique or anomaly being hunted. Whenever possible, provide links to related documentation.
 
-In addition, construct queries that adhere to the published [Windows Defender ATP Advanced hunting performance best practices](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-best-practices-windows-defender-advanced-threat-protection).
+In addition, construct queries that adhere to the published [Microsoft Defender ATP Advanced hunting performance best practices](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-atp/advanced-hunting-best-practices-windows-defender-advanced-threat-protection).
