@@ -1,0 +1,9 @@
+//Looking for high volume queries against a given RemoteIP, per ComputerName, RemotePort and Process
+//Please change the EventTime window according your preference/objective, as also the subnet ranges that you want to analyze against
+NetworkCommunicationEvents
+| where EventTime > ago(1d) and RemoteIP startswith "172.16" or RemoteIP startswith "192.168" 
+| summarize
+    by ComputerName, RemoteIP, RemotePort, InitiatingProcessFileName
+| summarize RemotePortCount=dcount(RemotePort) by ComputerName, RemoteIP, InitiatingProcessFileName
+//Please change the min value, for a host reaching out to remote ports on a remote IP, that you consider to be threshold for a suspicious behavior 
+| where RemotePortCount > 10
