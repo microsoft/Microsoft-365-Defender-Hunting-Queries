@@ -1,3 +1,0 @@
-NetworkCommunicationEvents  
-| where RemoteUrl == "www.microsoft.com"
-| project EventTime , ComputerName , MachineId , ReportId 
