@@ -2,4 +2,5 @@
 //Questions via Twitter: @janvonkirchheim 
 
 ProcessCreationEvents 
-| where ((FolderPath endswith "\\schtasks.exe" and ProcessCommandLine contains " /create ") and (AccountName != "system"))
+| where FolderPath endswith "\\schtasks.exe" and ProcessCommandLine has " /create " and AccountName != "system"
+| where EventTime > ago(30d)
