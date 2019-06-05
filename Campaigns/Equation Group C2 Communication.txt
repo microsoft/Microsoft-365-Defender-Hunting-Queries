@@ -1,0 +1,5 @@
+//Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_equationgroup_c2.yml
+//Questions via Twitter: @janvonkirchheim 
+ProcessCreationEvents 
+| where ((FolderPath endswith "\\rundll32.exe" and ProcessCommandLine endswith ",dll_u") or ProcessCommandLine contains " -export dll_u ")
+| where EventTime > ago(7d)
