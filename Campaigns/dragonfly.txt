@@ -1,0 +1,5 @@
+//Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_dragonfly.yml
+//Questions via Twitter: @janvonkirchheim 
+ProcessCreationEvents 
+| where FolderPath endswith "\\crackmapexec.exe"
+| where EventTime > ago(7d)
