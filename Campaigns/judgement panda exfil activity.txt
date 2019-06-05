@@ -1,0 +1,5 @@
+//Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_judgement_panda_gtr19.yml
+//Questions via Twitter: @janvonkirchheim 
+ProcessCreationEvents 
+| where (ProcessCommandLine contains "\\ldifde.exe -f -n " or ProcessCommandLine contains "\\7za.exe a 1.7z " or ProcessCommandLine endswith " eprod.ldf" or ProcessCommandLine contains "\\aaaa\\procdump64.exe" or ProcessCommandLine contains "\\aaaa\\netsess.exe" or ProcessCommandLine contains "\\aaaa\\7za.exe" or ProcessCommandLine contains "copy .\\1.7z \\" or ProcessCommandLine contains "copy \\client\\c$\\aaaa\\" or FolderPath == "C:\\Users\\Public\\7za.exe")
+| where EventTime > ago(7d)
