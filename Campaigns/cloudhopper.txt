@@ -1,5 +1,5 @@
 //Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_cloudhopper.yml
 //Questions via Twitter: @janvonkirchheim 
 ProcessCreationEvents 
-| where (FolderPath endswith "\\cscript.exe" and ProcessCommandLine contains ".vbs /shell ")
+| where (FolderPath endswith "\\cscript.exe" and ProcessCommandLine has ".vbs /shell ")
 | where EventTime > ago(7d)
