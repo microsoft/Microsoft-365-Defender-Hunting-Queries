@@ -1,0 +1,5 @@
+//Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_hurricane_panda.yml
+//Questions via Twitter: @janvonkirchheim 
+ProcessCreationEvents 
+| where ProcessCommandLine endswith " localgroup administrators admin /add" or ProcessCommandLine has "\\Win64.exe"
+| where EventTime > ago(7d)
