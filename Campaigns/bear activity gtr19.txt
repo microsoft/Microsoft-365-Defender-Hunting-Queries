@@ -1,5 +1,0 @@
-//Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_bear_activity_gtr19.yml
-//Questions via Twitter: @janvonkirchheim 
-ProcessCreationEvents 
-| where ((FolderPath endswith "\\xcopy.exe" and ProcessCommandLine has " /S /E /C /Q /H \\") or (FolderPath endswith "\\adexplorer.exe" and ProcessCommandLine has " -snapshot \"\" c:\\users\\"))
-| where EventTime > ago(7d)
