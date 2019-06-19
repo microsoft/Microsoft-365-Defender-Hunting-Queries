@@ -1,6 +1,0 @@
-// Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/crime_fireball.yml
-// Questions via Twitter: @janvonkirchheim
-ProcessCreationEvents
-| where EventTime > ago(7d)
-| where ProcessCommandLine matches regex @'rundll32.exe *,InstallArcherSvc'
-| top 100 by EventTime desc
