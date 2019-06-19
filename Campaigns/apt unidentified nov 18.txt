@@ -1,0 +1,11 @@
+// Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_unidentified_nov_18.yml
+// Questions via Twitter: @janvonkirchheim
+ProcessCreationEvents
+| where EventTime > ago(7d)
+| where ProcessCommandLine endswith "cyzfc.dat, PointFunctionCall" 
+| top 100 by EventTime desc
+
+FileCreationEvents 
+| where EventTime > ago(7d)
+| where FolderPath has "ds7002.lnk"
+| top 100 by EventTime desc
