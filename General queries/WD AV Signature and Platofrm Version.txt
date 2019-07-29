@@ -1,0 +1,15 @@
+//Author: António Vasconcelos
+//Twitter: https://twitter.com/anthonws
+// This query provides you the latest signature and platform (MoCamp) for Windows Defender AV
+FileCreationEvents
+| where InitiatingProcessCommandLine contains "MpSigStub.exe"
+| extend NewVersion=tostring(split(InitiatingProcessCommandLine, " ")[4]) 
+| summarize arg_max(NewVersion, *) by ComputerName
+| project ComputerName , NewVersion
+| join (FileCreationEvents
+        | where FileName == "MsMpEng.exe"
+        | where FolderPath contains @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
+        | extend PlatformVersion=tostring(split(FolderPath, "\\", 5))
+        | project ComputerName, PlatformVersion)
+    on ComputerName
+| project ComputerName , NewVersion , PlatformVersion
