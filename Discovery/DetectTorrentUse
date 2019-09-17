@@ -1,0 +1,4 @@
+//Custom detection to find use of torrenting software or browsing related to torrents
+NetworkCommunicationEvents
+| where RemoteUrl contains "torrent" or RemoteUrl contains "vuze" or RemoteUrl contains "azureus" or RemoteUrl endswith ".tor" or InitiatingProcessFileName contains "torrent" or InitiatingProcessFileName contains "vuze" or InitiatingProcessFileName contains "azureus" 
+| project EventTime, ReportId, MachineId, ComputerName, InitiatingProcessFileName, RemoteUrl , RemoteIP , RemotePort    
