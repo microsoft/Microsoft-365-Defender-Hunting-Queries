@@ -1,7 +1,7 @@
 ---
 page_type: sample
 languages:
-- python
+- kusto
 products:
 - mdatp
 description: "MDATP Advanced Hunting (AH) Sample Queries"
