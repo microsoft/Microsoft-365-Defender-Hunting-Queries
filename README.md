@@ -1,3 +1,12 @@
+---
+page_type: sample
+languages:
+- python
+products:
+- mdatp
+description: "MDATP Advanced Hunting (AH) Sample Queries"
+---
+
 # About
 This repo contains sample queries for [Advanced hunting](https://securitycenter.windows.com/hunting) on [Microsoft Defender Advanced Threat Protection](https://www.microsoft.com/en-us/windowsforbusiness/windows-atp?ocid=queryrepogit).
 With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through Advanced hunting.
