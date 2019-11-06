@@ -1,0 +1,24 @@
+// System Guard Security Level Drop
+// This query looks at the value of SystemGuardSecurityLevel in the DeviceBootAttestationInfo action type records in MiscEvents
+// when it sees a drop in the value of SystemGuardSecurityLevel of the latest record verus the previous record
+// You can convert this into a custom detection by selecting the "Create Detection Rule" in Advanced Hunting
+// For more questions on this query, feel free to ping @DepletionMode or @FlyingBlueMonki on twitter
+MiscEvents
+| where ActionType == "DeviceBootAttestationInfo"
+| partition by MachineId 
+    (   extend AdditionalFieldData = parse_json(AdditionalFields)
+        | project MachineId,EventTime, SystemGuardSecurityLevel = toint(AdditionalFieldData.SystemGuardSecurityLevel)
+        | summarize arg_max(EventTime, MachineId) by SystemGuardSecurityLevel
+        | order by EventTime asc
+        | extend PreviousSystemGuardSecurityLevel = prev(SystemGuardSecurityLevel)
+        | where isnotnull(PreviousSystemGuardSecurityLevel)
+        | where SystemGuardSecurityLevel < PreviousSystemGuardSecurityLevel
+    )
+    | join  
+    (
+    MiscEvents
+        | where ActionType == "DeviceBootAttestationInfo"
+        | order by EventTime desc
+        | project ReportId, MachineId
+        | take 1
+    ) on $left.MachineId == $right.MachineId
