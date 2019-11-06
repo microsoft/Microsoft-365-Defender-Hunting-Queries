@@ -1,24 +1,22 @@
-// System Guard Security Level Drop
-// This query looks at the value of SystemGuardSecurityLevel in the DeviceBootAttestationInfo action type records in MiscEvents
-// when it sees a drop in the value of SystemGuardSecurityLevel of the latest record verus the previous record
-// You can convert this into a custom detection by selecting the "Create Detection Rule" in Advanced Hunting
-// For more questions on this query, feel free to ping @DepletionMode or @FlyingBlueMonki on twitter
-MiscEvents
+// Goal: Find machines in the last N days where the SystemGuardSecurityLevel value NOW is less than it was BEFORE
+// Step 1: Get a list of all security levels in the system where the level is not null
+let SecurityLevels = MiscEvents
+| where EventTime >= ago(7d)
 | where ActionType == "DeviceBootAttestationInfo"
-| partition by MachineId 
-    (   extend AdditionalFieldData = parse_json(AdditionalFields)
-        | project MachineId,EventTime, SystemGuardSecurityLevel = toint(AdditionalFieldData.SystemGuardSecurityLevel)
-        | summarize arg_max(EventTime, MachineId) by SystemGuardSecurityLevel
-        | order by EventTime asc
-        | extend PreviousSystemGuardSecurityLevel = prev(SystemGuardSecurityLevel)
-        | where isnotnull(PreviousSystemGuardSecurityLevel)
-        | where SystemGuardSecurityLevel < PreviousSystemGuardSecurityLevel
-    )
-    | join  
-    (
-    MiscEvents
-        | where ActionType == "DeviceBootAttestationInfo"
-        | order by EventTime desc
-        | project ReportId, MachineId
-        | take 1
-    ) on $left.MachineId == $right.MachineId
+| extend AdditionalFieldData = parse_json(AdditionalFields)
+| project MachineId, EventTime, SystemGuardSecurityLevel = toint(AdditionalFieldData.SystemGuardSecurityLevel), ReportId
+| where isnotnull(SystemGuardSecurityLevel);
+// Step 2: Get the *latest* record for *each* machine from the SecurityLevels table
+let LatestLevelsPerMachine = SecurityLevels
+ // This is going to be the most recent event
+| summarize arg_max(EventTime, SystemGuardSecurityLevel) by MachineId
+| project MachineId, LatestSystemGuardSecurityLevel=SystemGuardSecurityLevel, LatestEventTime=EventTime;
+// Step 3: Join the two tables together where the LatestSystemGuardSecurityLevel is LESS than the SystemGuardSecurityLevel 
+let MachinesExhibitingSecurityLevelDrop = LatestLevelsPerMachine
+| join (
+ SecurityLevels
+) on MachineId
+| project-away MachineId1
+| where LatestSystemGuardSecurityLevel < SystemGuardSecurityLevel 
+| summarize arg_max(EventTime, LatestSystemGuardSecurityLevel, SystemGuardSecurityLevel, LatestEventTime, ReportId) by MachineId;
+MachinesExhibitingSecurityLevelDrop
