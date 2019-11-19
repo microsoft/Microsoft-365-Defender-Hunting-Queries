@@ -1,0 +1,32 @@
+// Author: António Vasconcelos
+// Twitter: https://twitter.com/anthonws
+// This query provides you the latest signature and platform (MoCamp) for Windows Defender AV
+// *Changelog*
+// V2 - 19/22/2019
+// Changed the query to account for the time separation between Signature Updates and Engine Updates.
+// Should now reflect properly both Signature and Enginer per machine, in a single line per device.
+// If a given machine does not have one of the fields populated, it means that AH does not have data for it, in the last 30 days.
+// --------------------------------------------------------------------------------------- //
+// Define the time window
+// Please note that results will vary depending on startDate since MoCamp updates happen normally once per month
+let startDate = ago(30d);
+let Signature =
+FileCreationEvents
+| where InitiatingProcessCommandLine has "MpSigStub.exe"
+| where EventTime > startDate
+| extend SignatureVersion=tostring(split(InitiatingProcessCommandLine, " ")[4])
+| summarize arg_max(SignatureVersion, EventTime) by ComputerName;
+let Engine =
+FileCreationEvents
+| where FileName == "MsMpEng.exe"
+| where FolderPath has @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
+| where EventTime > startDate
+| extend EngineVersion_Initial=tostring(split(FolderPath, "\\", 5))
+| summarize arg_max(EngineVersion_Initial, EventTime) by ComputerName;
+let GroupResults = union Signature, Engine;
+GroupResults
+//| where ComputerName has "shiriu"
+| where EventTime > startDate
+| project ComputerName, SignatureVersion, EngineVersion=extract("([0-9].[0-9][0-9].[0-9][0-9][0-9][0-9].[0-9]-[0-9])", 0, EngineVersion_Initial)
+| summarize max(SignatureVersion), max(EngineVersion) by ComputerName
+| order by max_SignatureVersion asc 
