@@ -8,7 +8,7 @@ let startDate = ago(7d);
 FileCreationEvents
 | where InitiatingProcessCommandLine has "MpSigStub.exe"
 //To exclude Engine Updates and non update events 
-| where InitiatingProcessParentFileName != "AM_Engine.exe" and InitiatingProcessParentFileName != "wuauclt.exe"
+| where InitiatingProcessParentFileName !~ "AM_Engine.exe" and InitiatingProcessParentFileName !~ "wuauclt.exe"
 // Comment the below line if you're looking specifically for a computer
 | where EventTime > startDate
 // Uncomment the line below when looking for info regarding a specific computer
