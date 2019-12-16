@@ -1,0 +1,9 @@
+// WIFI Keys
+// @mattiasborg82
+// blog.sec-labs.com
+ProcessCreationEvents
+| where EventTime > ago(7d)
+| where ProcessCommandLine startswith "netsh.exe"
+| where ProcessCommandLine has "key=clear"
+| project EventTime, ComputerName, InitiatingProcessFileName, FileName, ProcessCommandLine
+| top 100 by EventTime
