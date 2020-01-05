@@ -4,21 +4,21 @@
 // Tags: #SmartScreen
 let minTimeRange = ago(7d);
 let smartscreenAppBlocks = 
-    MiscEvents
-    | where ActionType == "SmartScreenAppWarning" and EventTime > minTimeRange
+    DeviceEvents
+    | where ActionType == "SmartScreenAppWarning" and Timestamp > minTimeRange
             // Filter out SmartScreen test files downloaded from https://demo.smartscreen.msft.net/
             and not (FileName startswith "knownmalicious" and FileName endswith ".exe")
     | extend ParsedFields=parse_json(AdditionalFields)
-    | project EventTime, ComputerName, BlockedFileName=FileName, SHA1, Experience=tostring(ParsedFields.Experience), ActivityId=tostring(ParsedFields.ActivityId), InitiatingProcessFileName;
+    | project Timestamp, DeviceName, BlockedFileName=FileName, SHA1, Experience=tostring(ParsedFields.Experience), ActivityId=tostring(ParsedFields.ActivityId), InitiatingProcessFileName;
 // Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
 let userIgnoredWarning=
-    MiscEvents
-    | where ActionType == "SmartScreenUserOverride" and EventTime > minTimeRange
-    | project ComputerName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
+    DeviceEvents
+    | where ActionType == "SmartScreenUserOverride" and Timestamp > minTimeRange
+    | project DeviceName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
 // Join the block and user decision event using an ActivityId
 let ignoredBlocks = 
 	smartscreenAppBlocks
-	| join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId
+	| join kind=leftsemi (userIgnoredWarning) on DeviceName, ActivityId
 	| project-away ActivityId;
 ignoredBlocks
 // Select only blocks on "Malicious" files.

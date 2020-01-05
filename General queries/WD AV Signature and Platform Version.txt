@@ -5,22 +5,22 @@
 // Define the time window
 // Please note that results will vary depending on startDate
 let startDate = ago(7d);
-FileCreationEvents
+DeviceFileEvents
 | where InitiatingProcessCommandLine has "MpSigStub.exe"
 //To exclude Engine Updates and non update events 
 | where InitiatingProcessParentFileName !~ "AM_Engine.exe" and InitiatingProcessParentFileName !~ "wuauclt.exe"
 // Comment the below line if you're looking specifically for a computer
-| where EventTime > startDate
+| where Timestamp > startDate
 // Uncomment the line below when looking for info regarding a specific computer
-//| and ComputerName == "COMPUTER"
+//| and DeviceName == "COMPUTER"
 | extend NewVersion=tostring(split(InitiatingProcessCommandLine, " ")[4]) 
-| summarize arg_max(NewVersion, EventTime) by ComputerName
-| project ComputerName , NewVersion
-| join (FileCreationEvents
+| summarize arg_max(NewVersion, Timestamp) by DeviceName
+| project DeviceName , NewVersion
+| join (DeviceFileEvents
         | where FileName == "MsMpEng.exe"
         | where FolderPath has @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
-        | where EventTime > startDate
+        | where Timestamp > startDate
         | extend PlatformVersion=tostring(split(FolderPath, "\\", 5))
-        | project ComputerName, PlatformVersion)
-    on ComputerName
-| project ComputerName , NewVersion , PlatformVersion
+        | project DeviceName, PlatformVersion)
+    on DeviceName
+| project DeviceName , NewVersion , PlatformVersion

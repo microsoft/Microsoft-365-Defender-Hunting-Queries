@@ -1,7 +1,7 @@
 // Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_judgement_panda_gtr19.yml
 // Questions via Twitter: @janvonkirchheim
-ProcessCreationEvents
-| where EventTime > ago(7d)
+DeviceProcessEvents
+| where Timestamp > ago(7d)
 | where ProcessCommandLine has @"\ldifde.exe -f -n "
      or ProcessCommandLine has @"\7za.exe a 1.7z " 
      or ProcessCommandLine endswith @" eprod.ldf" 
@@ -11,4 +11,4 @@ ProcessCreationEvents
      or ProcessCommandLine has @"copy .\1.7z \" 
      or ProcessCommandLine has @"copy \client\c$\aaaa\" 
      or FolderPath == @"C:\Users\Public\7za.exe"
-| top 100 by EventTime desc
+| top 100 by Timestamp desc
