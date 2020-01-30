@@ -1,6 +1,6 @@
 // Finds PowerShell execution events that could involve a download.
-ProcessCreationEvents
-| where EventTime > ago(7d)
+DeviceProcessEvents
+| where Timestamp > ago(7d)
 | where FileName in~ ("powershell.exe", "powershell_ise.exe")
 | where ProcessCommandLine has "Net.WebClient"
    or ProcessCommandLine has "DownloadFile"
@@ -8,5 +8,5 @@ ProcessCreationEvents
    or ProcessCommandLine has "Invoke-Shellcode"
    or ProcessCommandLine contains "http:"
    or ProcessCommandLine has "IEX"
-| project EventTime, ComputerName, InitiatingProcessFileName, FileName, ProcessCommandLine
-| top 100 by EventTime
+| project Timestamp, DeviceName, InitiatingProcessFileName, FileName, ProcessCommandLine
+| top 100 by Timestamp

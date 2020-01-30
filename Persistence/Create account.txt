@@ -5,11 +5,11 @@
 // Query #1: Query for users being created using "net user" command
 // "net user" commands are noisy, so needs to be joined with another signal -
 // e.g. in this example we look for use of uncommon & undocumented commandline switches (e.g. /ad instead of /add)
-ProcessCreationEvents
+DeviceProcessEvents
 // Pro-tip: 
 // There are many different ways to run a process from a file - e.g. by using full path, env. variables, ~1 annotation, more...
 // So, to find executions of a known filename, better filter on the filename (and possibly on folder path) than on the commandline.
-| where FileName in~ ("net.exe", "net1.exe") and EventTime > ago(3d)
+| where FileName in~ ("net.exe", "net1.exe") and Timestamp > ago(3d)
 // Parse the user name from the commandline.
 // To have case-insensitive parsing use the i flag, to have non-greedy match (e.g. CreatedUser as short as possible), specify U flag:
 // "kind=regex flags=i"
@@ -23,14 +23,14 @@ ProcessCreationEvents
 // Also, any prefix that's longer than 1 char will also do the same, e.g. /do, /dom, /doma, ....
 | extend CreatedOnLocalMachine=(ProcessCommandLine !contains "/do")
 | where ProcessCommandLine !contains "/add" or (CreatedOnLocalMachine == 0 and ProcessCommandLine !contains "/domain")
-| summarize MachineCount=dcount(ComputerName) by CreatedUser, CreatedOnLocalMachine, InitiatingProcessFileName, FileName, ProcessCommandLine, InitiatingProcessCommandLine 
+| summarize MachineCount=dcount(DeviceName) by CreatedUser, CreatedOnLocalMachine, InitiatingProcessFileName, FileName, ProcessCommandLine, InitiatingProcessCommandLine 
 
 
 // Query #2: Query for accounts created on machines onboarded with Sense.
 // Create account event is noisy, so we need to join it with some other signal.
 // E.g. In this query we look for accounts created which name resembles "administrator".
 //      Using account names similar to known common account names is a common way to be evade the human analyst eye.
-MiscEvents
+DeviceEvents
 | where ActionType == "UserAccountCreated"
 // To look for account names similar to administrator, we'll simply query for the prefix and suffix,
 // because these letters matter most to the human perception: https://en.wikipedia.org/wiki/Typoglycemia
@@ -38,5 +38,5 @@ MiscEvents
 // and looking for prefix and suffix should work in this case pretty well.
 | where AccountName startswith "ad" and AccountName endswith "or" and AccountName !~ "administrator"
 // Note: For the UserAccountCreated event we do not know the details of the process / account that was used to create this new account.
-| project AccountName, AccountDomain, ComputerName, EventTime
+| project AccountName, AccountDomain, DeviceName, Timestamp
 | limit 100

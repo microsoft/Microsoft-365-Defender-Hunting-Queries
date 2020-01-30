@@ -1,7 +1,7 @@
 // Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_oceanlotus_registry.yml
 // Questions via Twitter: @janvonkirchheim 
-RegistryEvents 
-| where EventTime > ago(7d)
+DeviceRegistryEvents 
+| where Timestamp > ago(7d)
 | where ActionType == "RegistryValueSet" 
 | where RegistryKey endswith @"\SOFTWARE\Classes\CLSID\{E08A0F4B-1F65-4D4D-9A09-BD4625B9C5A1}\Model" 
      or RegistryKey endswith @"\SOFTWARE\App\AppXbf13d4ea2945444d8b13e2121cb6b663\Application" 
