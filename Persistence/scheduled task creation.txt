@@ -1,5 +1,5 @@
 //Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/windows/process_creation/win_susp_schtask_creation.yml
 //Questions via Twitter: @janvonkirchheim 
 DeviceProcessEvents 
-| where FolderPath endswith "\\schtasks.exe" and ProcessCommandLine has " /create " and AccountName != "system"
+| where FolderPath endswith "\\schtasks.exe" and ProcessCommandLine has " /create " and AccountSid != "S-1-5-18"
 | where Timestamp > ago(7d)
