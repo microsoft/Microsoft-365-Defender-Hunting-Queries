@@ -1,0 +1,66 @@
+// Author: António Vasconcelos
+// Twitter: https://twitter.com/anthonws
+// --------------------------------------------------------------------------------------------------------------------------- //
+// *GOAL*
+// This query provides you the latest signature and platform (MoCamp) for Windows Defender AV per DeviceName.
+// If a given machine does not have one of the fields populated, it means that AH does not have data for it, in the last 30 days.
+// The main objective with this query is being able to reportin on a specific or group of devices, during an IR.
+// Please note that AH has a limitation of 10K rows output per query!
+// THIS QUERY SHOULD NOT REPLACE A ROBUST REPORTING MECHANISM, OFFERED BY PLATFORMS LIKE MICROSOFT ENDPOINT MANAGER!
+// --------------------------------------------------------------------------------------------------------------------------- //
+// *DISCLAIMER*
+// THIS IS A SAMPLE QUERY
+// PLEASE NOTE THAT I TAKE NO RESPONSIBILITY ON THE RESULTS THIS QUERY MIGHT YIELD
+// YOU SHOULD TEST IT AND MAKE SURE IT FITS YOUR NEEDS 
+// THIS QUERY IS NOT OFFICIAL AND ENDORSED BY MICROSOFT
+// --------------------------------------------------------------------------------------------------------------------------- //
+// *CHANGELOG*
+// V3 - 20/04/2020
+// - Correct a "bug" in the summarize
+// - Improved stability
+// - Added disclaimer
+// V2 - 19/22/2019
+// - Changed the query to account for the time separation between Signature Updates and Engine Updates.
+// - Should now reflect properly both Signature and Enginer per machine, in a single line per device.
+// V1 - Long, long time ago
+// - Initial query
+// --------------------------------------------------------------------------------------------------------------------------- //
+// We start by defining the time windows both for Signature Updates and Platform Updates
+// Signature Updates happen multiple times per day
+// We want to look at the last 7 days (after 7 days signatures are considered to be out-of-date [default config])
+let SignaturestartDate = ago(7d);
+// Platform Updates happen every 30 days (by default), with Patch Tuesday
+let PlatformstartDate = ago(30d);
+//
+// Block where we extract Signature version info
+//
+let SignatureVersion = DeviceFileEvents
+| where InitiatingProcessCommandLine has "MpSigStub.exe"
+//This line is used to exclude Engine Updates and non update events (we just want Signature Updates)
+| where InitiatingProcessParentFileName !~ "AM_Engine.exe" and InitiatingProcessParentFileName !~ "wuauclt.exe"
+// startDate defined in the beginning of the query
+| where Timestamp > SignaturestartDate
+// Uncomment the line below when looking for info regarding a specific computer
+//| where DeviceName == "COMPUTER"
+| extend NewVersion=tostring(split(InitiatingProcessCommandLine, " ")[4]) 
+| summarize arg_max(Timestamp, *) by DeviceName
+| project DeviceName , NewVersion;
+//
+// Block where we extract Signature version info
+//
+let PlatformVersion = DeviceFileEvents
+| where FileName == "MsMpEng.exe"
+| where FolderPath has @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
+| where Timestamp > PlatformstartDate
+| extend PlatformVersion_Initial=tostring(split(FolderPath, "\\", 5))
+| summarize arg_max(Timestamp, *) by DeviceName
+| project DeviceName, PlatformVersion_Final=extract("([0-9].[0-9][0-9].[0-9][0-9][0-9][0-9].[0-9]-[0-9])", 0, PlatformVersion_Initial);
+//
+// Join Signature and Platform version information
+//
+SignatureVersion
+| join (PlatformVersion
+            | project DeviceName, PlatformVersion_Final)
+    on DeviceName
+| project DeviceName , NewVersion , PlatformVersion_Final
+| order by NewVersion desc;
