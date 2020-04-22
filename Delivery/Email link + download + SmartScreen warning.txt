@@ -4,29 +4,29 @@
 // Tags: #EmailLink, #BrowserDownload, #SmartScreen
 let smartscreenAppWarnings =
 // Query for SmartScreen warnings of unknown executed applications
-    MiscEvents
+    DeviceEvents
     | where ActionType == "SmartScreenAppWarning"
-    | project WarnTime=EventTime, ComputerName, WarnedFileName=FileName, WarnedSHA1=SHA1, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string))
+    | project WarnTime=Timestamp, DeviceName, WarnedFileName=FileName, WarnedSHA1=SHA1, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string))
     // Select only warnings that the user has decided to ignore and has executed the app.
     | join kind=leftsemi (
-            MiscEvents
+            DeviceEvents
             | where ActionType == "SmartScreenUserOverride"
-            | project ComputerName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string)))
-         on ComputerName, ActivityId
+            | project DeviceName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string)))
+         on DeviceName, ActivityId
 	| project-away ActivityId;
 // Query for links opened from outlook, that are close in time to a SmartScreen warning
 let emailLinksNearSmartScreenWarnings =
-    MiscEvents
+    DeviceEvents
     | where ActionType == "BrowserLaunchedToOpenUrl" and isnotempty(RemoteUrl) and InitiatingProcessFileName =~ "outlook.exe"
     | extend WasOutlookSafeLink=(tostring(parse_url(RemoteUrl).Host) endswith "safelinks.protection.outlook.com")
-    | project ComputerName, MailLinkTime=EventTime,
+    | project DeviceName, MailLinkTime=Timestamp,
         MailLink=iff(WasOutlookSafeLink, url_decode(tostring(parse_url(RemoteUrl)["Query Parameters"]["url"])), RemoteUrl)
-    | join kind=inner smartscreenAppWarnings on ComputerName | where (WarnTime-MailLinkTime) between (0min..4min);
+    | join kind=inner smartscreenAppWarnings on DeviceName | where (WarnTime-MailLinkTime) between (0min..4min);
 // Add the browser download event to tie in all the dots
-FileCreationEvents
+DeviceFileEvents
 | where isnotempty(FileOriginUrl) and InitiatingProcessFileName in~ ("chrome.exe", "browser_broker.exe")
-| project FileName, FileOriginUrl, FileOriginReferrerUrl, ComputerName, EventTime, SHA1
-| join kind=inner emailLinksNearSmartScreenWarnings on ComputerName
-| where (EventTime-MailLinkTime) between (0min..3min) and (WarnTime-EventTime) between (0min..1min)
-| project FileName, MailLink, FileOriginUrl, FileOriginReferrerUrl, WarnedFileName, ComputerName, SHA1, WarnedSHA1, EventTime
+| project FileName, FileOriginUrl, FileOriginReferrerUrl, DeviceName, Timestamp, SHA1
+| join kind=inner emailLinksNearSmartScreenWarnings on DeviceName
+| where (Timestamp-MailLinkTime) between (0min..3min) and (WarnTime-Timestamp) between (0min..1min)
+| project FileName, MailLink, FileOriginUrl, FileOriginReferrerUrl, WarnedFileName, DeviceName, SHA1, WarnedSHA1, Timestamp
 | distinct *

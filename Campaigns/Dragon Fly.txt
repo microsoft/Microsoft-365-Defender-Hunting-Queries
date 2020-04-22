@@ -1,0 +1,6 @@
+// Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_dragonfly.yml
+// Questions via Twitter: @janvonkirchheim 
+DeviceProcessEvents 
+| where Timestamp > ago(7d)
+| where FileName =~ "crackmapexec.exe"
+| top 100 by Timestamp desc

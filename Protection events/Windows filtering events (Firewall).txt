@@ -1,8 +1,8 @@
 // Get all filtering events done by the Windows filtering platform.
 // This includes any blocks done by Windows Firewall rules, but also blocks triggered by some 3rd party firewalls.
 // When no Firewall rules are configured, the default behavior is to block all incoming network connections.
-MiscEvents
+DeviceEvents
 | where ActionType in ("FirewallOutboundConnectionBlocked", "FirewallInboundConnectionBlocked", "FirewallInboundConnectionToAppBlocked")
-| project MachineId , EventTime , InitiatingProcessFileName , InitiatingProcessParentFileName, RemoteIP, RemotePort, LocalIP, LocalPort
-| summarize MachineCount=dcount(MachineId) by RemoteIP
+| project DeviceId , Timestamp , InitiatingProcessFileName , InitiatingProcessParentFileName, RemoteIP, RemotePort, LocalIP, LocalPort
+| summarize MachineCount=dcount(DeviceId) by RemoteIP
 | top 100 by MachineCount desc
