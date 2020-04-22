@@ -1,14 +1,11 @@
 // This query looks for user content downloads from dropbox that originate from a link/redirect from a 3rd party site.
 // File sharing sites such as Dropbox are often used for hosting malware on a reputable site.
+// Read more about download URL data and about this attack vector in this blog post:
+// https://techcommunity.microsoft.com/t5/Threat-Intelligence/Hunting-tip-of-the-month-Browser-downloads/td-p/220454
 // Tags: #DownloadUrl, #Referer, #Dropbox
-// Explaining the underlying data:
-//     This query uses the FileOriginUrl and FileOriginReferrerUrl fields that are available only on Windows 10 version 1703 and onwards.
-//     For browser downloads, the first field indicate the URL from which the file was downloaded and the 2nd is the HTTP REFERER field.
-//     Only some of the browsers populate these fields, primarily Microsoft Edge and Google Chrome.
-//     This feature is not yet supported for Mozilla Firefox or Microsoft Internet Explorer.
-FileCreationEvents
+DeviceFileEvents
 | where 
-    EventTime > ago(7d)
+    Timestamp > ago(7d)
     and FileOriginUrl startswith "https://dl.dropboxusercontent.com/"
     and isnotempty(FileOriginReferrerUrl)
     and FileOriginReferrerUrl !startswith "https://www.dropbox.com/" 

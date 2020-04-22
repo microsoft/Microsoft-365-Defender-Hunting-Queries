@@ -5,25 +5,25 @@
 // Tags: #SmartScreen
 let minTimeRange = ago(7d);
 let smartscreenUrlBlocks = 
-    MiscEvents
-    | where ActionType == "SmartScreenUrlWarning" and EventTime > minTimeRange
+    DeviceEvents
+    | where ActionType == "SmartScreenUrlWarning" and Timestamp > minTimeRange
             // Filter out SmartScreen test URLs under https://demo.smartscreen.msft.net/
             and RemoteUrl !startswith "https://demo.smartscreen.msft.net/" 
     | extend ParsedFields=parse_json(AdditionalFields)
-    | project EventTime, ComputerName, BlockedUrl=RemoteUrl, Recommendation=tostring(ParsedFields.Recommendation), Experience=tostring(ParsedFields.Experience), ActivityId=tostring(ParsedFields.ActivityId);
+    | project Timestamp, DeviceName, BlockedUrl=RemoteUrl, Recommendation=tostring(ParsedFields.Recommendation), Experience=tostring(ParsedFields.Experience), ActivityId=tostring(ParsedFields.ActivityId);
 // Query for UserDecision events - each one means the user has decided to ignore the warning and run the app.
 let userIgnoredWarning=
-    MiscEvents
-    | where ActionType == "SmartScreenUserOverride" and EventTime > minTimeRange
-    | project ComputerName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
+    DeviceEvents
+    | where ActionType == "SmartScreenUserOverride" and Timestamp > minTimeRange
+    | project DeviceName, ActivityId=extractjson("$.ActivityId", AdditionalFields, typeof(string));
 // Join the block and user decision event using an ActivityId
-let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on ComputerName, ActivityId | project-away ActivityId;
+let ignoredBlocks = smartscreenUrlBlocks | join kind=leftsemi (userIgnoredWarning) on DeviceName, ActivityId | project-away ActivityId;
 // Optional additional filter - look only for cases where a file was downloaded from Microsoft Edge following the URL block being ignored 
 let edgeDownloads = 
-    FileCreationEvents
-    | where EventTime > minTimeRange and InitiatingProcessFileName =~ "browser_broker.exe"
-    | summarize (DownloadTime, SHA1) = argmax(EventTime, SHA1) by FileName, ComputerName, FileOriginUrl, FileOriginReferrerUrl;
+    DeviceFileEvents
+    | where Timestamp > minTimeRange and InitiatingProcessFileName =~ "browser_broker.exe"
+    | summarize (DownloadTime, SHA1) = argmax(Timestamp, SHA1) by FileName, DeviceName, FileOriginUrl, FileOriginReferrerUrl;
 ignoredBlocks
-| join kind=inner (edgeDownloads) on ComputerName
-| where DownloadTime - EventTime between (0min .. 2min)
-| project-away ComputerName1
+| join kind=inner (edgeDownloads) on DeviceName
+| where DownloadTime - Timestamp between (0min .. 2min)
+| project-away DeviceName1

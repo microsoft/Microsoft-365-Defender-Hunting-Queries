@@ -1,0 +1,7 @@
+// Original Sigma Rule: https://github.com/Neo23x0/sigma/blob/master/rules/apt/apt_hurricane_panda.yml
+// Questions via Twitter: @janvonkirchheim 
+DeviceProcessEvents 
+| where Timestamp > ago(7d)
+| where ProcessCommandLine endswith " localgroup administrators admin /add"
+     or ProcessCommandLine has @"\Win64.exe"
+| top 100 by Timestamp desc
