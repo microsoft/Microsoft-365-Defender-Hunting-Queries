@@ -1,6 +1,6 @@
 
 # Advanced hunting queries for Microsoft Threat Protection
-This repo contains sample queries for [advanced hunting](https://security.microsoft.com/hunting) in [Microsoft Threat Protection](https://aka.ms/mtp-docs). With these sample queries, you can start to experience Advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
+This repo contains sample queries for **[advanced hunting](https://security.microsoft.com/hunting) in [Microsoft Threat Protection]**(https://aka.ms/mtp-docs). With these sample queries, you can start to experience advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
 
 ---
 **NOTE:** Most of these queries can also be used in Microsoft Defender ATP. However, queries that search tables containing consolidated alert data as well as data about email, apps, and identities can only be used in Microsoft Threat Protection.
