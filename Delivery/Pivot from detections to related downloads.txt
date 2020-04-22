@@ -22,7 +22,7 @@ let detectedDownloadsSummary =
 DeviceFileEvents
 | where isnotempty(FileOriginUrl)
 | project FileName, FileOriginUrl, DeviceId, Timestamp,
-          Host=tostring(parse_url(FileOriginUrl).Host)
+          Host=tostring(parse_url(FileOriginUrl).Host), SHA1 
 // Filter downloads from hosts serving detected files
 | join kind=inner(detectedDownloadsSummary) on Host
 // Filter out download file create events that were also detected.
