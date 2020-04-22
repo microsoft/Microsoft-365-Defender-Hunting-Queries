@@ -1,0 +1,15 @@
+////////////////////////////////////////////////////////////////////
+// Scripting engines with rare process command lines
+//
+// This query identifies processes launched with a scripting engine
+// using a rare command line relative to the environment.  Results 
+// are not necessarily malicious unless validated.
+////////////////////////////////////////////////////////////////////
+let ShellHashes = ( 
+    DeviceProcessEvents
+    | where FileName in~ ('powershell.exe','cmd.exe','cscript.exe','vbscript.exe','python.exe')
+    | distinct SHA256
+);
+DeviceProcessEvents
+| join kind=leftsemi ShellHashes on SHA256
+| top-nested 10000 of ProcessCommandLine by dcount(DeviceId) asc
