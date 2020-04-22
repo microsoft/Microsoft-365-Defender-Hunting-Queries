@@ -1,5 +1,5 @@
 
-# Detect not active AD user accounts
+# Detect not active AD user accounts 
 
 // Detect Active Directory service accounts that are not active because their last logon was more than 14 days ago
 // Replace XXX on line 4 with the naming convention start of your Active Directory service accounts
