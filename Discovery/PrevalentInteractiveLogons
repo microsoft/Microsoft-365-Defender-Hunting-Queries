@@ -1,0 +1,10 @@
+// Breaks down the top interactive logged on user for each machine.
+// you can look for a specific user by using the line in comment of where AccountName
+DeviceLogonEvents
+//| where AccountName == "YOUR ACCOUNT"
+| where LogonType in ("Interactive","CachedInteractive") and ActionType == "LogonSuccess"
+| extend parsed = parse_json(AdditionalFields)
+| extend Localcheck = tostring(parsed.IsLocalLogon)
+| where Localcheck notcontains "false"
+| summarize timesloggedon=count() by DeviceName, AccountName
+| summarize arg_max(timesloggedon,*) by DeviceName 
