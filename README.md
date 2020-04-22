@@ -11,7 +11,7 @@ This repo contains sample queries for **[advanced hunting](https://security.micr
 
 To get started, simply paste a sample query into the query builder and run the query. If you get syntax errors, try removing empty lines introduced when pasting. If a query returns no results, try expanding the time range. 
 
-We are continually building up documentation about Advanced hunting and its data schema. You can access the full list of tables and columns in the portal or reference the following resources:
+We are continually building up documentation about advanced hunting and its data schema. You can access the full list of tables and columns in the portal or reference the following resources:
 
 - [Advanced hunting overview](https://docs.microsoft.com/microsoft-365/security/mtp/advanced-hunting-overview)
 - [Language overview](https://docs.microsoft.com/microsoft-365/security/mtp/advanced-hunting-query-language)
@@ -44,7 +44,7 @@ Everyone can freely add a file for a new query or improve on existing queries in
 - Use the query name as the title, separating each word with a hyphen (-), e.g. `files-from-malicious-sender.md`
 - Include comments that explain the attack technique or anomaly being hunted. Whenever possible, provide links to related documentation.
 
-In addition, construct queries that adhere to the published [Microsoft Threat Protection Advanced hunting performance best practices](https://docs.microsoft.com/en-us/microsoft-365/security/mtp/advanced-hunting-best-practices?view=o365-worldwide).
+In addition, construct queries that adhere to the published [advanced hunting performance best practices](https://docs.microsoft.com//microsoft-365/security/mtp/advanced-hunting-best-practices).
 
 # Suggestions and feedback
 We maintain a backlog of suggested sample queries in the project [issues page](https://github.com/microsoft/Microsoft-threat-protection-Hunting-Queries/issues). Feel free to comment, rate, or provide suggestions.
