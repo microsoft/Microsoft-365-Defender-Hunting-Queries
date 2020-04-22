@@ -5,8 +5,8 @@
 // Implementation comment #1: Matching events by time
 //      Matching the 3 different events (saving attachment, clicking on link, downloading file) is done purely by time difference - so could sometimes link together unrelated events.
 //      Doing a more exact lookup would create a much more complex query due to 
-// Implementation comment #2: Deduping FileCreationEvents
-//      Oftentimes there are multiple FileCreationEvents for a single file - e.g. if the file keeps being appended into before being closed.
+// Implementation comment #2: Deduping DeviceFileEvents
+//      Oftentimes there are multiple DeviceFileEvents for a single file - e.g. if the file keeps being appended into before being closed.
 //      So, we query only for the last reported file state to ignore intermediate file states.
 // Explaining the underlying data:
 //     BrowserLaunchedToOpenUrl event:
@@ -14,33 +14,33 @@
 //         For this event, RemoteUrl contains the opened URL.
 let minTimeRange = ago(7d);
 let wordLinks = 
-    MiscEvents
+    DeviceEvents
     // Filter on click on links from WinWord
-    | where EventTime > minTimeRange and ActionType == "BrowserLaunchedToOpenUrl" and isnotempty(RemoteUrl) and InitiatingProcessFileName =~ "winword.exe"
-    | project ClickTime=EventTime, MachineId, ComputerName, ClickUrl=RemoteUrl;
+    | where Timestamp > minTimeRange and ActionType == "BrowserLaunchedToOpenUrl" and isnotempty(RemoteUrl) and InitiatingProcessFileName =~ "winword.exe"
+    | project ClickTime=Timestamp, DeviceId, DeviceName, ClickUrl=RemoteUrl;
 let docAttachments = 
-    FileCreationEvents
-    | where EventTime > minTimeRange 
+    DeviceFileEvents
+    | where Timestamp > minTimeRange 
 			// Query for common document file extensions
             and (FileName endswith ".docx" or FileName endswith ".docm" or FileName endswith ".doc")
 			// Query for files saved from email clients such as the Office Outlook app or the Windows Mail app
             and InitiatingProcessFileName in~ ("outlook.exe", "hxoutlook.exe")
-    | summarize AttachmentSaveTime=min(EventTime) by AttachmentName=FileName, MachineId;
+    | summarize AttachmentSaveTime=min(Timestamp) by AttachmentName=FileName, DeviceId;
 let browserDownloads = 
-    FileCreationEvents
-    | where EventTime > minTimeRange 
+    DeviceFileEvents
+    | where Timestamp > minTimeRange 
 			// Query for files created by common browsers
             and InitiatingProcessFileName in~ ("browser_broker.exe", "chrome.exe", "iexplore.exe", "firefox.exe")
             // Exclude JS files that are used for loading sites (but still query for JS files that are known to be downloaded)
             and not (FileName endswith ".js" and isempty(FileOriginUrl))
     // Further filter to exclude file extensions that are less indicative of an attack (when there were already previously a doc attachment that included a link)
     | where FileName !endswith ".partial" and FileName !endswith ".docx"
-    | summarize (EventTime, SHA1) = argmax(EventTime, SHA1) by FileName, MachineId, FileOriginUrl;
+    | summarize (Timestamp, SHA1) = argmax(Timestamp, SHA1) by FileName, DeviceId, FileOriginUrl;
 // Perf tip: start the joins from the smallest table (put it on the left-most side of the joins)
 wordLinks
-| join kind= inner (docAttachments) on MachineId | where ClickTime - AttachmentSaveTime between (0min..3min)
-| join kind= inner (browserDownloads) on MachineId | where EventTime - ClickTime between (0min..3min) 
+| join kind= inner (docAttachments) on DeviceId | where ClickTime - AttachmentSaveTime between (0min..3min)
+| join kind= inner (browserDownloads) on DeviceId | where Timestamp - ClickTime between (0min..3min) 
 // Aggregating multiple "attachments" together - because oftentimes the same file is stored multiple times under different names
 | summarize Attachments=makeset(AttachmentName), AttachmentSaveTime=min(AttachmentSaveTime), ClickTime=min(ClickTime)
     by // Downloaded file details
-        bin(EventTime, 1tick), FileName, FileOriginUrl, ClickUrl, SHA1, ComputerName, MachineId
+        bin(Timestamp, 1tick), FileName, FileOriginUrl, ClickUrl, SHA1, DeviceName, DeviceId

@@ -3,13 +3,13 @@
 //   The first and second ProcessCommandLine component is looking for Python decoding base64
 //   The third ProcesssCommandLine component is looking for the Bash/sh commandline base64 decoding tool
 //   The fourth one is looking for Ruby decoding base64
-ProcessCreationEvents 
-| where EventTime > ago(14d) 
+DeviceProcessEvents 
+| where Timestamp > ago(14d) 
 | where ProcessCommandLine contains ".decode('base64')"
         or ProcessCommandLine contains ".b64decode("
         or ProcessCommandLine contains "base64 --decode"
         or ProcessCommandLine contains ".decode64(" 
-| project EventTime , ComputerName , FileName , FolderPath , ProcessCommandLine , InitiatingProcessCommandLine 
-| top 100 by EventTime 
+| project Timestamp , DeviceName , FileName , FolderPath , ProcessCommandLine , InitiatingProcessCommandLine 
+| top 100 by Timestamp 
 
 

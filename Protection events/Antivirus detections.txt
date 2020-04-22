@@ -1,14 +1,14 @@
 // Query for Windows Defender Antivirus detections.
 
 // Query #1: Query for Antivirus detection events
-MiscEvents
+DeviceEvents
 | where ActionType == "AntivirusDetection"
 | extend ParsedFields=parse_json(AdditionalFields)
 | project ThreatName=tostring(ParsedFields.ThreatName),
           WasRemediated=tobool(ParsedFields.WasRemediated),
           WasExecutingWhileDetected=tobool(ParsedFields.WasExecutingWhileDetected),
           FileName, SHA1, InitiatingProcessFileName, InitiatingProcessCommandLine,
-          ComputerName, EventTime
+          DeviceName, Timestamp
 | limit 100
 
 // Query #2:
@@ -18,9 +18,9 @@ MiscEvents
 //    This query looks for alerts on Windows Defender Antivirus detections.
 //    For most purposes it is probably better to query on the events themselves (see query #1).
 //    However, this query might still be useful sometimes (e.g. to quickly parse the family name).
-AlertEvents
+DeviceAlertEvents
 | where Title contains "Defender AV detected"
 | parse Title with *"'"FamilyName"'"*
-| summarize FamilyCount=dcount(FamilyName), Families=makeset(FamilyName), Titles=makeset(Title) by ComputerName, MachineId, bin(EventTime, 1d)
+| summarize FamilyCount=dcount(FamilyName), Families=makeset(FamilyName), Titles=makeset(Title) by DeviceName, DeviceId, bin(Timestamp, 1d)
 | where FamilyCount > 1
 | limit 100 
