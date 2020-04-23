@@ -7,12 +7,14 @@
 // network communication.
 ////////////////////////////////////////////////////////////////////////////////////
 DeviceNetworkEvents
+| where Timestamp > ago(1h)
 | where InitiatingProcessFileName !in~ ('iexplore.exe','chrome.exe','opera.exe','safari.exe') // Remove web browsers
     and isnotempty(RemoteUrl)
 | extend FQDN = iff(RemoteUrl matches regex "^([a-zA-Z0-9._-])+$", tostring(RemoteUrl), parse_url(RemoteUrl).domain)
-| top-nested 10000 of FQDN by dcount(DeviceId) asc
+| top-nested 100 of FQDN by dcount(DeviceId) asc
 | join kind=inner (
     DeviceNetworkEvents
+    | where Timestamp > ago(1h)
     | where isnotempty(RemoteUrl)
     | extend FQDN = iff(RemoteUrl matches regex "^([a-zA-Z0-9._-])+$", tostring(RemoteUrl), parse_url(RemoteUrl).domain)
 ) on FQDN
