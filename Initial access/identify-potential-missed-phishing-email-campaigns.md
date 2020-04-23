@@ -7,10 +7,12 @@
 
 ## Query
 
+```
 EmailEvents
 | where SenderFromDomain != "corporatedomain.com"
 | summarize dcount(RecipientEmailAddress) by SenderFromAddress, NetworkMessageId, AttachmentCount, SendTime = Timestamp 
 | where dcount_RecipientEmailAddress > 50
+```
 
 ## Category
 
