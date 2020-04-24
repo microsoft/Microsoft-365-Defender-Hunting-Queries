@@ -1,0 +1,173 @@
+///////////////////////////////////////////////////////////////////////////////
+// DetectMasqueradeAnomaly
+//
+// Have you ever wanted to find anomalies within a dataset where you had a key
+// which was pretty much always paired with the same value?  For example, say
+// you were looking for evidence of a file that as always in the same location
+// being launched from somewhere else?  Or perhaps a process that always talked
+// to the same IP address talking somewhere else?
+//
+// DetectMasqueradeAnomaly is a function that ranks a 2 column dataset (key and 
+// value) based on its relative prevalence to the data, then uses that ranking 
+// to highlight conditions where this very consistent relationship is broken.
+//
+// Results from this function are ranked by their "MScore" (masquerade score)
+// based on a weighted calculation of how prevalent the key was, how commonly
+// it was always paired with the same value, and how rare the value was.  It 
+// might sound confusing, but it'll make sense when you try it.
+/////////////////////////////////////////////////////////////////////////////////
+
+// Identifying files being launched from strange locations based on their filename
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceProcessEvents
+| project Key = FileName, Value = FolderPath
+| invoke DetectMasqueradeAnomaly()
+| project-rename FileName = Key, FolderPath = Value
+| join kind=inner DeviceProcessEvents on FileName, FolderPath
+| project-reorder MScore, DeviceName, FileName, FolderPath, MostCommonValue
+| top 10000 by MScore desc
+
+// Identifying processes which talk to the same destination address suddenly talking somewhere else
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceNetworkEvents
+| project Key = InitiatingProcessFileName, Value = RemoteIP
+| invoke DetectMasqueradeAnomaly()
+| project-rename InitiatingProcessFileName = Key, RemoteIP = Value
+| join kind=inner DeviceNetworkEvents on InitiatingProcessFileName, RemoteIP
+| project-reorder MScore, DeviceName, InitiatingProcessFileName, RemoteIP
+| top 10000 by MScore desc
+
+// Strange child processes being launched by a parent process that consistently launces the same child process(es)
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceProcessEvents
+| project Key = InitiatingProcessFileName, Value = FileName
+| invoke DetectMasqueradeAnomaly()
+| project-rename InitiatingProcessFileName = Key, FileName = Value
+| join kind=inner DeviceProcessEvents on InitiatingProcessFileName, FileName
+| project-reorder MScore, DeviceName, InitiatingProcessFileName, FileName
+| top 10000 by MScore desc
+
+// Strange users logging onto a device that is consistently logged on to by the same user(s)
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceLogonEvents
+| project Key = DeviceId, Value = AccountSid
+| invoke DetectMasqueradeAnomaly()
+| project-rename DeviceId = Key, AccountSid = Value
+| join kind=inner DeviceLogonEvents on DeviceId, AccountSid
+| project-reorder MScore, DeviceName, AccountDomain, AccountName
+| top 10000 by MScore desc
+
+// Strange logon types for an account which always uses the same type of logon
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceLogonEvents
+| project Key = AccountSid, Value = LogonType
+| invoke DetectMasqueradeAnomaly()
+| project-rename AccountSid = Key, LogonType = Value
+| join kind=inner DeviceLogonEvents on AccountSid, LogonType
+| project-reorder MScore, DeviceName, AccountDomain, AccountName, LogonType
+| top 10000 by MScore desc
