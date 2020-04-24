@@ -171,3 +171,66 @@ DeviceLogonEvents
 | join kind=inner DeviceLogonEvents on AccountSid, LogonType
 | project-reorder MScore, DeviceName, AccountDomain, AccountName, LogonType
 | top 10000 by MScore desc
+
+// Common processes loading uncommon libraries by SHA256
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+DeviceImageLoadEvents
+| project Key = InitiatingProcessSHA256, Value = SHA256
+| invoke DetectMasqueradeAnomaly()
+| project-rename InitiatingProcessSHA256 = Key, SHA256 = Value
+| join kind=inner DeviceImageLoadEvents on InitiatingProcessSHA256, SHA256
+| project-reorder MScore, DeviceName, InitiatingProcessFileName, FileName, SHA256
+| top 10000 by MScore desc
+        
+// Accounts that consistently log on to the same devices logging on to anomalous devices
+let DetectMasqueradeAnomaly = (SourceData:(Key:string, Value:string), MaxResults:int = 10000) { 
+    let PairCount = materialize(
+        SourceData
+        | summarize hint.strategy=shuffle Instances = count() by Key, Value
+    );
+    PairCount
+    | summarize hint.strategy=shuffle SampleSize = count(), Average = avg(Instances), DistinctValueCount = dcount(Value) by Key
+    | where DistinctValueCount > 1 and SampleSize > 1 and DistinctValueCount < Average // Remove entries that are always have the same key, have only one instance, or are above the average instances (that would be a normal value for the key by this definition)
+    | join kind=inner hint.strategy=shuffle PairCount on Key // Join back on raw Key to Value statistics so that we can now find anomalies
+    | extend MScore = (SampleSize * (Average - Instances) / (Instances * DistinctValueCount)) // Run the masquerade detection calculation
+    | where MScore > 0  // Remove values that are more normal than the average
+    | top MaxResults by MScore desc // Strip entries beyond the defined result count threshold
+    | join kind=inner hint.strategy=shuffle ( // Join back on PairCount to deteremine most common value for the pair
+        PairCount 
+        | summarize MostCommonValueInstances = max(Instances) by Key // In this case, we need to know which key had the max number of instances
+        | join kind=inner hint.strategy=shuffle PairCount on Key // Bring it back together with the Key to Value data
+        | where Instances == MostCommonValueInstances // Select only the rows where Instances == MostCommonValueInstances to figure out which path was most common
+        | project Key, MostCommonValueInstances = Instances, MostCommonValue = Value // Clean up output
+        ) on Key 
+    | project-away Key1, Key2
+    | top MaxResults by MScore desc
+};
+IdentityLogonEvents
+| where isnotempty(AccountUpn) and isnotempty(DeviceName)
+| project Key = AccountUpn, Value = DeviceName
+| invoke DetectMasqueradeAnomaly()
+| project-rename AccountUpn = Key, DeviceName = Value
+| join kind=inner IdentityLogonEvents on AccountUpn, DeviceName
+| project-reorder MScore, AccountUpn, DeviceName, MostCommonValue
+| top 10000 by MScore desc
