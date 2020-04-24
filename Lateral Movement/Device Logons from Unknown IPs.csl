@@ -15,5 +15,5 @@ DeviceLogonEvents
 | join kind=leftanti (
     IdentityLogonEvents
     | where ISP != "INTERNAL_NETWORK"
-) on $left.RemoteIP == $right.IPAddress // Removes any IP addresses identified as internal by Azure ATP
-| summarize EarliestEvent = min(Timestamp), LatestEvent = max(Timestamp), Instances = count(), DistinctMachines = dcount(DeviceId) by AccountDomain, AccountName, RemoteIP, ActionType
+) on $left.RemoteIP == $right.IPAddress // Remove any IP addresses identified as internal by Azure ATP
+| summarize EarliestEvent = min(Timestamp), LatestEvent = max(Timestamp), Instances = count(), DistinctMachines = dcount(DeviceId) by AccountDomain, AccountName, LogonType, RemoteIP, ActionType
