@@ -1,0 +1,6 @@
+////////////////////////////////////////////////////////////////////
+// Non-local logons with the built-in administrator (-500) account
+////////////////////////////////////////////////////////////////////
+DeviceLogonEvents
+| where AccountSid endswith '-500' and parse_json(AdditionalFields).IsLocalLogon != true
+| join kind=leftanti IdentityLogonEvents on AccountSid // Remove the domain's built-in admin acccount
