@@ -1,4 +1,13 @@
 
+---
+page_type: sample
+languages: 
+- kusto
+products: 
+- MTP
+description: "Microsoft threat protection repository for Advance Hunting"
+---
+
 # Advanced hunting queries for Microsoft Threat Protection
 This repo contains sample queries for **[advanced hunting](https://security.microsoft.com/hunting) in [Microsoft Threat Protection](https://aka.ms/mtp-docs)**. With these sample queries, you can start to experience advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
 
