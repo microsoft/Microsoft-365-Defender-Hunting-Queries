@@ -1,0 +1,30 @@
+//////////////////////////////////////////////////////////////////////////
+// Sudden Increases in Outbound Communication (IP)
+//
+// This query analyzes client outbound network communication to identify
+// sudden spikes based on the destination IP.  Use cases for this include
+// detecting widely-used command and control, configuration errors, or 
+// in troubleshooting other network anomalies.
+//////////////////////////////////////////////////////////////////////////
+let StartDate = ago(7d); // Beginning of the analysis period (currently 7 days ago)
+let EndDate = ago(0d); // End of the analysis period (currently now)
+let TimeBinSize = 1h; // The time block increment (currently 1 hour, larger enterprises may need 1d for 1 day)
+let TcpPort = 443; // The destination TCP port to analyze (0 will include all TCP ports)
+let AnomalyThreshold = 2; // A threshold of what we determine to be an anomaly
+let MaxResults = 25; // Limit to the maximum number of results that will be output to the graph
+let NetData = (
+    DeviceNetworkEvents
+    | where Timestamp between (StartDate .. EndDate)
+    | where (TcpPort == 0 or RemotePort == 443) and ActionType in ('ConnectionRequest', 'ConnectionSuccess', 'ConnectionFailed', 'ConnectionFound')
+    | extend TimeBin = bin(Timestamp, TimeBinSize) 
+);
+NetData
+| make-series y = dcount(DeviceId) default = 0 on TimeBin from StartDate to EndDate step TimeBinSize by RemoteIP // Make it a time series
+| extend (anomalies, score, baseline) = series_decompose_anomalies(y, AnomalyThreshold) // Identify anomalies within the series
+| mv-expand anomalies to typeof(int)
+| where anomalies == 1 // Look for incremental anomalies
+| mv-expand score to typeof(double)
+| top MaxResults by score desc // limit results to the largest MaxResults anomalies
+| join kind=rightsemi NetData on RemoteIP // Filter initial dataset to only those in this set
+| summarize machines = dcount(DeviceId) by RemoteIP, TimeBin // Count distinct machines for chart
+| render timechart 
