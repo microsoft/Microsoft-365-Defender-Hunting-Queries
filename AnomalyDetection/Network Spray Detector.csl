@@ -1,0 +1,58 @@
+/////////////////////////////////////////////////////////////////////////
+// Network Spray Detector
+//
+// This query identifies sudden significant increases of outbound network
+// activity from a specific source to the same remote port on remote 
+// endpoints.  This may be helpful in identifying an attacker scanning
+// the network or malware suddenly attempting to worm throughout your
+// enterprise.
+// 
+// The number of normal outbound network connections from a
+// given host is bin'ed by the time period specified in BinSize
+// (currently 1 day).  The calculation is performed within the window 
+// specified between StartDate and EndDate.  The sensitivity of the 
+// anomaly threshold is determined by the AnomalyThreshold value.  The
+// top N results specified by MaxResultCount are returned and rendered
+// into a linegraph to highlight potentially anomalous network 
+// communication activity.
+//
+// Note that this can be a computationally intensive query.  If you have 
+// a specific TCP port you are looking for (or are exceeding the query 
+// cap) consider changing the value of TcpPort to a specific port to 
+// reduce the dataset.
+/////////////////////////////////////////////////////////////////////////
+let BinSize = 1d; // Timeframe used to group results, currently 1 day
+let StartDate = ago(7d); // How far back to start the baseline, currently 7 days
+let EndDate = ago(0d); // How recent to end the baseline, currently now
+let AnomalyThreshold = 2; // This determines the minimum threshold for something to be determined an anomaly (higher = more anomalous)
+let MaxResults = 50; // This reduces the number of results to the top 'x' based on how anomalous the activity is from the baseline
+let TcpPort = 0; // This is used to reduce the results to only a specific TCP port in the event that the query exceeds thresholds.  Setting this to 0 analyzes across all TCP ports.
+let RawData = (
+    union (
+        // Measure outbound connections
+        DeviceNetworkEvents
+        | where (RemotePort == TcpPort or TcpPort == 0) and RemoteIPType !in ('Loopback', 'LinkLocal') and Timestamp between (StartDate .. EndDate)
+        | where ActionType in ('ConnectionRequest', 'ConnectionSuccess','ConnectionFailed')
+        | project TimeBin = bin(Timestamp, BinSize), SourceIP = LocalIP, SourcePort = LocalPort, DestinationIP = RemoteIP, DestinationPort = RemotePort
+    ), (
+        // Measure inbound connections
+        DeviceNetworkEvents
+        | where (LocalPort == TcpPort or TcpPort == 0) and RemoteIPType !in ('Loopback', 'LinkLocal') and Timestamp between (StartDate .. EndDate)
+        | where ActionType == 'InboundConnectionAccepted'
+        | project TimeBin = bin(Timestamp, BinSize), DestinationIP = LocalIP, DestinationPort = LocalPort, SourceIP = RemoteIP, SourcePort = RemotePort
+    )
+    | distinct TimeBin, SourceIP, SourcePort, DestinationIP, DestinationPort // Get distinct connections
+);
+RawData
+| make-series y = count() default = 0 on TimeBin from StartDate to EndDate step BinSize by SourceIP, DestinationPort
+| extend (anomalies, score, baseline) = series_decompose_anomalies(y, AnomalyThreshold)
+| project TimeBin, SourceIP, DestinationPort, y, anomalies, score
+| mv-expand anomalies to typeof(int) // Break out anomaly calculations per row
+| where anomalies == 1 // We only care about incremental anomalies, not normal behavior or decremental anomalies
+| mv-expand score to typeof(double)
+| where score > 0 // Make sure any normal activity is removed
+| top MaxResults by score desc
+| join kind=rightsemi RawData on SourceIP, DestinationPort // Join any anomalies back on the original data 
+| extend Connection = strcat(SourceIP, '=>', DestinationPort) 
+| summarize connections = count() by TimeBin, Connection
+| render timechart 
