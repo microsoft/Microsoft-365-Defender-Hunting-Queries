@@ -1,0 +1,19 @@
+//////////////////////////////////////////////////////////////////////////
+// Processes Signed by Rare Certificates
+//
+// This query identifies rarely used certificates based on the number of
+// certificates seen issued by the issuer, then how many distinct files 
+// were signed by the leaf certificate based on the file's SHA1.  This is
+// then joined back with DeviceProcessEvents to identify any processes 
+// created by those SHA1's.
+// Note that trusted and Microsoft certs are removed by default.  To 
+// include them remove the first where clause.
+//////////////////////////////////////////////////////////////////////////
+DeviceFileCertificateInfo
+| where IsRootSignerMicrosoft == false and IsTrusted == false // Change or remove this row to include trusted certs
+| summarize CertInstances = dcount(SHA1) by SignerHash, IssuerHash // Determine how many files were signed by each cert
+| join DeviceFileCertificateInfo on IssuerHash, SignerHash // Get all of the certificate data back
+| join kind=inner DeviceProcessEvents on SHA1 // Get process creation events that match those SHA1's
+| project-away SHA11, SignerHash1, IssuerHash1 // Get rid of dupe columns from the joins
+| project-reorder IsTrusted, CertInstances, Signer, Issuer, FolderPath, InitiatingProcessFolderPath, DeviceName, SHA256
+| top 10000 by CertInstances asc 
