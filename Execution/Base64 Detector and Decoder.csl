@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////
 // Base64 Detector and Decoder
 //
-// This query will identify strings which match Base64 format, extract the
-// string to a column called Base64, and decode it in a column called 
-// DecodedString.
+// This query will identify strings in process command lines which match 
+// Base64 encoding format, extract the string to a column called Base64, 
+// and decode it in a column called DecodedString.
 ///////////////////////////////////////////////////////////////////////////
 DeviceProcessEvents 
 | extend SplitLaunchString = split(ProcessCommandLine, " ")
