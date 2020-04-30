@@ -1,0 +1,31 @@
+///////////////////////////////////////////////////////////////////////////////
+// Sudden Changes in Process Creation Activity (Sha256)
+//
+// This query analyzes process creation events across all endpoints and looks
+// for either significant increases or decreases in activity based on the
+// associated file's Sha256 and the number of distinct machines that launched
+// a process with that Sha256 within the TimeBinSize.
+// To see the file, change the view to table and you should be able to click
+// on the Sha256 to bring up a page on it.
+///////////////////////////////////////////////////////////////////////////////
+let StartDate = ago(7d); // Beginning of the analysis period (currently 7 days ago)
+let EndDate = ago(0d); // End of the analysis period (currently now)
+let TimeBinSize = 1h; // The time block increment (currently 1 hour, larger enterprises may need 1d for 1 day)
+let AnomalyThreshold = 2; // A threshold of what we determine to be an anomaly
+let MaxResults = 25; // Limit to the maximum number of results that will be output to the graph
+let ProcessData = (
+    DeviceProcessEvents
+    | where Timestamp between (StartDate .. EndDate)
+    | extend TimeBin = bin(Timestamp, TimeBinSize) 
+    | project DeviceId, TimeBin, SHA256
+);
+ProcessData
+| make-series Machines = dcount(DeviceId) default = 0 on TimeBin from StartDate to EndDate step TimeBinSize by SHA256
+| extend (anomalies, score, baseline) = series_decompose_anomalies(Machines, AnomalyThreshold) // Identify anomalies within the series
+| mv-expand anomalies to typeof(int)
+| where anomalies != 0 // Look for incremental anomalies
+| mv-expand score to typeof(double)
+| top MaxResults by score desc // limit results to the largest MaxResults anomalies
+| join kind=rightsemi ProcessData on SHA256 // Filter initial dataset to only those in this set
+| summarize machines = dcount(DeviceId) by SHA256, TimeBin // Count distinct machines for chart
+| render timechart 
