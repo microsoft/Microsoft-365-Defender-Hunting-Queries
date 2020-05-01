@@ -1,0 +1,5 @@
+​// Look for attempts to use fsutil.exe to delete file system logs that can be used as forensic artifacts.
+DeviceProcessEvents
+| where Timestamp > ago(7d)
+| where FileName =~ "fsutil.exe"
+and ProcessCommandLine has "usn" and ProcessCommandLine has "deletejournal"
