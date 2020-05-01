@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Make FolderPath Vogon Poetry
-// @mjmelone
+// @mjmelone with creative input from Captain
 //
 // This is a completely stupid and pointless query that makes Vogon poetry out 
 // of a random FolderPath from the table you pass it.  You can change 
@@ -29,10 +29,14 @@ let MakeFolderPathVogonPoetry = (SourceData:(DeviceName:string, FolderPath:strin
         'And I lay my PATH at your feet'
     );    
     let PhraseCount = toscalar(array_length(Verses));
-    let RandRow = rand(toscalar(SourceData | count));
-    SourceData
-    | where isnotempty( FolderPath)
-    | project DeviceName, FolderPath
+    let CleanedSourceData = (
+        SourceData
+        | take 10000
+        | where isnotempty( FolderPath) and (FolderPath startswith "/" or FolderPath startswith "c:\\")
+        | project DeviceName, FolderPath
+    );
+    let RandRow = rand(toscalar(CleanedSourceData | count));
+    CleanedSourceData
     | serialize 
     | where row_number() == RandRow
     | extend Path = iff(FolderPath startswith "/", split(FolderPath, '/'), split(FolderPath, '\\'))
