@@ -29,11 +29,12 @@ let MakeFolderPathVogonPoetry = (SourceData:(DeviceName:string, FolderPath:strin
         'And I lay my PATH at your feet'
     );    
     let PhraseCount = toscalar(array_length(Verses));
+    let RandRow = rand(toscalar(SourceData | count));
     SourceData
-    | take 10000
-    | serialize 
-    | where row_number() == toint(rand(toscalar(SourceData | count)) + 1)
+    | where isnotempty( FolderPath)
     | project DeviceName, FolderPath
+    | serialize 
+    | where row_number() == RandRow
     | extend Path = iff(FolderPath startswith "/", split(FolderPath, '/'), split(FolderPath, '\\'))
     | mvexpand Path to typeof(string)
     | where isnotempty(Path)
