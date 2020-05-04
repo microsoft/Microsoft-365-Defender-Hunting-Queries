@@ -5,12 +5,12 @@
 // certificates seen issued by the issuer, then how many distinct files 
 // were signed by the leaf certificate based on the file's SHA1.  This is
 // then joined with DeviceProcessEvents and DeviceImageLoadEvents to 
-// identify instances of these files within the enterprise.  To facilitate
-// analysis, the number of distinct machines the file was found on (by  
-// SHA256) is provided as FileDistinctMachines.
+// identify instances of these files within the enterprise.
 //////////////////////////////////////////////////////////////////////////
+let StartDate = ago(7d); // This is how far back to search
 let RareCerts = (
     DeviceFileCertificateInfo
+    | where Timestamp > StartDate 
     | where IsRootSignerMicrosoft == false and IsTrusted == false // Change or remove this row to include trusted certs
     | summarize CertInstances = dcount(SHA1) by SignerHash, IssuerHash // Determine how many files were signed by each cert
     | join DeviceFileCertificateInfo on IssuerHash, SignerHash // Get all of the certificate data back
@@ -20,23 +20,17 @@ union (
     RareCerts
     | join kind=inner (
         DeviceProcessEvents
-        | summarize FileDistinctMachines = dcount(DeviceId) by SHA1
-        | join (
-            DeviceProcessEvents
-            | distinct DeviceId, DeviceName, SHA1, SHA256, FolderPath, FileName
-        ) on SHA1
+        | where Timestamp > StartDate
+        | distinct DeviceId, DeviceName, SHA1, SHA256, FolderPath, FileName
     ) on SHA1
 ), ( 
     RareCerts
     | join kind=inner ( 
         DeviceImageLoadEvents
-        | summarize FileDistinctMachines = dcount(DeviceId) by SHA1
-        | join (
-            DeviceImageLoadEvents
-            | distinct DeviceId, DeviceName, SHA1, SHA256, FolderPath, FileName
-        ) on SHA1
+        | where Timestamp > StartDate 
+        | distinct DeviceId, DeviceName, SHA1, SHA256, FolderPath, FileName
     ) on SHA1
 )
 | project-away SHA11
-| project-reorder FileDistinctMachines, CertInstances, Signer, Issuer, DeviceName, FolderPath, SHA256
+| project-reorder CertInstances, Signer, Issuer, DeviceName, FolderPath, SHA256
 | top 10000 by CertInstances asc
