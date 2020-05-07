@@ -7,4 +7,4 @@
 // how many distinct accounts have registered a logon.
 ///////////////////////////////////////////////////////////////////
 DeviceLogonEvents
-| summarize LogonCount = count(), SuccessCount = countif(ActionType == 'LogonSuccess'), AttemptCount = countif(ActionType == 'LogonAttempted'), FailureCount = countif(ActionType == 'LogonFailed'), DistinctMachineCount = dcount(DeviceId) by AccountDomain, AccountName, AccountSid
+| summarize LogonCount = count(), SuccessCount = countif(ActionType == 'LogonSuccess'), AttemptCount = countif(ActionType == 'LogonAttempted'), FailureCount = countif(ActionType == 'LogonFailed'), DistinctAccounts = dcount(AccountSid) by DeviceId, DeviceName
