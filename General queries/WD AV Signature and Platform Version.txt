@@ -16,7 +16,7 @@
 // --------------------------------------------------------------------------------------------------------------------------- //
 // *CHANGELOG*
 // V4 - 07MAY2020
-// - Simplified logic (mjmelone)
+// - Simplified logic, updated fields to match PowerShell Get-MpComputerStatus (mjmelone)
 // V3 - 20/04/2020
 // - Correct a "bug" in the summarize
 // - Improved stability
@@ -27,14 +27,25 @@
 // V1 - Long, long time ago
 // - Initial query
 // --------------------------------------------------------------------------------------------------------------------------- //
+// How far back to search
+let StartDate = ago(30d);
 DeviceFileEvents 
-// Find file creations made by MpSigStub that have /stub and /payload
+| where Timestamp > StartDate
+// Find signature \ engine update activity
 | where InitiatingProcessFileName =~ 'MpSigStub.exe' and InitiatingProcessCommandLine contains '/stub' and InitiatingProcessCommandLine contains '/payload'
-// Get the latest one by device
 | summarize Timestamp = arg_max(Timestamp, DeviceName, DeviceId) by InitiatingProcessCommandLine
-// Split on the spaces so we can locate the version switches
 | extend SplitCommand = split(InitiatingProcessCommandLine, ' ')
-// Find the version locations
+// Locate stub and payload versions
 | extend EngineVersionLocation = array_index_of(SplitCommand, "/stub") + 1, DefinitionVersionLocation = array_index_of(SplitCommand, "/payload") + 1
-// project the results
-| project Timestamp, DeviceName, DeviceId, EngineVersion = SplitCommand[EngineVersionLocation], DefinitionVersion = SplitCommand[DefinitionVersionLocation]
+| project Timestamp, DeviceName, DeviceId, AMEngineVersion = SplitCommand[EngineVersionLocation], AntivirusSignatureVersion = SplitCommand[DefinitionVersionLocation]
+| join (
+    DeviceProcessEvents
+    | where Timestamp > StartDate
+    // Find process creations for MsMpEng from the platform folder
+    | where FileName =~ 'MsMpEng.exe' and FolderPath contains @"\Microsoft\Windows Defender\Platform\"
+    | summarize arg_max(Timestamp, DeviceName, DeviceId) by FolderPath
+    // Go up two levels
+    | project DeviceId, DeviceName, AMServiceVersion = split(FolderPath, '\\')[-2]
+) on DeviceId
+// Re-projecting to make the UI happy
+| project DeviceId, DeviceName, AMEngineVersion, AntivirusSignatureVersion, AMServiceVersion
