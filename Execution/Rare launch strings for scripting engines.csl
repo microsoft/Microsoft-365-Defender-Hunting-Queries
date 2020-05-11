@@ -4,12 +4,33 @@
 // This query identifies processes launched with a scripting engine
 // using a rare command line relative to the environment.  Results 
 // are not necessarily malicious unless validated.
+//
+// Performance note: if you receive an error that the query exceeded
+// resource limitations, consider reducing the timespan.
 ////////////////////////////////////////////////////////////////////
-let ShellHashes = ( 
-    DeviceProcessEvents
-    | where FileName in~ ('powershell.exe','cmd.exe','cscript.exe','vbscript.exe','python.exe')
-    | distinct SHA256
-);
+let RareMaxCount = 50;
+let Timespan = 7d;
 DeviceProcessEvents
-| join kind=leftsemi ShellHashes on SHA256
-| top-nested 10000 of ProcessCommandLine by dcount(DeviceId) asc
+| where FileName in~ ('powershell.exe','cmd.exe','cscript.exe','vbscript.exe','python.exe') and Timestamp > ago(Timespan)
+| distinct SHA256
+| join kind=rightsemi (
+    DeviceProcessEvents
+    | where Timestamp > ago(Timespan)
+    ) on SHA256
+| top-nested RareMaxCount of ProcessCommandLine by dcount(DeviceId) asc
+
+// Adding this additional step may cause problems in large environments, but this
+// will give you back the DeviceProcessEvents rows which correspond to the launch strings
+let RareMaxCount = 50;
+let Timespan = 7d;
+DeviceProcessEvents
+| where FileName in~ ('powershell.exe','cmd.exe','cscript.exe','vbscript.exe','python.exe') and Timestamp > ago(Timespan)
+| distinct SHA256
+| join kind=rightsemi (
+    DeviceProcessEvents
+    | where Timestamp > ago(Timespan)
+    ) on SHA256
+| top-nested RareMaxCount of ProcessCommandLine by dcount(DeviceId) asc
+| join kind=inner DeviceProcessEvents on ProcessCommandLine
+| project-away ProcessCommandLine1
+| order by aggregated_ProcessCommandLine asc
