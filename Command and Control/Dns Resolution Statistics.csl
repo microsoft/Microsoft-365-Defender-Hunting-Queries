@@ -1,0 +1,14 @@
+///////////////////////////////////////////////////////
+// Dns Resolution Statistics
+//
+// This is a query I use all the time as sort of a DNS
+// cache check.  While you can use it as-is, I usually
+// will add a clause to the where statement to search
+// for all of the IP addresses that have been associated
+// with a specific DNS name per endpoints monitored by
+// Defender ATP.  I added a commented clause as an 
+// example.
+///////////////////////////////////////////////////////
+DeviceNetworkEvents
+| where isnotempty(RemoteUrl) and Timestamp > ago(30d) // and RemoteUrl contains 'foo'
+| summarize RequestCount = count(), DistinctMachines = dcount(DeviceId) by RemoteUrl, RemoteIP
