@@ -1,0 +1,6 @@
+//Gets the service name from the registry key
+DeviceRegistryEvents  
+| where RegistryKey has @"SYSTEM\CurrentControlSet\Services"
+| extend ServiceName=tostring(split(RegistryKey, @"\")[4])
+| project Timestamp, DeviceName, ServiceName, ActionType, InitiatingProcessAccountName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, InitiatingProcessMD5, InitiatingProcessParentFileName
+| top 100 by Timestamp desc 
