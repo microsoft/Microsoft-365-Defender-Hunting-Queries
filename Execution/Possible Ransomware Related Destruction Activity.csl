@@ -1,0 +1,16 @@
+///////////////////////////////////////////////////////////
+// Possible Ransomware Related Destruction Activity
+//
+// This query identifies common processes run by ransomware
+// malware to destroy volume shadow copies or clean free
+// space on a drive to prevent a file from being recovered
+// post-encryption.  To reduce false positives, results are
+// filtered to only actions taken when the initiating 
+// process was launched from a suspicious directory.  If 
+// you don't mind false positives, consider removing the 
+// last where clause.
+///////////////////////////////////////////////////////////
+DeviceProcessEvents
+| where (FileName =~ 'vssadmin.exe' and ProcessCommandLine contains "delete shadows" and ProcessCommandLine contains " /all" and ProcessCommandLine contains " /quiet" )
+    or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w")  
+| where InitiatingProcessFileName  in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe") or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
