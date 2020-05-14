@@ -9,8 +9,12 @@
 // process was launched from a suspicious directory.  If 
 // you don't mind false positives, consider removing the 
 // last where clause.
+//
+// Special thanks to Captain for additional inputs
 ///////////////////////////////////////////////////////////
 DeviceProcessEvents
-| where (FileName =~ 'vssadmin.exe' and ProcessCommandLine contains "delete shadows" and ProcessCommandLine contains " /all" and ProcessCommandLine contains " /quiet" )
-    or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w")  
-| where InitiatingProcessFileName  in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe") or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
+| where (FileName =~ 'vssadmin.exe' and ProcessCommandLine has "delete shadows" and ProcessCommandLine has "/all" and ProcessCommandLine has "/quiet" ) // Clearing shadow copies
+    or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w") // Wiping drive free space
+    or (FileName =~ 'schtasks.exe' and ProcessCommandLine has "/change" and ProcessCommandLine has @"\Microsoft\Windows\SystemRestore\SR" and ProcessCommandLine has "/disable") // Disabling system restore task
+    or (FileName =~ 'fsutil.exe' and ProcessCommandLine has "usn" and ProcessCommandLine has "deletejournal" and ProcessCommandLine has "/d") // Deleting USN journal
+| where InitiatingProcessFileName in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe") or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
