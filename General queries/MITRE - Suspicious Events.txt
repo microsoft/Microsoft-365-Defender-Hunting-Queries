@@ -6,7 +6,7 @@
 let weights = dynamic({"Low":1, "Medium":3, "High":5}); //Assign weights to the risk levels
 //Low risk events
 let lowRiskEvents =
-    ProcessCreationEvents
+    DeviceProcessEvents 
     | where
         (FileName =~ "powershell.exe" and ProcessCommandLine has "-command") //T1086 PowerShell
         or
@@ -28,7 +28,7 @@ let lowRiskEvents =
     | extend Weight = toint((weights["Low"]));
 //Medium risk events
 let mediumRiskEvents =
-    ProcessCreationEvents
+    DeviceProcessEvents 
     | where
         (FileName =~ "regsvcs.exe") //T1121 Regsvcs/Regasm
         or
@@ -44,7 +44,7 @@ let mediumRiskEvents =
     | extend Weight = toint((weights["Medium"]));
 //Higher risk events
 let highRiskEvents =
-    ProcessCreationEvents
+    DeviceProcessEvents 
     | where
         (FileName =~ "net.exe" and ProcessCommandLine has "config") //T1016 System Network Configuration Discovery
         or
@@ -57,7 +57,7 @@ let highRiskEvents =
         (FileName =~ "netsh.exe" and (ProcessCommandLine has "portproxy" or ProcessCommandLine has "p")) //T1090 Connection Proxy
     | extend Weight = toint((weights["High"]));
 union kind=outer lowRiskEvents, mediumRiskEvents, highRiskEvents
-| project EventTime, ComputerName, FileName, ProcessCommandLine, InitiatingProcessCommandLine, Weight
-| summarize Start_Time=min(EventTime), End_Time=max(EventTime), Weight_Sum=sum(Weight), Processes=makeset(FileName), Commands=makeset(ProcessCommandLine) by ComputerName
+| project Timestamp, DeviceName, FileName, ProcessCommandLine, InitiatingProcessCommandLine, Weight
+| summarize Start_Time=min(Timestamp), End_Time=max(Timestamp), Weight_Sum=sum(Weight), Processes=makeset(FileName), Commands=makeset(ProcessCommandLine) by DeviceName
 | where Weight_Sum > 30
 | sort by Weight_Sum desc 
