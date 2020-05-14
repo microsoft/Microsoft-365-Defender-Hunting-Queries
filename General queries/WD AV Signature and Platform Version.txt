@@ -28,7 +28,7 @@
 // - Initial query
 // --------------------------------------------------------------------------------------------------------------------------- //
 // How far back to search
-let StartDate = ago(30d);
+let StartDate = ago(7d);
 DeviceFileEvents 
 | where Timestamp > StartDate
 // Find signature \ engine update activity
