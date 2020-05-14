@@ -1,0 +1,29 @@
+///////////////////////////////////////////////////////////////////
+// Identify blocked USB drive connections
+//
+// This query searches for USB drive mount events and looks for a 
+// corresponding launch of WUDFHost.exe within 2 seconds of the
+// attach.  If WUDFHost is not detected the mount attempt was most
+// likely blocked.
+///////////////////////////////////////////////////////////////////
+let MaxTimeoutInSeconds = 2;
+let MountAttempts = (
+ DeviceEvents
+ | where ActionType == "PnpDeviceConnected"
+ | extend parsed = parse_json(AdditionalFields)
+ | extend DriveClass = tostring(parsed.ClassName), UsbDeviceId = tostring(parsed.DeviceId), ClassId = tostring(parsed.ClassId), DeviceDescription = tostring(parsed.DeviceDescription), VendorIds = tostring(parsed.VendorIds)
+ | where DriveClass == 'USB' and DeviceDescription == 'USB Mass Storage Device'
+ | project Timestamp, DeviceId, DeviceName, UsbDeviceId, DeviceDescription, VendorIds
+);
+let SuccessfulMounts = (
+ DeviceProcessEvents
+ | where FileName =~ 'WUDFHost.exe' and ProcessCommandLine contains "-IoEventPortName" and ProcessCommandLine contains "-SystemEventPortName" and ProcessCommandLine contains "-IoCancelEventPortName"
+ | summarize MountTimestamp = make_list(Timestamp) by DeviceId
+);
+MountAttempts
+| serialize 
+| extend MountEvent = row_number()
+| join kind=leftouter SuccessfulMounts on DeviceId
+| mv-expand MountTimestamp to typeof(datetime)
+| extend WasSuccessful = iff(MountTimestamp between (Timestamp .. datetime_add('second', MaxTimeoutInSeconds, Timestamp)), 1, 0)
+| summarize arg_max(WasSuccessful, MountEvent) by Timestamp, DeviceId, DeviceName, UsbDeviceId, DeviceDescription, VendorIds
