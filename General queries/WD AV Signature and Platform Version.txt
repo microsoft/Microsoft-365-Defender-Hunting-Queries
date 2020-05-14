@@ -15,6 +15,8 @@
 // THIS QUERY IS NOT OFFICIAL AND ENDORSED BY MICROSOFT
 // --------------------------------------------------------------------------------------------------------------------------- //
 // *CHANGELOG*
+// V4 - 07MAY2020
+// - Simplified logic, updated fields to match PowerShell Get-MpComputerStatus (mjmelone)
 // V3 - 20/04/2020
 // - Correct a "bug" in the summarize
 // - Improved stability
@@ -25,42 +27,25 @@
 // V1 - Long, long time ago
 // - Initial query
 // --------------------------------------------------------------------------------------------------------------------------- //
-// We start by defining the time windows both for Signature Updates and Platform Updates
-// Signature Updates happen multiple times per day
-// We want to look at the last 7 days (after 7 days signatures are considered to be out-of-date [default config])
-let SignaturestartDate = ago(7d);
-// Platform Updates happen every 30 days (by default), with Patch Tuesday
-let PlatformstartDate = ago(30d);
-//
-// Block where we extract Signature version info
-//
-let SignatureVersion = DeviceFileEvents
-| where InitiatingProcessCommandLine has "MpSigStub.exe"
-//This line is used to exclude Engine Updates and non update events (we just want Signature Updates)
-| where InitiatingProcessParentFileName !~ "AM_Engine.exe" and InitiatingProcessParentFileName !~ "wuauclt.exe"
-// startDate defined in the beginning of the query
-| where Timestamp > SignaturestartDate
-// Uncomment the line below when looking for info regarding a specific computer
-//| where DeviceName == "COMPUTER"
-| extend NewVersion=tostring(split(InitiatingProcessCommandLine, " ")[4]) 
-| summarize arg_max(Timestamp, *) by DeviceName
-| project DeviceName , NewVersion;
-//
-// Block where we extract Signature version info
-//
-let PlatformVersion = DeviceFileEvents
-| where FileName == "MsMpEng.exe"
-| where FolderPath has @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
-| where Timestamp > PlatformstartDate
-| extend PlatformVersion_Initial=tostring(split(FolderPath, "\\", 5))
-| summarize arg_max(Timestamp, *) by DeviceName
-| project DeviceName, PlatformVersion_Final=extract("([0-9].[0-9][0-9].[0-9][0-9][0-9][0-9].[0-9]-[0-9])", 0, PlatformVersion_Initial);
-//
-// Join Signature and Platform version information
-//
-SignatureVersion
-| join (PlatformVersion
-            | project DeviceName, PlatformVersion_Final)
-    on DeviceName
-| project DeviceName , NewVersion , PlatformVersion_Final
-| order by NewVersion desc;
+// How far back to search
+let StartDate = ago(7d);
+DeviceFileEvents 
+| where Timestamp > StartDate
+// Find signature \ engine update activity
+| where InitiatingProcessFileName =~ 'MpSigStub.exe' and InitiatingProcessCommandLine contains '/stub' and InitiatingProcessCommandLine contains '/payload'
+| summarize Timestamp = arg_max(Timestamp, DeviceName, DeviceId) by InitiatingProcessCommandLine
+| extend SplitCommand = split(InitiatingProcessCommandLine, ' ')
+// Locate stub and payload versions
+| extend EngineVersionLocation = array_index_of(SplitCommand, "/stub") + 1, DefinitionVersionLocation = array_index_of(SplitCommand, "/payload") + 1
+| project Timestamp, DeviceName, DeviceId, AMEngineVersion = SplitCommand[EngineVersionLocation], AntivirusSignatureVersion = SplitCommand[DefinitionVersionLocation]
+| join (
+    DeviceProcessEvents
+    | where Timestamp > StartDate
+    // Find process creations for MsMpEng from the platform folder
+    | where FileName =~ 'MsMpEng.exe' and FolderPath contains @"\Microsoft\Windows Defender\Platform\"
+    | summarize arg_max(Timestamp, DeviceName, DeviceId) by FolderPath
+    // Go up two levels
+    | project DeviceId, DeviceName, AMServiceVersion = split(FolderPath, '\\')[-2]
+) on DeviceId
+// Re-projecting to make the UI happy
+| project DeviceId, DeviceName, AMEngineVersion, AntivirusSignatureVersion, AMServiceVersion
