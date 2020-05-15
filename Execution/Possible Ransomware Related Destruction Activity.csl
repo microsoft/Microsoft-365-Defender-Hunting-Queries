@@ -17,4 +17,4 @@ DeviceProcessEvents
     or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w") // Wiping drive free space
     or (FileName =~ 'schtasks.exe' and ProcessCommandLine has "/change" and ProcessCommandLine has @"\Microsoft\Windows\SystemRestore\SR" and ProcessCommandLine has "/disable") // Disabling system restore task
     or (FileName =~ 'fsutil.exe' and ProcessCommandLine has "usn" and ProcessCommandLine has "deletejournal" and ProcessCommandLine has "/d") // Deleting USN journal
-| where InitiatingProcessFileName in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe") or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
+| where InitiatingProcessFileName in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe", 'javaw.exe', 'java.exe') or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
