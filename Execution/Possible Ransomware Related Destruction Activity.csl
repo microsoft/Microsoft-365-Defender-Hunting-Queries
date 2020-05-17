@@ -13,6 +13,7 @@
 // Special thanks to Captain for additional inputs
 ///////////////////////////////////////////////////////////
 DeviceProcessEvents
+| where Timestamp > ago(7d)
 | where (FileName =~ 'vssadmin.exe' and ProcessCommandLine has "delete shadows" and ProcessCommandLine has "/all" and ProcessCommandLine has "/quiet" ) // Clearing shadow copies
     or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w") // Wiping drive free space
     or (FileName =~ 'schtasks.exe' and ProcessCommandLine has "/change" and ProcessCommandLine has @"\Microsoft\Windows\SystemRestore\SR" and ProcessCommandLine has "/disable") // Disabling system restore task
