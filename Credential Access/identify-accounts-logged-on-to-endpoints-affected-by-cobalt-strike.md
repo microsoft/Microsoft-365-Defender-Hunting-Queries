@@ -13,14 +13,15 @@ Assume that all credentials on endpoints affected by Cobalt Strike were availabl
 ## Query
 
 ```
-// Check for specific alerts
-DeviceAlertEvents
+// Check for specific alerts in the MDATP-specific table DeviceAlertEvents, and in the MTP-specific tables AlertInfo and AlertEvidence
+union isfuzzy=true DeviceAlertEvents, AlertInfo, AlertEvidence
+// Check over the specified time period
+| where Timestamp > ago(7d)
 // Attempts to clear security event logs.
 | where Title in("Event log was cleared",
 // List alerts flagging attempts to delete backup files.
 "File backups were deleted",
-// Potential Cobalt Strike activity - Note that other threat activity can also
-//trigger alerts for suspicious decoded content
+// Potential Cobalt Strike activity - Note that other threat activity can also trigger alerts for suspicious decoded content
 "Suspicious decoded content",
 // Cobalt Strike activity
 "\'Atosev\' malware was detected",
