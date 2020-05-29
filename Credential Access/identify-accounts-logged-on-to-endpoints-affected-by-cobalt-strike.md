@@ -7,15 +7,12 @@ It finds all user accounts that have logged on to an endpoint affected by [Cobal
 
 Assume that all credentials on endpoints affected by Cobalt Strike were available to attackers and that all associated accounts are compromised. Note that attackers will not only dump credentials for accounts that have logged on to interactive or RDP sessions, but will also dump cached credentials and passwords for service accounts and scheduled tasks that are stored in the LSA Secrets section of the registry.
 
-> [!NOTE]
-> This query can only check endpoints onboarded to Microsoft Defender ATP.
-
 ## Query
 
 ```
-// Check for specific alerts in the MDATP-specific table DeviceAlertEvents, and in the MTP-specific tables AlertInfo and AlertEvidence
+// Check for specific alerts in the MDATP-only table DeviceAlertEvents, and in the MTP-only tables AlertInfo and AlertEvidence
 union isfuzzy=true DeviceAlertEvents, AlertInfo, AlertEvidence
-// Check over the specified time period
+// This checks over the previous 7 days -- alter Timestamp value for other periods
 | where Timestamp > ago(7d)
 // Attempts to clear security event logs.
 | where Title in("Event log was cleared",
@@ -62,11 +59,3 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 ## Contributor info
 
 **Contributor:** Microsoft Threat Protection team
-
-<!-- Fill out the rest? With what?
-
-**GitHub alias:** < your github alias >
-
-**Organization:** < your org >
-
-**Contact info:** < email or website > -->
