@@ -24,7 +24,7 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
 | Initial access |  |  |
-| Execution |  |  |
+| Execution | v |  |
 | Persistence | v |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |
@@ -32,7 +32,7 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 | Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
-| Command and control |  |  |
+| Command and control | v |  |
 | Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
