@@ -10,8 +10,8 @@ Assume that all credentials on endpoints affected by Cobalt Strike were availabl
 ## Query
 
 ```
-// Check for specific alerts in the MDATP-only table DeviceAlertEvents, and in the MTP-only tables AlertInfo and AlertEvidence
-union isfuzzy=true DeviceAlertEvents, AlertInfo, AlertEvidence
+// Check for specific alerts
+AlertInfo
 // This checks over the previous 7 days -- alter Timestamp value for other periods
 | where Timestamp > ago(7d)
 // Attempts to clear security event logs.
@@ -25,8 +25,9 @@ union isfuzzy=true DeviceAlertEvents, AlertInfo, AlertEvidence
 "\'Ploty\' malware was detected",
 "\'Bynoco\' malware was detected")
 | extend AlertTime = Timestamp
-| distinct DeviceName, AlertTime, AlertId, Title
-| join DeviceLogonEvents on $left.DeviceName == $right.DeviceName
+| join AlertEvidence on AlertId 
+| project DeviceId, AlertTime, AlertId, Title
+| join DeviceLogonEvents on DeviceId 
 // Creating 10 day Window surrounding alert activity
 | where Timestamp < AlertTime +5d and Timestamp > AlertTime - 5d
 // Projecting specific columns
