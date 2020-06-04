@@ -9,7 +9,7 @@ Assume that all credentials on endpoints affected by Cobalt Strike were availabl
 
 ## Query
 
-```
+```Kusto
 // Check for specific alerts
 AlertInfo
 // This checks over the previous 7 days -- alter Timestamp value for other periods
@@ -22,12 +22,12 @@ AlertInfo
 "Suspicious decoded content",
 // Cobalt Strike activity
 "\'Atosev\' malware was detected",
-"\'Ploty\' malware was detected",
-"\'Bynoco\' malware was detected")
+"\'Bynoco\' malware was detected",
+"\'Cosipor\' malware was detected")
 | extend AlertTime = Timestamp
-| join AlertEvidence on AlertId 
+| join AlertEvidence on AlertId
 | project DeviceId, AlertTime, AlertId, Title
-| join DeviceLogonEvents on DeviceId 
+| join DeviceLogonEvents on DeviceId
 // Creating 10 day Window surrounding alert activity
 | where Timestamp < AlertTime +5d and Timestamp > AlertTime - 5d
 // Projecting specific columns
