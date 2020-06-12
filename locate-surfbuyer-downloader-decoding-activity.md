@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *OSX/SurfBuyer adware campaign*.
 
-It will return results if a shell script has furtively attempted to decode and save a file to a */tmp* folder.
+It will return results if a shell script has attempted to decode and save a file to a */tmp* folder.
 
 If discovered on your system, this kind of activity might be associated with SurfBuyer, which is adware that installs a browser extension to take control of several major web browsers, including Safari, Google Chrome, and Firefox.
 
