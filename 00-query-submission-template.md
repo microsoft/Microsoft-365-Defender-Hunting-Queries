@@ -1,12 +1,21 @@
 
-# < Insert query name >
+# Check for Maalware Baazar (abuse.ch) hashes in your mail flow
 
-< Provide query description and usage tips >
+Check if file hashes published in the recent abuse.ch feed are found in your mail flow scanned by Office 365 ATP.
 
 ## Query
 
 ```
-< Insert query string here >
+let abuse_sha256 = (externaldata(sha256_hash: string )
+[@"https://bazaar.abuse.ch/export/txt/sha256/recent/"]
+with (format="txt"))
+| where sha256_hash !startswith "#"
+| project sha256_hash;
+abuse_sha256
+| join (EmailAttachmentInfo 
+| where Timestamp > ago(1d) 
+) on $left.sha256_hash == $right.SHA256
+| project Timestamp,SenderFromAddress ,RecipientEmailAddress,FileName,FileType,SHA256,MalwareFilterVerdict,MalwareDetectionMethod
 ```
 ## Category
 
@@ -14,7 +23,7 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
-| Initial access |  |  |
+| Initial access | v |  |
 | Execution |  |  |
 | Persistence |  |  | 
 | Privilege escalation |  |  |
@@ -28,15 +37,15 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
-| Malware, component |  |  |
+| Malware, component | v |  |
 
 
 ## Contributor info
 
-**Contributor:** < your name >
+**Contributor:** Pawel Partyka
 
-**GitHub alias:** < your github alias >
+**GitHub alias:** pawp81
 
-**Organization:** < your org >
+**Organization:** Microsoft
 
-**Contact info:** < email or website >
+**Contact info:** Twitter: @pawp81
