@@ -1,4 +1,3 @@
-
 # Identify accounts that have logged on to endpoints affected by Cobalt Strike
 
 This query was originally published in the threat analytics report, *Ransomware continues to hit healthcare, critical services*.
