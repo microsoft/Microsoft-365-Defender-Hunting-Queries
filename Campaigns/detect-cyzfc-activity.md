@@ -8,7 +8,7 @@ The attackers would gain access to a target by having the user click on a link t
 
 Once established on a target's device, the attackers used a malicious DLL named *cyzfc.dat* to execute additional payloads. They would call a function in the malicious DLL via the legitimate Windows process, [rundll32.exe](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/rundll32), to connect directly to their command-and-control (C2) servers.
 
-The following queries detect activity associated with the malicious DLL, cyzfc.dat., used in this campaign.
+The following queries detect various activity associated with the malicious DLL used in this campaign.
 
 ## Query
 
@@ -42,7 +42,7 @@ let fileHash = "cd92f19d3ad4ec50f6d19652af010fe07dca55e1";
 find in (FileCreationEvents, ProcessCreationEvents, MiscEvents,
 RegistryEvents, NetworkCommunicationEvents, ImageLoadEvents)
 where SHA1 == fileHash or InitiatingProcessSHA1 == fileHash
-| where EventTime > ago(10d
+| where EventTime > ago(10d)
 ```
 
 ## Category
@@ -53,14 +53,14 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 |-|-|-|
 | Initial access |  |  |
 | Execution | v |  |
-| Persistence |  |  |
+| Persistence | v |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |
 | Credential Access |  |  |
 | Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
-| Command and control |  |  |
+| Command and control | v |  |
 | Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
