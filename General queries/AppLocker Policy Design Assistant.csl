@@ -4,8 +4,10 @@
 // One of the challenges in making an AppLocker policy is knowing where applications 
 // launch from.  This query normalizes process launch paths through aliasing, then 
 // counts the number of processes launched from that path, how many distinct machines it
-// was launched on, and how many distinct file names \ hashes these processes had.
+// was launched on, and how many distinct file names \ hashes these processes had.  The
+// path is broken into subfolders to help simplify analysis
 ////////////////////////////////////////////////////////////////////////////////////////
+let FolderDepthLimit = 5; // This is how many folders deep it will check - higher = more folder depth.
 let AliasPath = (SourcePath:(FolderPath:string, FileName:string))
 {
 SourcePath
@@ -28,9 +30,14 @@ SourcePath
         )
 };
 DeviceProcessEvents
-| where isnotempty(FolderPath)
-| invoke AliasPath()
-| extend Folder = substring(AliasPath, 0, strlen(AliasPath) - strlen(FileName))
-| where Folder !startswith @'%windir%' and Folder !startswith @'%programfiles%' and Folder !startswith @'%programfilesx86%'
-| summarize ProcessCount = count(), DistinctMachines = dcount(DeviceId), DistinctProcesses = dcount(SHA256), DistinctFileNames = dcount(FileName) by Folder
-| order by DistinctMachines desc
+| where isnotempty(FolderPath) and FolderPath !startswith '/' //AppLocker is not supported on Linux \ Mac and we need a FolderPath
+| invoke AliasPath() // Alias the path for consistency
+| extend Folder = substring(AliasPath, 0, strlen(AliasPath) - strlen(FileName)) // Trim the FileName
+| where Folder !startswith @'%windir%' and Folder !startswith @'%programfiles%' and Folder !startswith @'%programfilesx86%' // Remove folders that are included in AppLocker by default
+| extend SplitFolderPath = split(Folder, '\\') // Break the folder down by folders
+| extend PathDepth = range(1,FolderDepthLimit,1) // create a range to break the path into depths
+| mvexpand PathDepth to typeof(int) // mvexpand
+| where PathDepth <= array_length(SplitFolderPath) // Determine if the current depth is greater than the number of folders in the path
+| extend SubPath = strcat_array(array_slice(SplitFolderPath, 0, PathDepth), '\\') // Reassemble the subpath based on the number of folders
+| summarize ProcessCount = count(), DistinctMachines = dcount(DeviceId), DistinctProcesses = dcount(SHA256), DistinctFileNames = dcount(FileName) by SubPath 
+| order by DistinctMachines desc // Order by the number of distinct machines in descending order
