@@ -1,0 +1,36 @@
+////////////////////////////////////////////////////////////////////////////////////////
+// AppLocker Policy Design Assistant
+//
+// One of the challenges in making an AppLocker policy is knowing where applications 
+// launch from.  This query normalizes process launch paths through aliasing, then 
+// counts the number of processes launched from that path, how many distinct machines it
+// was launched on, and how many distinct file names \ hashes these processes had.
+////////////////////////////////////////////////////////////////////////////////////////
+let AliasPath = (SourcePath:(FolderPath:string, FileName:string))
+{
+SourcePath
+    | extend AliasPath = tolower(
+            case(
+                //Modern style profile
+                FolderPath startswith 'c:\\users\\', strcat('%UserProfile%', substring(FolderPath, indexof(FolderPath,'\\',11), strlen(FolderPath) - 11)),
+                //Legacy style profile
+                FolderPath startswith 'c:\\documents and settings\\', strcat('%UserProfile%', substring(FolderPath, indexof(FolderPath,'\\',27), strlen(FolderPath) - 27)),
+                //Windir
+                FolderPath contains @':\Windows\', strcat('%windir%', substring(FolderPath, 10)),
+                //ProgramData
+                FolderPath contains @':\programdata\', strcat('%programdata%', substring(FolderPath, 14)),
+                // ProgramFiles
+                FolderPath contains @':\Program Files\', strcat('%ProgramFiles%', substring(FolderPath, 16)),
+                // Program Files (x86)
+                FolderPath contains @':\Program Files (x86)\', strcat('%ProgramFilesx86%', substring(FolderPath, 22)),
+                //Other
+                FolderPath)
+        )
+};
+DeviceProcessEvents
+| where isnotempty(FolderPath)
+| invoke AliasPath()
+| extend Folder = substring(AliasPath, 0, strlen(AliasPath) - strlen(FileName))
+| where Folder !startswith @'%windir%' and Folder !startswith @'%programfiles%' and Folder !startswith @'%programfilesx86%'
+| summarize ProcessCount = count(), DistinctMachines = dcount(DeviceId), DistinctProcesses = dcount(SHA256), DistinctFileNames = dcount(FileName) by Folder
+| order by DistinctMachines desc
