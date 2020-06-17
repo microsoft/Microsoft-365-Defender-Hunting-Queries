@@ -2,11 +2,11 @@
 
 This query was originally published in the threat analytics report, *Operation Soft Cell*.
 
-Operation Soft Cell is a series of campaigns targeting users' call logs at telecommunications providers throughout the world. These attacks date from as early as 2012.
+[Operation Soft Cell](https://www.cybereason.com/blog/operation-soft-cell-a-worldwide-campaign-against-telecommunications-providers) is a series of campaigns targeting users' call logs at telecommunications providers throughout the world. These attacks date from as early as 2012.
 
 Operation Soft Cell operators have been known to run *[nbtscan.exe](https://unixwiz.net/tools/nbtscan.html),* a legitimate MS-DOS command line tool used to discover any NETBIOS nameservers on a local or remote TCP/IP network.
 
-The following query detects nbtscan activity potentially associated with Operation Soft Cell.
+The following query detects any nbtscan activity over the past 7 days.
 
 ## Query
 

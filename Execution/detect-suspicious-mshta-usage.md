@@ -25,7 +25,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
 | Initial access |  |  |
-| Execution | v |  |
+| Execution | v |   |  |
+| Execution | v | The query will detect whenever mshta.exe has been run over the past seven days. This sort of activity, although suspicious, is not by itself actively harmful. Administrators should investigate further to determine if the event was  malicious. |
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |

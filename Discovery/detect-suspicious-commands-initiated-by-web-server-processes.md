@@ -38,7 +38,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
-| Execution |  |  |
+| Execution | v | This query detects whenever, over the past seven days, a web server process launched a CLI command. This sort of activity, although suspicious, is not by itself actively harmful. Administrators should investigate further to determine if the event was  malicious or associated with Operation Soft Cell. |
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion | v |  |
