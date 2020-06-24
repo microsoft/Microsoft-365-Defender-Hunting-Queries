@@ -1,7 +1,8 @@
 # Detect LDAP queries that search for accounts vulnerable for roasting attacks
 
-// Detect Active Directory LDAP queries that search for Kerberoasting (SPNs) or accounts with Kerberos preauthentication not required
-// This LDAP query cover Rubeus, Kerberoast, BloodHound tools
+Detect Active Directory LDAP queries that search for Kerberoasting (SPNs) or accounts with Kerberos preauthentication not required
+
+This LDAP query cover Rubeus, Kerberoast, BloodHound tools
 
 ## Query
 
@@ -46,18 +47,18 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 
 ## Contributors info
 
-**Contributor:** < Mor Rubin >
+**Contributor:** Mor Rubin
 
-**GitHub alias:** < https://github.com/morRubin >
+**GitHub alias:** https://github.com/morRubin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: MorRubin >
+**Contact info:** Twitter: MorRubin
 
-**Contributor:** < Oz Soprin >
+**Contributor:** Oz Soprin
 
-**GitHub alias:** < https://github.com/ozSoprin >
+**GitHub alias:** https://github.com/ozSoprin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: ozSoprin >
+**Contact info:** Twitter: ozSoprin
