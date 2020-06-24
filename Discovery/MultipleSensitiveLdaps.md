@@ -1,10 +1,14 @@
 # Detect multiple sensitive LDAP queries
 
-// Detect multiple sensitive Active Directory LDAP queries made in bin time
-// sensitive queries defined as Roasting or sensitive objects queries
-// Replace 10 on line 8 with your desired thershold
-// replace 1m on line 9 with your desired bin time
-// This LDAP query cover Rubeus, Kerberoast, BloodHound tools
+Detect multiple sensitive Active Directory LDAP queries made in bin time
+
+Sensitive queries defined as Roasting or sensitive objects queries
+
+Replace 10 on line 8 with your desired thershold
+
+Replace 1m on line 9 with your desired bin time
+
+This LDAP query cover Rubeus, Kerberoast, BloodHound tools
 
 ## Query
 
@@ -61,18 +65,18 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 
 ## Contributors info
 
-**Contributor:** < Mor Rubin >
+**Contributor:** Mor Rubin
 
-**GitHub alias:** < https://github.com/morRubin >
+**GitHub alias:** https://github.com/morRubin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: MorRubin >
+**Contact info:** Twitter: MorRubin
 
-**Contributor:** < Oz Soprin >
+**Contributor:** Oz Soprin
 
-**GitHub alias:** < https://github.com/ozSoprin >
+**GitHub alias:** https://github.com/ozSoprin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: ozSoprin >
+**Contact info:** Twitter: ozSoprin
