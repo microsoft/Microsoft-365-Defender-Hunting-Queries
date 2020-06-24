@@ -1,7 +1,8 @@
 # Detect LDAP queries that search for user password in description or comment
 
-// Detect Active Directory LDAP queries that search for users with comment or description that contains the string "pass" that might suggest for the user password
-// This LDAP query cover MetaSploit - enum_ad_user_comments tool
+Detect Active Directory LDAP queries that search for users with comment or description that contains the string "pass" that might suggest for the user password
+
+This LDAP query cover MetaSploit - enum_ad_user_comments tool
 
 ## Query
 
@@ -43,18 +44,18 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 
 ## Contributors info
 
-**Contributor:** < Mor Rubin >
+**Contributor:** Mor Rubin
 
-**GitHub alias:** < https://github.com/morRubin >
+**GitHub alias:** https://github.com/morRubin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: MorRubin >
+**Contact info:** Twitter: MorRubin
 
-**Contributor:** < Oz Soprin >
+**Contributor:** Oz Soprin
 
-**GitHub alias:** < https://github.com/ozSoprin >
+**GitHub alias:** https://github.com/ozSoprin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: ozSoprin >
+**Contact info:** Twitter: ozSoprin
