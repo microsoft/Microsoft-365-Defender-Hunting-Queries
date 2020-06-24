@@ -4,17 +4,15 @@ Detect multiple sensitive Active Directory LDAP queries made in bin time
 
 Sensitive queries defined as Roasting or sensitive objects queries
 
-Replace 10 on line 8 with your desired thershold
+Replace 10 on line 6 with your desired thershold
 
-Replace 1m on line 9 with your desired bin time
+Replace 1m on line 7 with your desired bin time
 
 This LDAP query cover Rubeus, Kerberoast, BloodHound tools
 
 ## Query
 
 ```
-let UserClass = "objectClass=user";
-let SamAccountUser = "samAccountType=805306368";
 let SensitiveObjects = "[\"Administrators\", \"Domain Controllers\", \"Domain Admins\", \"Account Operators\", \"Backup Operators\", \"DnsAdmin\", \"Enterprise Admins\", \"Group Policy Creator Owners\"]";
 let ASREP_ROASTING = "userAccountControl:1.2.840.113556.1.4.803:=4194304";
 let ASREP_ROASTING1 = "userAccountControl|4194304";
@@ -34,7 +32,7 @@ IdentityQueryEvents
 | where SearchFilter contains ASREP_ROASTING or
 SearchFilter contains ASREP_ROASTING1 or
 SearchFilter contains ASREP_ROASTING2 or
-(SearchFilter contains KERBEROASTING and SearchFilter contains UserClass or SearchFilter contains SamAccountUser));
+SearchFilter contains KERBEROASTING);
 union SensitiveQueries, Roasting
 | summarize NumberOfLdapQueries = count(), NumberOfDistinctLdapQueries = dcount(SearchFilter) by DeviceName, bin(Timestamp, BinTime)
 | where NumberOfDistinctLdapQueries > Thershold 
