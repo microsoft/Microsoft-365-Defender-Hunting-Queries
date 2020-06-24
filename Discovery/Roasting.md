@@ -7,8 +7,6 @@ This LDAP query cover Rubeus, Kerberoast, BloodHound tools
 ## Query
 
 ```
-let UserClass = "objectClass=user";
-let SamAccountUser = "samAccountType=805306368";
 let ASREP_ROASTING = "userAccountControl:1.2.840.113556.1.4.803:=4194304";
 let ASREP_ROASTING1 = "userAccountControl|4194304";
 let ASREP_ROASTING2 = "userAccountControl&4194304";
@@ -19,7 +17,7 @@ IdentityQueryEvents
 | where SearchFilter contains ASREP_ROASTING or
 SearchFilter contains ASREP_ROASTING1 or
 SearchFilter contains ASREP_ROASTING2 or
- (SearchFilter contains KERBEROASTING and SearchFilter contains UserClass or SearchFilter contains SamAccountUser)
+SearchFilter contains KERBEROASTING
 
 ```
 ## Category
