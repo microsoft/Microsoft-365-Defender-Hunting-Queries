@@ -1,7 +1,8 @@
 # Detect LDAP queries for sensitive objects
 
-// Detect Active Directory LDAP queries that search for sensitive objects in the organization
-// This LDAP query cover BloodHound tool
+Detect Active Directory LDAP queries that search for sensitive objects in the organization
+
+This LDAP query cover BloodHound tool
 
 ## Query
 
@@ -36,20 +37,21 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 | Malware, component |  |  |
 
 
+
 ## Contributors info
 
-**Contributor:** < Mor Rubin >
+**Contributor:** Mor Rubin
 
-**GitHub alias:** < https://github.com/morRubin >
+**GitHub alias:** https://github.com/morRubin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: MorRubin >
+**Contact info:** Twitter: MorRubin
 
-**Contributor:** < Oz Soprin >
+**Contributor:** Oz Soprin
 
-**GitHub alias:** < https://github.com/ozSoprin >
+**GitHub alias:** https://github.com/ozSoprin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: ozSoprin >
+**Contact info:** Twitter: ozSoprin
