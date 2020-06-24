@@ -1,7 +1,8 @@
 # Detect LDAP queries that search for computer operating system
 
-// Detect Active Directory LDAP queries that try to find operating systems that are vulnerable to specific vulnerabilities
-// This LDAP query cover MetaSploit - enum_ad_computers tool
+Detect Active Directory LDAP queries that try to find operating systems that are vulnerable to specific vulnerabilities
+
+This LDAP query cover MetaSploit - enum_ad_computers tool
 
 ## Query
 
@@ -40,20 +41,21 @@ This query can be used the following attack techniques and tactics ([see MITRE A
 | Malware, component |  |  |
 
 
+
 ## Contributors info
 
-**Contributor:** < Mor Rubin >
+**Contributor:** Mor Rubin
 
-**GitHub alias:** < https://github.com/morRubin >
+**GitHub alias:** https://github.com/morRubin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: MorRubin >
+**Contact info:** Twitter: MorRubin
 
-**Contributor:** < Oz Soprin >
+**Contributor:** Oz Soprin
 
-**GitHub alias:** < https://github.com/ozSoprin >
+**GitHub alias:** https://github.com/ozSoprin
 
-**Organization:** < Microsoft >
+**Organization:** Microsoft
 
-**Contact info:** < Twitter: ozSoprin >
+**Contact info:** Twitter: ozSoprin
