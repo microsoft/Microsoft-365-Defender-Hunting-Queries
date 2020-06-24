@@ -1,0 +1,24 @@
+/////////////////////////////////////////////////////////
+// Private Key Files
+//
+// This query identifies file operation with files having
+// one of the extensions commonly used to save a private
+// key.  The risk is that if an attacker were to obtain
+// the file, they could brute force any password on it
+// and potentially obtain a powerful certificate.  To do
+// this, they would only need to obtain read access to 
+// the file.
+//
+// The risk associated with these files is heavily 
+// determined by the value of the certificate.  For example,
+// loss of a self-signed certificate created by Adobe Acrobat
+// is significantly less impactful than loss of a website 
+// SSL certificate.
+//
+// Recommendation: Know where these files are, and if possible
+// back them up and remove them.  You might also consider
+// creating an informational alert.
+//////////////////////////////////////////////////////////////
+DeviceFileEvents
+| where Timestamp > ago(7d)
+| where FileName endswith '.pfx' or FileName endswith '.pfn' or FileName endswith '.p12'
