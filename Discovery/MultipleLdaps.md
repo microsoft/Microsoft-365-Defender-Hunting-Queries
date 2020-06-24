@@ -1,8 +1,10 @@
 # Detect multiple LDAP queries
 
-// Detect multiple Active Directory LDAP queries made in bin time
-// Replace 10 on line 1 with your desired thershold
-// replace 1m on line 2 with your desired bin time
+Detect multiple Active Directory LDAP queries made in bin time
+
+Replace 10 on line 1 with your desired thershold
+
+Replace 1m on line 2 with your desired bin time
 
 ## Query
 
