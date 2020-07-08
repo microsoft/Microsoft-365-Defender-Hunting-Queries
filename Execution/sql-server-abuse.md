@@ -9,12 +9,12 @@ This query detects instances of a SQL Server process launching a shell to run on
 ## Query
 
 ```Kusto
-ProcessCreationEvents
-| where EventTime >= ago(10d)
+DeviceCreationEvents
+| where Timestamp >= ago(10d)
 | where InitiatingProcessFileName in~ ("sqlservr.exe", "sqlagent.exe", 
 "sqlps.exe", "launchpad.exe")
 | summarize tostring(makeset(ProcessCommandLine)) 
-by MachineId, bin(EventTime, 2m)
+by DeviceId, bin(Timestamp, 2m)
 | where
 set_ProcessCommandLine has "certutil" or 
 set_ProcessCommandLine has "netstat" or 
@@ -108,7 +108,7 @@ set_ProcessCommandLine has "winrm.vbs" or
 set_ProcessCommandLine has "wmic.exe" or 
 set_ProcessCommandLine has "xwizard.exe" or 
 set_ProcessCommandLine has "zipfldr.dll"
-| sort by MachineId , EventTime asc
+| sort by DeviceId , Timestamp asc
 ```
 
 ## Category
