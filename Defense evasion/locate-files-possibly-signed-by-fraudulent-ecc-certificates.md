@@ -11,7 +11,7 @@ Use the following query to locate files containing ECC certificates that might h
 ## Query
 
 ```
-DeviceFileCertificateInfoBeta
+DeviceFileCertificateInfo
 | where Timestamp > ago(30d)
 | where IsSigned == 1 and IsTrusted == 1 and IsRootSignerMicrosoft == 1
 | where SignatureType == "Embedded"
