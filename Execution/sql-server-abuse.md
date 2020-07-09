@@ -9,8 +9,8 @@ This query detects instances of a SQL Server process launching a shell to run on
 ## Query
 
 ```Kusto
-DeviceCreationEvents
-| where Timestamp >= ago(10d)
+DeviceProcessEvents 
+| where Timestamp  >= ago(10d)
 | where InitiatingProcessFileName in~ ("sqlservr.exe", "sqlagent.exe", 
 "sqlps.exe", "launchpad.exe")
 | summarize tostring(makeset(ProcessCommandLine)) 
@@ -108,7 +108,7 @@ set_ProcessCommandLine has "winrm.vbs" or
 set_ProcessCommandLine has "wmic.exe" or 
 set_ProcessCommandLine has "xwizard.exe" or 
 set_ProcessCommandLine has "zipfldr.dll"
-| sort by DeviceId , Timestamp asc
+| sort by DeviceId  , Timestamp asc
 ```
 
 ## Category
