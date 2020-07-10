@@ -1,0 +1,83 @@
+////////////////////////////////////////////////////////////
+// Device Report
+//
+// This query assembles a full report of what Defender ATP
+// currently has on a device including agent status, installed
+// software, any detected vulnerabilities, and AV versions.
+// Vulnerabilties and software are provided as JSON arrays.
+//
+// This would be best used to pull periodic reports on devices
+// for ingestion into a SIEM.
+////////////////////////////////////////////////////////////
+DeviceInfo
+| where isnotempty(OSPlatform)
+| summarize arg_max(Timestamp, *) by DeviceId
+| project-rename LastCheckin = Timestamp, SensorVersion = ClientVersion
+| join kind=leftouter (
+    DeviceTvmSecureConfigurationAssessment
+    | where ConfigurationId in ('scid-91', 'scid-2000', 'scid-2001', 'scid-2002', 'scid-2003', 'scid-2010', 'scid-2011', 'scid-2012', 'scid-2013', 'scid-2014', 'scid-2016')
+    | summarize arg_max(Timestamp, IsCompliant, IsApplicable) by DeviceId, ConfigurationId
+    | extend Test = case(
+        ConfigurationId == "scid-2000", "SensorEnabledTest",
+        ConfigurationId == "scid-2001", "SensorDataCollectionTest",
+        ConfigurationId == "scid-2002", "ImpairedCommunicationsTest",
+        ConfigurationId == "scid-2003", "TamperProtectionTest",
+        ConfigurationId == "scid-2010", "AntivirusEnabledTest",
+        ConfigurationId == "scid-2011", "AntivirusSignatureVersionTest",
+        ConfigurationId == "scid-2012", "RealtimeProtectionTest",
+        ConfigurationId == "scid-91", "BehaviorMonitoringTest",
+        ConfigurationId == "scid-2013", "PUAProtectionTest",
+        ConfigurationId == "scid-2014", "AntivirusReportingTest",
+        ConfigurationId == "scid-2016", "CloudProtectionTest",
+        "N/A"),
+    Result = case(IsApplicable == 0, "N/A", IsCompliant == 1, "GOOD", "BAD")
+    | extend packed = pack(Test, Result)
+    | summarize Tests = make_bag(packed) by DeviceId
+    | evaluate bag_unpack(Tests)
+) on DeviceId
+| join kind=leftouter (
+    // Run TVM Signature Check
+    DeviceTvmSecureConfigurationAssessment
+    | where ConfigurationId == 'scid-2011'
+    | summarize Timestamp = arg_max(Timestamp, DeviceName, Context) by DeviceId
+    | project DeviceId, DeviceName, AntivirusSignatureVersionTvm = todynamic(Context)[0][0] // This gets the sig version from TVM
+    | where isnotnull(AntivirusSignatureVersionTvm)
+    | join kind=fullouter (
+        DeviceFileEvents 
+        // Find signature \ engine update activity
+        | where InitiatingProcessFileName =~ 'MpSigStub.exe' and InitiatingProcessCommandLine contains '/stub' and InitiatingProcessCommandLine contains '/payload'
+        | summarize Timestamp = arg_max(Timestamp, InitiatingProcessCommandLine) by DeviceId, DeviceName
+        | extend SplitCommand = split(InitiatingProcessCommandLine, ' ')
+        // Locate stub and payload versions
+        | extend EngineVersionLocation = array_index_of(SplitCommand, "/stub") + 1, DefinitionVersionLocation = array_index_of(SplitCommand, "/payload") + 1
+        | project DeviceName, DeviceId, AMEngineVersion = SplitCommand[EngineVersionLocation], AntivirusSignatureVersionCl = SplitCommand[DefinitionVersionLocation]
+    ) on DeviceId
+    | project DeviceId = iff(isempty( DeviceId), DeviceId1, DeviceId), DeviceName = iff(isempty(DeviceName), DeviceName1, DeviceName), AMEngineVersion, AntivirusSignatureVersion = iff(isempty(AntivirusSignatureVersionTvm), AntivirusSignatureVersionCl, AntivirusSignatureVersionTvm) // Prefer TVM over command line for AV sig version
+    | join kind=fullouter (
+        DeviceProcessEvents
+        // Find process creations for MsMpEng from the platform folder
+        | where FileName =~ 'MsMpEng.exe' and FolderPath contains @"\Microsoft\Windows Defender\Platform\"
+        | summarize arg_max(Timestamp, FolderPath) by DeviceId, DeviceName
+        // Go up two levels
+        | project DeviceId, DeviceName, AMServiceVersion = split(FolderPath, '\\')[-2]
+    ) on DeviceId
+    // Re-projecting to make the UI happy
+    | project DeviceId = iff(isempty(DeviceId), DeviceId1, DeviceId), DeviceName = iff(isempty(DeviceName), DeviceName1, DeviceName), AMEngineVersion, AntivirusSignatureVersion, AMServiceVersion
+) on DeviceId
+| join kind=leftouter (
+    DeviceTvmSecureConfigurationAssessment
+    | where IsApplicable == 1
+    | summarize arg_max(Timestamp, *) by DeviceId, ConfigurationId
+    | join kind=leftouter DeviceTvmSecureConfigurationAssessmentKB on ConfigurationId
+    | extend packed = pack("Timestamp", Timestamp, "ConfigurationCategory", ConfigurationCategory, "ConfigurationSubcategory", ConfigurationSubcategory, "ConfigurationImpact", ConfigurationImpact, "IsCompliant", IsCompliant, "Context", Context, "IsExpectedUserImpact", IsExpectedUserImpact, "ConfigurationName", ConfigurationName, "ConfigurationDescription", ConfigurationDescription, "RiskDescription", RiskDescription, "ConfigurationBenchmarks", ConfigurationBenchmarks, "Tags", Tags, "RemediationOptions", RemediationOptions)
+    | summarize ConfigurationAssessments = make_list(packed) by DeviceId
+) on DeviceId
+| join kind=leftouter (
+    DeviceTvmSoftwareInventoryVulnerabilities
+    | join kind=leftouter DeviceTvmSoftwareVulnerabilitiesKB on CveId
+    | extend vuln = pack("CveId",CveId, "Severity", VulnerabilitySeverityLevel, "CvssScore", CvssScore, "IsExploitAvailable", IsExploitAvailable, "LastModifiedTime", LastModifiedTime, "PublishedDate", PublishedDate, "VulnerabilityDescription", VulnerabilityDescription)
+    | summarize Vulnerabilities = make_list(vuln) by DeviceId, SoftwareVendor, SoftwareName, SoftwareVersion
+    | extend Software = pack("Vendor", SoftwareVendor, "Software", SoftwareName, "Version", SoftwareVersion, "Vulnerabilities", Vulnerabilities)
+    | summarize Software = make_list(Software) by DeviceId
+) on DeviceId
+| project-away DeviceId1, DeviceId2, DeviceId3
