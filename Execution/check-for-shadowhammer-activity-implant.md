@@ -19,7 +19,7 @@ union ProcessCreationEvents, NetworkCommunicationEvents, FileCreationEvents, Ima
 
 ## Category
 
-This query can be used the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
