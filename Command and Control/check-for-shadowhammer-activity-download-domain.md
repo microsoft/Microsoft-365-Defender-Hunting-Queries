@@ -9,8 +9,8 @@ The following query checks for activity associated with the ShadowHammer downloa
 ## Query
 
 ```
-​NetworkCommunicationEvents
-| where EventTime > ago(30d)
+DeviceNetworkEvents 
+| where Timestamp > ago(30d)
 | where RemoteUrl == "asushotfix.com" or RemoteIP == "141.105.71.116"
 ```
 
