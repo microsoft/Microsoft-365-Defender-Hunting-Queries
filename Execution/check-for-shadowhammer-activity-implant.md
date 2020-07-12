@@ -10,8 +10,8 @@ The following query checks for activity associated with the ShadowHammer implant
 
 ```
 ​// Event types that may be associated with the implant or container
-union ProcessCreationEvents, NetworkCommunicationEvents, FileCreationEvents, ImageLoadEvents
-| where EventTime > ago(30d)
+union DeviceProcessEvents , DeviceNetworkEvents , DeviceFileEvents , DeviceImageLoadEvents 
+| where Timestamp > ago(30d)
 // File SHAs for implant and container
 | where InitiatingProcessSHA1 in("e01c1047001206c52c87b8197d772db2a1d3b7b4",
 "e005c58331eb7db04782fdf9089111979ce1406f", "69c08086c164e58a6d0398b0ffdcb957930b4cf2")
