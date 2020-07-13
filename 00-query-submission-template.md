@@ -1,12 +1,22 @@
 
-# < Insert query name >
+# Phish and Malware received by user vs total amout of email
 
-< Provide query description and usage tips >
+How much phish and malware emails vs good emails received the user in the given timeframe.
 
 ## Query
 
 ```
-< Insert query string here >
+let UserToAnalyze="john.doe@contoso.com";
+EmailEvents
+| where RecipientEmailAddress==UserToAnalyze
+| project RecipientEmailAddress, PhishFilterVerdict
+| evaluate pivot(PhishFilterVerdict)
+| sort by RecipientEmailAddress asc;
+EmailEvents
+| where RecipientEmailAddress==UserToAnalyze
+| project RecipientEmailAddress, MalwareFilterVerdict
+| evaluate pivot(MalwareFilterVerdict)
+| sort by RecipientEmailAddress asc
 ```
 ## Category
 
@@ -14,7 +24,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
-| Initial access |  |  |
+| Initial access | x |  |
 | Execution |  |  |
 | Persistence |  |  | 
 | Privilege escalation |  |  |
@@ -33,10 +43,10 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-**Contributor:** < your name >
+**Contributor:** Pawel Partyka
 
-**GitHub alias:** < your github alias >
+**GitHub alias:** pawp81
 
-**Organization:** < your org >
+**Organization:** Microsoft
 
-**Contact info:** < email or website >
+**Contact info:** ppartyka@microsoft.com
