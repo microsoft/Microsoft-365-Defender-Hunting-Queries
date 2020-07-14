@@ -9,12 +9,6 @@ This event reflects relevant clicks on the malicious URL in the spear-phishing e
 ```
 // Some URL are wrapped with a safelink
 // Let's get the the unwrapped url and clicks 
-let GetCompareableUrl = (arg0:string ) 
-{ 
-    let parsedUrl = parse_url(arg0);
-     let UrlFromQueryParams = url_decode(tostring(parsedUrl["QueryParameters"].url));
-    coalesce(UrlFromQueryParams, arg0)
-};
 AlertInfo
 | where ServiceSource == "Office 365 ATP"
 | join (
@@ -32,7 +26,7 @@ AlertInfo
 // Get the unique NetworkMessageId for the email containing the Url
 | distinct RemoteUrl, NetworkMessageId
 | join EmailEvents on NetworkMessageId
-// get the email RecipientEmailAddress and ObjectId from the email 
+// Get the email RecipientEmailAddress and ObjectId from the email 
 | distinct RemoteUrl, NetworkMessageId, RecipientEmailAddress , RecipientObjectId
 | join kind = inner IdentityInfo on $left.RecipientObjectId  == $right.AccountObjectId 
 // get the UserSid of the Recipient
@@ -41,12 +35,13 @@ AlertInfo
 | join kind = inner  
     (DeviceEvents 
     | where ActionType == "BrowserLaunchedToOpenUrl"| where isnotempty(RemoteUrl) 
-    | extend UrlDeviceClickTime = Timestamp  |extend UrlClickedByUserSid = GetCompareableUrl(RemoteUrl) 
+    | project UrlDeviceClickTime = Timestamp , UrlClickedByUserSid = RemoteUrl, 
+                InitiatingProcessAccountSid, DeviceName, DeviceId, InitiatingProcessFileName
     ) 
    on $left.OnPremSid == $right.InitiatingProcessAccountSid and $left.RemoteUrl == $right.UrlClickedByUserSid
-| distinct UrlDeviceClickTime, RemoteUrl, NetworkMessageId, RecipientEmailAddress , RecipientObjectId, OnPremSid, UrlClickedByUserSid, DeviceName, DeviceId, 
-InitiatingProcessFileName 
-| sort by UrlDeviceClickTime desc  
+| distinct UrlDeviceClickTime, RemoteUrl, NetworkMessageId, RecipientEmailAddress, RecipientObjectId, 
+    OnPremSid, UrlClickedByUserSid, DeviceName, DeviceId, InitiatingProcessFileName 
+| sort by UrlDeviceClickTime desc 
 ```
 ## Category
 
