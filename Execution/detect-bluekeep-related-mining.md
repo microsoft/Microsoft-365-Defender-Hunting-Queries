@@ -1,4 +1,4 @@
-# Detect suspicious RDP activity related to BlueKeep
+# Detect BlueKeep-related cryptocurrency mining
 
 This query was originally published in the threat analytics report, *Exploitation of CVE-2019-0708 (BlueKeep)*.
 
