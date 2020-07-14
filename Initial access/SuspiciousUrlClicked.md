@@ -73,4 +73,4 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-Microsoft threat proteciton team
+Microsoft threat protection team
