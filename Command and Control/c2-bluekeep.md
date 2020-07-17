@@ -42,6 +42,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
+## See also
+
+* [Detect BlueKeep-related mining](../Execution/detect-bluekeep-related-mining.md)
+* [Detect BlueKeep exploitation attempts](../Initial%20access/detect-bluekeep-exploitation-attempts.md)
+* [Detect suspicious RDP activity related to BlueKeep](..\Lateral%20Movement\detect-suspicious-rdp-connections.md)
+
 ## Contributor info
 
 **Contributor:** Microsoft Threat Protection team
