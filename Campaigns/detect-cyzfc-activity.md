@@ -15,30 +15,34 @@ The following queries detect activity associated with the malicious DLL, *cyzfc.
 ```Kusto
 ​// Query 1: Events involving the DLL container
 let fileHash = "9858d5cb2a6614be3c48e33911bf9f7978b441bf";
-find in (FileCreationEvents, ProcessCreationEvents, MiscEvents,
-RegistryEvents, NetworkCommunicationEvents, ImageLoadEvents)
+find in (DeviceFileEvents, DeviceProcessEvents, DeviceEvents,
+DeviceRegistryEvents, DeviceNetworkEvents, DeviceImageLoadEvents)
 where SHA1 == fileHash or InitiatingProcessSHA1 == fileHash
-| where EventTime > ago(10d)
+| where Timestamp > ago(10d)
+
 // Query 2: C2 connection
-NetworkCommunicationEvents
-| where EventTime > ago(10d)
+DeviceNetworkEvents
+| where Timestamp > ago(10d)
 | where RemoteUrl == "pandorasong.com"
+
 // Query 3: Malicious PowerShell
-ProcessCreationEvents
-| where EventTime > ago(10d)
+DeviceProcessEvents
+| where Timestamp > ago(10d)
 | where ProcessCommandLine contains
 "-noni -ep bypass $zk='JHB0Z3Q9MHgwMDA1ZTJiZTskdmNxPTB4MDAwNjIzYjY7JHRiPSJ"
+
 // Query 4: Malicious domain in default browser commandline
-ProcessCreationEvents
-| where EventTime > ago(10d)
+DeviceProcessEvents
+| where Timestamp > ago(10d)
 | where ProcessCommandLine contains
 "https://www.jmj.com/personal/nauerthn_state_gov"
+
 // Query 5: Events involving the ZIP
 let fileHash = "cd92f19d3ad4ec50f6d19652af010fe07dca55e1";
-find in (FileCreationEvents, ProcessCreationEvents, MiscEvents,
-RegistryEvents, NetworkCommunicationEvents, ImageLoadEvents)
+find in (DeviceFileEvents, DeviceProcessEvents, DeviceEvents,
+DeviceRegistryEvents, DeviceNetworkEvents, DeviceImageLoadEvents)
 where SHA1 == fileHash or InitiatingProcessSHA1 == fileHash
-| where EventTime > ago(10d
+| where Timestamp > ago(10d)
 ```
 
 ## Category
