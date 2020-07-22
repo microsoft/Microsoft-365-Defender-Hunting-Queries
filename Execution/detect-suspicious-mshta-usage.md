@@ -12,8 +12,8 @@ The following query detects when mshta.exe has been run, which might include ill
 
 ```Kusto
 // mshta.exe script launching processes
-ProcessCreationEvents
-| where EventTime > ago(7d)
+DeviceProcessEvents 
+| where Timestamp > ago(7d)
 and InitiatingProcessFileName =~ 'mshta.exe'
 and InitiatingProcessCommandLine contains '<script>'
 ```
