@@ -10,8 +10,8 @@ Operation Soft Cell operators sometimes use legitimate web server processes to l
 
 ```Kusto
 // Suspicious commands launched by web server processes
-ProcessCreationEvents
-| where EventTime > ago(7d)
+DeviceProcessEvents 
+| where Timestamp > ago(7d)
 // Pivoting on parents or grand parents
 and (((InitiatingProcessParentFileName in("w3wp.exe", "beasvc.exe",
 "httpd.exe") or InitiatingProcessParentFileName startswith "tomcat")
@@ -26,9 +26,9 @@ InitiatingProcessFileName startswith "tomcat"))
     or ProcessCommandLine has 'ping'
     or ProcessCommandLine has 'ipconfig'
     or ProcessCommandLine has 'timeout'
-| summarize any(EventTime), any(EventTime), any(FileName),
+| summarize any(Timestamp), any(Timestamp), any(FileName),
 makeset(ProcessCommandLine), any(InitiatingProcessFileName),
-any(InitiatingProcessParentFileName) by MachineId
+any(InitiatingProcessParentFileName) by DeviceId
 ```
 
 ## Category
