@@ -13,11 +13,11 @@ The following query detects any nbtscan activity on the system over the past sev
 ```Kusto
 let nbtscan = pack_array("9af0cb61580dba0e380cddfe9ca43a3e128ed2f8",
 "90da10004c8f6fafdaa2cf18922670a745564f45");
-union ProcessCreationEvents, FileCreationEvents
-| where EventTime > ago(7d)
+union DeviceProcessEvents , DeviceFileEvents 
+| where Timestamp > ago(7d)
 | where FileName =~ "nbtscan.exe" or SHA1 in (nbtscan)
 | project FolderPath, FileName, InitiatingProcessAccountName,
-InitiatingProcessFileName, ProcessCommandLine, EventTime
+InitiatingProcessFileName, ProcessCommandLine, Timestamp
 ```
 
 ## Category
