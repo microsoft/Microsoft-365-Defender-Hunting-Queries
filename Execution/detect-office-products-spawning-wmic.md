@@ -10,7 +10,7 @@ The following query detects when Microsoft Office software spawns an instance of
 
 ```Kusto
 ​​// Office products spawning WMI
-ProcessCreationEvents
+DeviceProcessEvents
 | where InitiatingProcessFileName in~ ("winword.exe", "excel.exe", "outlook.exe")
 and FileName =~"wmic.exe"
 ```
