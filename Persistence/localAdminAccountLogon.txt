@@ -1,0 +1,5 @@
+//This query looks for local admin account used to logon into the computer
+//this can help to detect malicious insiders that were able to add a local account to the local admin group offline
+DeviceLogonEvents
+| where IsLocalAdmin == 1
+ and AccountDomain == DeviceName
