@@ -228,7 +228,6 @@ DeviceFileEvents
 ////////////////////////////////////////////////////////////////// 
 // As you can see, using the ABC method is a quick way to pivot 
 // through an incident. But Advanced Hunting doesn't stop there. 
-// Here are a couple example queries from our GitHub. 
 /////////////////////////////////////////////////////////////////// 
 
 // It is clear this file is malicious, we don’t want it in our env.
