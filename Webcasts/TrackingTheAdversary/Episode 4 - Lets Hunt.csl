@@ -100,7 +100,7 @@ and ProcessCommandLine contains 'UpdatedPolicy_SOW_07182020.doc'
 and AccountObjectId == 'ab653b2a-d23e-49df-9493-c26590f8f319'
 
 
-// ...and we can see that Barbara launched it. Process ID 10460
+// ...and we can see that Barbara launched it. Process ID 13988
 
 
 // Looks like Barbara used Word to open it a couple times... 
@@ -109,7 +109,7 @@ and AccountObjectId == 'ab653b2a-d23e-49df-9493-c26590f8f319'
 search in (DeviceProcessEvents, DeviceNetworkEvents, DeviceFileEvents, DeviceRegistryEvents, DeviceEvents ) 
 Timestamp > ago(19d) 
 and DeviceId == '87da11a9257988b2fc090c9f05c72f6453bc53de' 
-and InitiatingProcessId == 8060 
+and InitiatingProcessId == 13988 
 | where RegistryKey !contains @'\Software\Microsoft\Office\16.0\Common\Internet\Server Cache' // Filtering out cache registry key changes 
 | order by Timestamp asc 
 | project-reorder Timestamp, $table, ActionType, RemoteIP, RemoteUrl, FileName, SHA256, RegistryKey, RegistryValueData, ActionType, AdditionalFields
@@ -178,11 +178,11 @@ EricGAlerts
 | join AlertEvidence on AlertId // Join back on AlertEvidence to get other evidence 
 | join kind = leftouter ( 
     DeviceInfo 
-    | summarize DeviceName = any(DeviceName) by DeviceId) on DeviceId // This creates a mapping table between DeviceId and DeviceName since we only have ID in AlertEvidence 
-    | extend DomainAndAccount = strcat(AccountDomain, '\\', AccountName) 
-    | summarize Timestamp = min(Timestamp) 
-    , Device = make_set_if(DeviceName, isnotempty(DeviceName)
-) 
+    | summarize DeviceName = any(DeviceName) by DeviceId
+) on DeviceId // This creates a mapping table between DeviceId and DeviceName since we only have ID in AlertEvidence 
+| extend DomainAndAccount = strcat(AccountDomain, '\\', AccountName) 
+| summarize Timestamp = min(Timestamp) 
+, Device = make_set_if(DeviceName, isnotempty(DeviceName)) 
 , SHA1 = make_set_if(SHA1,isnotempty(SHA1)) 
 , SHA256 = make_set_if(SHA256, isnotempty(SHA256)) 
 , RemoteIP = make_set_if(RemoteIP, isnotempty(RemoteIP)) 
