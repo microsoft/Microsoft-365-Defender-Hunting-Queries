@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Python abuse on macOS*
 
-The Python programming language comes bundled with macOS. In threat intelligence gathered from Microsoft Defender ATP, we have observed numerous attacks against macOS endpoints run with *[EmPyre](https://github.com/EmpireProject/EmPyre)*, a Python-based post-exploitation framework similar to [PowerShell Empire](https://www.powershellempire.com/) for Windows.
+The Python programming language comes bundled with macOS. In threat intelligence gathered about macOS endpoints, sourced from Microsoft Defender ATP, we have observed numerous attacks run with *[EmPyre](https://github.com/EmpireProject/EmPyre)*, a Python-based post-exploitation framework similar to [PowerShell Empire](https://www.powershellempire.com/) for Windows.
 
 The following query checks for Microsoft Office documents that run Python scripts.
 
