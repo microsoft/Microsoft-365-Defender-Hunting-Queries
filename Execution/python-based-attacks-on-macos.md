@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Python abuse on macOS*
 
-[Operation ShadowHammer](https://www.vice.com/en_us/article/pan9wn/hackers-hijacked-asus-software-updates-to-install-backdoors-on-thousands-of-computers) was an attack against ASUS computer hardware, using the company's own update infrastructure to deliver malware to the company's products. The campaign ran from June to November, 2018. ASUS has since [responded](https://www.asus.com/News/hqfgVUyZ6uyAyJe1) with updates that protect their Live Update system, and diagnostic tools to check affected systems.
+The Python programming language comes bundled with macOS. In threat intelligence gathered from Microsoft Dedender ATP, we have observed numerous attacks against macOS endpoints run with *[EmPyre](https://github.com/EmpireProject/EmPyre)*, a Python-based post-exploitation framework similar to [PowerShell Empire](https://www.powershellempire.com/) for Windows.
 
 The following query checks for Microsoft Office documents that run Python scripts.
 
