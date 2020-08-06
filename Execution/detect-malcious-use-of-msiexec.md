@@ -11,24 +11,26 @@ The following query detects activity associated with misuse of msiexec.exe, part
 ```Kusto
 //Find possible download and execution using Msiexec
 DeviceProcessEvents
-| where Timestamp > ago(30d)
+| where Timestamp > ago(7d)
 //MSIExec
 | where FileName =~ "msiexec.exe" and 
 //With domain in command line
 (ProcessCommandLine has "http" and ProcessCommandLine has "return")//Find PowerShell running files from the temp folder
+
 DeviceProcessEvents
-| where Timestamp > ago(30d)
+| where Timestamp > ago(7d)
 //Looking for PowerShell
 | where FileName =~ "powershell.exe"
 //Looking for %temp% in the command line indicating deployment 
 and ProcessCommandLine contains "%temp%"//Find credential theft attempts using Msiexec to run Mimikatz commands
+
 DeviceProcessEvents
-| where Timestamp > ago(30d)
+| where Timestamp > ago(7d)
 | where InitiatingProcessFileName =~ "msiexec.exe"
 //Mimikatz commands
 and (ProcessCommandLine contains "privilege::" 
 or ProcessCommandLine has "sekurlsa" 
-or ProcessCommandLine contains "token::" 
+or ProcessCommandLine contains "token::") 
 ```
 
 ## Category
