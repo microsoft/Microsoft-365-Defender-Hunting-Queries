@@ -244,7 +244,7 @@ DeviceFileEvents
 // Custom detection rule to get alerted on every future activity involving IP: 
 // '178.32.124.142', '51.83.139.56'
 
-search in (DeviceNetworkEvents, DeviceEvents, AppFileEvents, IdentityLogonEvents) 
+search in (DeviceNetworkEvents, DeviceEvents) 
 RemoteIP in ('178.32.124.142', '51.83.139.56') or FileOriginIP  in ('178.32.124.142', '51.83.139.56') or IPAddress in ('178.32.124.142', '51.83.139.56')
 
 // Detection name – Activity involving malicious IP ('178.32.124.142', '51.83.139.56') 
