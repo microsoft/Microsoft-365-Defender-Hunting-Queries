@@ -1,0 +1,13 @@
+/////////////////////////////////////////////////////////////////////
+// Devices by DNS Suffix
+//
+// This query will count the number of devices in Defender ATP based
+// on their DNS suffix.  For a full list of devices with the DNS 
+// suffix, comment out or remove the last line.
+/////////////////////////////////////////////////////////////////////
+DeviceInfo
+| where isnotempty(OSPlatform)
+| summarize arg_max(Timestamp, DeviceName) by DeviceId
+| extend DeviceMachineName = split(DeviceName, '.')[0]
+| extend DeviceDomain = substring(DeviceName, strlen(DeviceMachineName) + 1, strlen(DeviceName) - strlen(DeviceMachineName) - 1)
+| summarize count() by DeviceDomain
