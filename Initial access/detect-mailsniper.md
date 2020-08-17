@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *MailSniper Exchange attack tool*.
 
-[MaailSniper](https://github.com/dafthack/MailSniper) is a tool that targets Microsoft Exchange Server. The core function is to connect to Exchange Server and search through emails. In support of this, it can perform reconnaissance, collection, exfiltration, and credential theft. MailSniper is used both by red teams running penetration tests, and by malicious actors.
+[MailSniper](https://github.com/dafthack/MailSniper) is a tool that targets Microsoft Exchange Server. The core function is to connect to Exchange Server and search through emails. In support of this, it can perform reconnaissance, collection, exfiltration, and credential theft. MailSniper is used both by red teams running penetration tests, and by malicious actors.
 
 Microsoft Defender Security Center may record the following alerts during and after an attack:
 
