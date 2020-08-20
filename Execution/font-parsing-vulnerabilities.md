@@ -1,4 +1,4 @@
-# VPN exploit activity associated with MANGANESE
+# Font parsing vulnerability associated with remote execution
 
 This query was originally published in the threat analytics report, *Type 1 font-parsing 0-day vulnerabilities*.
 
