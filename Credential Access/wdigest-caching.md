@@ -6,7 +6,7 @@ This query was originally published in the threat analytics report, *WDigest cre
 
 The Microsoft Security Response Center published an [overview](https://msrc-blog.microsoft.com/2014/06/05/an-overview-of-kb2871997/) of [KB2871997](https://www.catalog.update.microsoft.com/Search.aspx?q=KB2871997), which addresses WDigest use on older platforms. More recent versions of Windows can be protected with a holistic security approach that follows the [principle of least privilege](https://docs.microsoft.com/windows-server/identity/ad-ds/plan/security-best-practices/implementing-least-privilege-administrative-models).
 
-The following query returns any attempts to turn WDigest credential on through the registry.
+The following query returns any attempts to turn WDigest credential caching on through the registry.
 
 ## Query
 
