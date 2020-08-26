@@ -2,9 +2,9 @@
 
 This query was originally published in the threat analytics report, *The expansion of Dudear (TA505)*.
 
-The [Dudear](https://www.msn.com/en/news/technology/microsoft-detects-new-evil-corp-malware-attacks/ar-BBZxkRs) campaign spreads commodity malware for profit.
+The [Dudear](https://www.msn.com/en/news/technology/microsoft-detects-new-evil-corp-malware-attacks/ar-BBZxkRs) campaign spreads commodity malware for profit. Other security researchers have given the name *TA505* to a group performing similar or related malicious activity.
 
-The campaign targets financial services or healthcare. They involve several kinds of malware implants, including a family of trojan droppers also known as [Dudear](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:O97M/Dudear.A!dha&threatId=-2147217587). Dudear campaign operators often use Remote Access Trojans (RATs) for command-and-control, lateral movement, and credential dumping.
+The Dudear campaign targets financial services or healthcare. They involve several kinds of malware implants, including a family of trojan droppers also known as [Dudear](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:O97M/Dudear.A!dha&threatId=-2147217587). Dudear campaign operators often use Remote Access Trojans (RATs) for command-and-control, lateral movement, and credential dumping.
 
 The following query finds devices that have connected to IP addresses known to be associated with the Dudear campaign. To detect network connection events on an impacted device, see [Detect network connection events on a device impacted by the Dudear campaign](dudear-connection-activity.md).
 
