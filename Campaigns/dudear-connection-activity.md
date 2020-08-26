@@ -2,9 +2,9 @@
 
 This query was originally published in the threat analytics report, *The expansion of Dudear (TA505)*.
 
-The [Dudear](https://www.msn.com/en/news/technology/microsoft-detects-new-evil-corp-malware-attacks/ar-BBZxkRs) campaign spreads commodity malware for profit. The group behind this campaign is known as Dudear, TA505, Chimborazo, SectorJ04, or Evil Corp, by various security researchers.
+The [Dudear](https://www.msn.com/en/news/technology/microsoft-detects-new-evil-corp-malware-attacks/ar-BBZxkRs) campaign spreads commodity malware for profit.
 
-Campaigns run by this group often target financial services or healthcare. They involve several kinds of malware implants, including a family of trojan droppers also known as [Dudear](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:O97M/Dudear.A!dha&threatId=-2147217587). The group often uses Remote Access Trojans (RATs) for command-and-control, lateral movement, and credential dumping.
+The campaign targets financial services or healthcare. They involve several kinds of malware implants, including a family of trojan droppers also known as [Dudear](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=TrojanDropper:O97M/Dudear.A!dha&threatId=-2147217587). Dudear campaign operators often use Remote Access Trojans (RATs) for command-and-control, lateral movement, and credential dumping.
 
 The following query finds network connection events on a device that has connected to a Dudear IP address. To find these devices, see [Detect devices connected to Dudear campaign IPs](dudear.ip.md).
 
