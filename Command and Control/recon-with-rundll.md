@@ -2,9 +2,9 @@
 
 This query was originally published in the threat analytics report, *Trickbot: Pervasive & underestimated*.
 
-[Trickbot](https://attack.mitre.org/software/S0266/) is a very prevalent piece of malware with an array of malicious capabilities. Originally designed to steal banking credentials, it has since evolved into a modular trojan that can deploy other malware, disable security software, and perform command and control.
+[Trickbot](https://attack.mitre.org/software/S0266/) is a very prevalent piece of malware with an array of malicious capabilities. Originally designed to steal banking credentials, it has since evolved into a modular trojan that can deploy other malware, disable security software, and perform command and control (C2) operations.
 
-Trickbot operators are known to use the legitimate Windows process *rundll.exe* to perform malicious activities, such as reconnaissance. Once a target is infected, the operator will drop a batch file that runs several commands and connects to a command-and-control (C2) server for further action.
+Trickbot operators are known to use the legitimate Windows process *rundll.exe* to perform malicious activities, such as reconnaissance. Once a target is infected, the operator will drop a batch file that runs several commands and connects to a C2 server for further action.
 
 The following query detects suspicious rundll.exe activity associated with Trickbot campaigns.
 

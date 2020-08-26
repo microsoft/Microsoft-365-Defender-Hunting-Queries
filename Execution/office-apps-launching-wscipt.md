@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Trickbot: Pervasive & underestimated*.
 
-[Trickbot](https://attack.mitre.org/software/S0266/) is a very prevalent piece of malware with an array of malicious capabilities. Originally designed to steal banking credentials, it has since evolved into a modular trojan that can deploy other malware, disable security software, and perform command and control.
+[Trickbot](https://attack.mitre.org/software/S0266/) is a very prevalent piece of malware with an array of malicious capabilities. Originally designed to steal banking credentials, it has since evolved into a modular trojan that can deploy other malware, disable security software, and perform command-and-control (C2) operations.
 
 Trickbot is frequently spread through email. An attacker will send a target a message with an attachment containing a malicious macro. If the target enables the macro, it will write a JScript Encoded (JSE) file to disk (JScript is a Microsoft dialect of ECMAScript). The JSE file will then be launched using *[wscript.exe](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/wscript)* to perform a variety of malicious tasks, particularly reconnaissance.
 
