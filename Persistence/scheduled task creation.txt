@@ -2,4 +2,4 @@
 //Questions via Twitter: @janvonkirchheim 
 DeviceEvents 
 | where ActionType == "ScheduledTaskCreated"
-  and InitiatingProcessAccountSid == "S-1-5-18"
+  and InitiatingProcessAccountSid != "S-1-5-18"
