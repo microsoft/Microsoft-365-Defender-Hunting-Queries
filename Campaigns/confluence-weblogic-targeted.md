@@ -77,20 +77,20 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
 | Initial access |  |  |
-| Execution | v |  |
-| Persistence | v |  |
+| Execution |  |  |
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion | v |  |
+| Defense evasion |  |  |
 | Credential Access |  |  |
-| Discovery | v |  |
+| Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
 | Command and control |  |  |
 | Exfiltration |  |  |
 | Impact |  |  |
-| Vulnerability |  |  |
+| Vulnerability | v |  |
 | Misconfiguration |  |  |
-| Malware, component | v |  |
+| Malware, component |  |  |
 
 ## Contributor info
 
