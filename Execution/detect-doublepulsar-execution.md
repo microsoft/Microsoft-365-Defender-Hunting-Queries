@@ -6,7 +6,7 @@ This query was originally published in the threat analytics report, *Motivated m
 
 The following query detects possible DoublePulsar execution events.
 
-See [Detect web server exploitation by DoublePulsar](detect-web-server-exploit-double-pulsar.md) for a query that detects behaviors associated with campaigns that use DoublePulsar.
+See [Detect web server exploitation by DoublePulsar](detect-web-server-exploit-doublepulsar.md) for a query that detects behaviors associated with campaigns that use DoublePulsar.
 
 ## Query
 
