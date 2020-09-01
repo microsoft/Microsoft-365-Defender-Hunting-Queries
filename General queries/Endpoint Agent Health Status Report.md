@@ -48,7 +48,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exfiltration |  |  | 
 | Impact |  |  |
 | Vulnerability |  |  |
-| Misconfiguration |  |  |
+| Misconfiguration | v |  |
 | Malware, component |  |  |
 
 
