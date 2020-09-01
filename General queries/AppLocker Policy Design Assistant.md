@@ -1,12 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////////////
-// AppLocker Policy Design Assistant
-//
-// One of the challenges in making an AppLocker policy is knowing where applications 
-// launch from.  This query normalizes process launch paths through aliasing, then 
-// counts the number of processes launched from that path, how many distinct machines it
-// was launched on, and how many distinct file names \ hashes these processes had.  The
-// path is broken into subfolders to help simplify analysis
-////////////////////////////////////////////////////////////////////////////////////////
+# AppLocker Policy Design Assistant
+
+One of the challenges in making an AppLocker policy is knowing where applications 
+launch from.  This query normalizes process launch paths through aliasing, then 
+counts the number of processes launched from that path, how many distinct machines it
+was launched on, and how many distinct file names \ hashes these processes had.  The
+path is broken into subfolders to help simplify analysis.
+
+## Query
+
+```
 let FolderDepthLimit = 5;
 let AliasPath = (SourcePath:(FolderPath:string, FileName:string))
 {
@@ -41,3 +43,37 @@ DeviceProcessEvents
 | extend SubPath = strcat_array(array_slice(SplitFolderPath, 0, PathDepth), '\\') // Reassemble the subpath based on the number of folders
 | summarize ProcessCount = count(), DistinctMachines = dcount(DeviceId), DistinctProcesses = dcount(SHA256), DistinctFileNames = dcount(FileName) by SubPath 
 | order by DistinctMachines desc // Order by the number of distinct machines in descending order
+
+```
+## Category
+
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+
+| Technique, tactic, or state | Covered? (v=yes) | Notes |
+|------------------------|----------|-------|
+| Initial access |  |  |
+| Execution |  |  |
+| Persistence |  |  | 
+| Privilege escalation |  |  |
+| Defense evasion |  |  | 
+| Credential Access |  |  | 
+| Discovery |  |  | 
+| Lateral movement |  |  | 
+| Collection |  |  | 
+| Command and control |  |  | 
+| Exfiltration |  |  | 
+| Impact |  |  |
+| Vulnerability |  |  |
+| Misconfiguration |  |  |
+| Malware, component |  |  |
+
+
+## Contributor info
+
+**Contributor:** Michael Melone
+
+**GitHub alias:** mjmelone
+
+**Organization:** Microsoft
+
+**Contact info:** mimelone@microsoft.com
