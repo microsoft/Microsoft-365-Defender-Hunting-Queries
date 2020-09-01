@@ -1,14 +1,15 @@
-////////////////////////////////////////////////////////////////////////////////
-// Make FolderPath Vogon Poetry
-// @mjmelone with creative input from Captain
-//
-// This is a completely stupid and pointless query that makes Vogon poetry out 
-// of a random FolderPath from the table you pass it.  You can change 
-// DeviceProcessEvents for any table as long as it has a column named DeviceName
-// and a column called FolderPath.  Feel free to check in more verses :)
-// 
-// Don't know what Vogon poetry is?  You have a research assignment: http://tinyurl.com/y8ueqchl 
-////////////////////////////////////////////////////////////////////////////////
+# Make FolderPath Vogon Poetry
+
+This is a completely stupid and pointless query that makes Vogon poetry out 
+of a random FolderPath from the table you pass it.  You can change 
+DeviceProcessEvents for any table as long as it has a column named DeviceName
+and a column called FolderPath.  Feel free to check in more verses :)
+ 
+Don't know what Vogon poetry is?  You have a research assignment: http://tinyurl.com/y8ueqchl 
+
+## Query
+
+```
 let MakeFolderPathVogonPoetry = (SourceData:(DeviceName:string, FolderPath:string)) {
     let Verses = pack_array(
         'My life was spent with PATH', 
@@ -40,6 +41,7 @@ let MakeFolderPathVogonPoetry = (SourceData:(DeviceName:string, FolderPath:strin
     | serialize 
     | where row_number() == RandRow
     | extend Path = iff(FolderPath startswith "/", split(FolderPath, '/'), split(FolderPath, '\\'))
+    | where array_length( Path ) > 2
     | mvexpand Path to typeof(string)
     | where isnotempty(Path)
     | extend Rand = toint(rand(PhraseCount))
@@ -50,3 +52,37 @@ let MakeFolderPathVogonPoetry = (SourceData:(DeviceName:string, FolderPath:strin
 };
 DeviceProcessEvents
 | invoke MakeFolderPathVogonPoetry()
+```
+## Category
+
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+
+| Technique, tactic, or state | Covered? (v=yes) | Notes |
+|------------------------|----------|-------|
+| Initial access |  |  |
+| Execution |  |  |
+| Persistence |  |  | 
+| Privilege escalation |  |  |
+| Defense evasion |  |  | 
+| Credential Access |  |  | 
+| Discovery |  |  | 
+| Lateral movement |  |  | 
+| Collection |  |  | 
+| Command and control |  |  | 
+| Exfiltration |  |  | 
+| Impact |  |  |
+| Vulnerability |  |  |
+| Misconfiguration |  |  |
+| Malware, component |  |  |
+| Creates Poetry | v |  |
+
+
+## Contributor info
+
+**Contributor:** Michael Melone
+
+**GitHub alias:** mjmelone
+
+**Organization:** Microsoft
+
+**Contact info:** mimelone@microsoft.com
