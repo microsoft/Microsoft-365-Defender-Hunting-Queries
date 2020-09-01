@@ -4,7 +4,7 @@ This query was originally published in the threat analytics report, *Ransomware 
 
 [Robbinhood](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Robinhood.A&ThreatID=2147735370) is ransomware that has been involved in several high-profile incidents, including a 2019 [attack](https://www.nytimes.com/2019/05/22/us/baltimore-ransomware.html) on the city of Baltimore, Maryland. Robbinhood operators often employ a distinctive defense evasion technique, where they load a vulnerable driver on to a target and exploit it, in order to turn off security software -- essentially using the driver as malware.
 
-The following query detects an early stage of this technique, when the operator is implanting the driver on the target.
+The following query detects if a device contains the vulnerable drivers. These are often, but not always, implanted on the target by operators seeking to use this technique to turn off security software.
 
 For a query that detects a later stage of this technique, see [Detect security evasion related to the Robbinhood ransomware campaign](robbinhood-driver.md).
 
