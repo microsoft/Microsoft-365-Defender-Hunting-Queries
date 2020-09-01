@@ -85,4 +85,4 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 **Organization:** Microsoft
 
-**Contact info:** mimelone@microsoft.com
+**Contact info:** @PowershellPoet
