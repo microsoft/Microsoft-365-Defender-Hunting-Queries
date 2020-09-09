@@ -57,8 +57,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
-* [Detect credential theft via SAM database export by LaZagne](./Credential%20Access/lazagne.md)
-* [Detect Cobalt Strike invoked via WMI](./Campaigns/cobalt-strike-invoked-w-wmi.md)
+* [Detect credential theft via SAM database export by LaZagne](../Credential%20Access/lazagne.md)
+* [Detect Cobalt Strike invoked via WMI](../Campaigns/cobalt-strike-invoked-w-wmi.md)
 
 ## Contributor info
 

@@ -48,8 +48,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
-* [Detect PsExec being used to spread files](./Lateral%20Movement/remote-file-creation-with-psexec.md)
-* [Detect Cobalt Strike invoked via WMI](./Campaigns/cobalt-strike-invoked-w-wmi.md)
+* [Detect PsExec being used to spread files](../Lateral%20Movement/remote-file-creation-with-psexec.md)
+* [Detect Cobalt Strike invoked via WMI](../Campaigns/cobalt-strike-invoked-w-wmi.md)
 
 ## Contributor info
 

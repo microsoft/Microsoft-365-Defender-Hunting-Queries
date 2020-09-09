@@ -55,8 +55,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
-* [Detect PsExec being used to spread files](./Lateral%20Movement/remote-file-creation-with-psexec.md)
-* [Detect credential theft via SAM database export by LaZagne](./Credential%20Access/lazagne.md)
+* [Detect PsExec being used to spread files](../Lateral%20Movement/remote-file-creation-with-psexec.md)
+* [Detect credential theft via SAM database export by LaZagne](../Credential%20Access/lazagne.md)
 
 ## Contributor info
 
