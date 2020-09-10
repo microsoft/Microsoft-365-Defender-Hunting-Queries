@@ -4,7 +4,7 @@ This query was originally published in the threat analytics report, *Hunting for
 
 [PowerShell Empire](https://www.powershellempire.com/) is a modular toolkit used both by penetration testers and malicious actors. It offers a wide range of attack techniques, and has been observed in numerous attacks.
 
-The following query detects Base64-encoded PowerShell commands that are either process creation or network events. This can identify common techniques, such as [Kerberoasting](https://docs.microsoft.com/azure-advanced-threat-protection/atp-reconnaissance-alerts#security-principal-reconnaissance-ldap-external-id-2038).
+The following query detects Base64-encoded PowerShell commands that are either process creation or network events. This can identify common techniques, such as [Kerberoasting](https://attack.mitre.org/techniques/T1558/003/).
 
 More queries related to PowerShell Empire are listed under the [See also](#see-also) section below.
 
@@ -48,7 +48,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion | v |  |
-| Credential Access |  |  |
+| Credential Access | v |  |
 | Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
