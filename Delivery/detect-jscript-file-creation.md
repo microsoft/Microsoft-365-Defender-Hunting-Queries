@@ -39,8 +39,6 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
-## See also
-
 ## Contributor info
 
 **Contributor:** Microsoft Threat Protection team
