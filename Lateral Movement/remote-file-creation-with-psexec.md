@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Ryuk ransomware*. There is also a related [blog](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/).
 
-[Ryuk](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Ryuk&threatId=-2147232689) is human-operated ransomware. Muck like [DoppelPaymer](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/) ransomware, Ryuk is spread manually, often on networks that are already infected with Trickbot.
+[Ryuk](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Ryuk&threatId=-2147232689) is human-operated ransomware. Much like [DoppelPaymer](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/) ransomware, Ryuk is spread manually, often on networks that are already infected with Trickbot.
 
 Ryuk operators use [PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec) to manually spread the ransomware to other devices.
 
