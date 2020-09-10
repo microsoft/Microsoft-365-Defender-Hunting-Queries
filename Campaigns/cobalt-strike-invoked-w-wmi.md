@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Ryuk ransomware*. There is also a related [blog](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/).
 
-[Ryuk](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Ryuk&threatId=-2147232689) is human-operated ransomware. Muck like [DoppelPaymer](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/) ransomware, Ryuk is spread manually, often on networks that are already infected with Trickbot.
+[Ryuk](https://www.microsoft.com/en-us/wdsi/threats/malware-encyclopedia-description?Name=Ransom:Win32/Ryuk&threatId=-2147232689) is human-operated ransomware. Much like [DoppelPaymer](https://www.microsoft.com/security/blog/2020/03/05/human-operated-ransomware-attacks-a-preventable-disaster/) ransomware, Ryuk is spread manually, often on networks that are already infected with Trickbot.
 
 During the earliest stages of a Ryuk infection, an operator downloads [Cobalt Strike](https://www.cobaltstrike.com/), a penetration testing kit that is also used by malicious actors. Cobalt Strike is used by Ryuk operators to explore the network before deploying the Ryuk payload. This malicious behavior is often obscured by Base64 encoding and other tricks.
 
