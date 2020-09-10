@@ -44,9 +44,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
-* [Return alerts for PowerShell Empire](../Protection%20events/powershell-empire.md)
+* [Return alerts for PowerShell Empire](../Protection%20events/powershell-empire-alerts.md)
 * [Detect PowerShell Empire modules](../Execution/powershell-empire-modules.md)
-* [Detect Base64-encoded PowerShell process and network creation commands](../General%20queries/base64-encoded-powershell-commands.md)
+* [Detect Base64-encoded PowerShell process and network creation commands](../Defense%20evasion/base64-encoded-powershell-commands.md)
 * [Detect obfuscated PowerShell commands](../Defense%20evasion/obfuscated-powershell-commands.md)
 * [Detect PowerShell commands to connect to remote hosts](../General%20queries/powershell-remote-connection.md)
 
