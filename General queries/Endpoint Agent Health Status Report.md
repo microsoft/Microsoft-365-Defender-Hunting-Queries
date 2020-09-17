@@ -22,7 +22,7 @@ DeviceTvmSecureConfigurationAssessment
     ConfigurationId == "scid-91", "BehaviorMonitoring",
     ConfigurationId == "scid-2013", "PUAProtection",
     ConfigurationId == "scid-2014", "AntivirusReporting",
-    ConfigurationId == "scid-2016", "CloudProteciton",
+    ConfigurationId == "scid-2016", "CloudProtection",
     "N/A"),
     Result = case(IsApplicable == 0, "N/A", IsCompliant == 1, "GOOD", "BAD")
 | extend packed = pack(Test, Result)
