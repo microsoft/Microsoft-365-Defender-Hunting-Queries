@@ -20,11 +20,11 @@ DeviceEvents
 | extend LocalGroup = AccountName
 | extend LocalGroupSID = AccountSid
 | extend Actor = trim(@"[^\w]+",InitiatingProcessAccountName)
+// limit to local administrators group
+//  | where LocalGroupSID contains "S-1-5-32-544"
 | join kind= leftouter    (NewUsers)
 on $left.AddedAccountSID == $right.NewUserSID
 | project Timestamp, DeviceName, LocalGroup,LocalGroupSID, AddedAccountSID, lUserAdded , Actor, ActionType , laccountdomain 
-// limit to local administrators group
-// | where LocalGroupSID contains "S-1-5-32-544"
 | join kind= leftouter        (ADAZUsers)
 on $left.AddedAccountSID == $right.OnPremSid
 | extend UserAdded = iff(isnotempty(lUserAdded),strcat(laccountdomain,"\\", lUserAdded), strcat(DirectoryDomain,"\\", DirectoryAccount))
