@@ -3,7 +3,7 @@ page_type: sample
 languages: 
 - kusto
 products: 
-- MTP
+- Microsoft 365 Defender
 description: "Microsoft 365 Defender repository for Advanced Hunting"
 ---
 # Advanced hunting queries for Microsoft 365 Defender
