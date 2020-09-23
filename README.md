@@ -4,16 +4,16 @@ languages:
 - kusto
 products: 
 - MTP
-description: "Microsoft threat protection repository for Advanced Hunting"
+description: "Microsoft 365 Defender repository for Advanced Hunting"
 ---
-# Advanced hunting queries for Microsoft Threat Protection
-This repo contains sample queries for **[advanced hunting](https://security.microsoft.com/hunting) in [Microsoft Threat Protection](https://aka.ms/mtp-docs)**. With these sample queries, you can start to experience advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
+# Advanced hunting queries for Microsoft 365 Defender
+This repo contains sample queries for **[advanced hunting](https://security.microsoft.com/hunting) in [Microsoft 365 Defender](https://aka.ms/mtp-docs)**. With these sample queries, you can start to experience advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
 
 ---
-**NOTE:** Most of these queries can also be used in Microsoft Defender ATP. However, queries that search tables containing consolidated alert data as well as data about email, apps, and identities can only be used in Microsoft Threat Protection.
+**NOTE:** Most of these queries can also be used in Microsoft Defender ATP. However, queries that search tables containing consolidated alert data as well as data about email, apps, and identities can only be used in Microsoft 365 Defender.
 
 - [Microsoft Defender ATP schema](https://docs.microsoft.com/windows/security/threat-protection/microsoft-defender-atp/advanced-hunting-schema-reference)
-- [Microsoft Threat Protection schema](https://docs.microsoft.com/microsoft-365/security/mtp/advanced-hunting-schema-tables)
+- [Microsoft 365 Defender schema](https://docs.microsoft.com/microsoft-365/security/mtp/advanced-hunting-schema-tables)
 ---
 
 To get started, simply paste a sample query into the query builder and run the query. If you get syntax errors, try removing empty lines introduced when pasting. If a query returns no results, try expanding the time range. 
