@@ -8,11 +8,10 @@ This query allows to verify when email matching your search condition (by defaul
 ```
 let URL=""; // Put your URL here
 EmailUrlInfo
-| where Url matches regex URL
-| join EmailEvents on NetworkMessageId
-| where DeliveryAction == "Delivered" and EmailDirection == "Inbound"
+| where Url matches regex URL 
+| join (EmailEvents | where DeliveryAction == "Delivered" and EmailDirection == "Inbound") on NetworkMessageId
 | project Timestamp, NetworkMessageId, Url, SenderFromAddress, SenderIPv4, RecipientEmailAddress, Subject,DeliveryAction, DeliveryLocation
-| join kind=inner EmailPostDeliveryEvents on NetworkMessageId
+| join (EmailPostDeliveryEvents | where ActionType has "ZAP") on NetworkMessageId,RecipientEmailAddress 
 | extend DeliveryTime=(Timestamp)
 | extend ZAPTime=(Timestamp1)
 | project DeliveryTime, ZAPTime, NetworkMessageId, SenderFromAddress, SenderIPv4,RecipientEmailAddress, Subject, DeliveryAction, DeliveryLocation
