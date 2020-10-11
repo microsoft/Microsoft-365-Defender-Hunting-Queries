@@ -1,7 +1,0 @@
-///////////////////////////////////////////////////////
-// This query identifies the launch pattern associated 
-// with wastedlocker ransomware.
-// reference writeup: https://symantec-enterprise-blogs.security.com/blogs/threat-intelligence/wastedlocker-ransomware-us
-///////////////////////////////////////////////////////
-DeviceProcessEvents
-| where InitiatingProcessFileName =~ 'wscript.exe' and FileName =~ 'powershell.exe' and InitiatingProcessCommandLine matches regex @"(?i)\\chrome\.update\..+?\.js"
