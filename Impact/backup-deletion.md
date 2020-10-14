@@ -11,7 +11,7 @@ The [See also](#see=also) section below lists more queries related to techniques
 ## Query
 
 ```Kusto
-​DeviceAlertEvents 
+AlertsInfo
 | where Timestamp > ago(7d) 
 | where Title == "File backups were deleted" 
 ```
