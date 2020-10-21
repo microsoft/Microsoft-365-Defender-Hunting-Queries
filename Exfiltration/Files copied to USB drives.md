@@ -1,5 +1,5 @@
 # List files copied to USB mounted drives
-This query lists files copied to USB external drives with USB drive information based on FileCreated events associated with most recent USBDriveMount events. But be aware that Advanced Hunting is not monitoring all the file activities.
+This query lists files copied to USB external drives with USB drive information based on FileCreated events associated with most recent USBDriveMount events befor file creations. But be aware that Advanced Hunting is not monitoring all the file types.
 
 ## Query
 ```
