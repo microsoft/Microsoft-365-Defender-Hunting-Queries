@@ -40,6 +40,10 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
+* [Ransom note 'say' alert associated with ransomware on macOS](..\Impact\ransom-note-creation-macos.md)
+* [Launching questd ransomware using osascript](..\Execution\launch-questd-w-osascript.md)
+* [Python usage associated with ransomware on macOS](python-use-by-ransomware-macos.md)
+
 ## Contributor info
 
 **Contributor:** Microsoft Threat Protection team

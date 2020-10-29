@@ -40,6 +40,10 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
+* [Launching questd ransomware using osascript](..\Execution\launch-questd-w-osascript.md)
+* [Reverse shell associated with ransomware on macOS](..\Command%20and%20Control\reverse-shell-ransomware-macos.md)
+* [Python usage associated with ransomware on macOS](..\Command%20and%20Control\python-use-by-ransomware-macos.md)
+
 ## Contributor info
 
 **Contributor:** Microsoft Threat Protection team
