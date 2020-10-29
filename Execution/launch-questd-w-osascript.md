@@ -1,10 +1,10 @@
-# Ransom note 'say' alert associated with ransomware on macOS
+# Launching questd ransomware using osascript
 
 This query was originally published in the threat analytics report, *EvilQuest signals the rise of Mac ransomware*.
 
 As of the time of this writing (October 2020), ransomware designed to target macOS is relatively rare. EvilQuest is one of the few examples of this kind of malware on the platform.
 
-The query below can detect the creation of a ransom note according to the typical methods of EvilQuest operators. The command the query searches for is associated with, but not definitely indicative of, EvilQuest infections.
+The query below can detect events associated with the launch of the EvilQuest executable, *questd*, from the shell.
 
 Other queries related to EvilQuest ransomware can be found under the [See also](#see-also) section below.
 
@@ -13,7 +13,8 @@ Other queries related to EvilQuest ransomware can be found under the [See also](
 ```kusto
 union DeviceFileEvents, DeviceProcessEvents  
 | where Timestamp >= ago(7d)  
-| where ProcessCommandLine contains "say \\\"Your files are encrypted\\\" waiting until completion false"
+| where ProcessCommandLine contains "osascript -e do shell script \"launchctl load" and  
+ProcessCommandLine contains "questd"
 ```
 
 ## Category
@@ -23,7 +24,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
 | Initial access |  |  |
-| Execution |  |  |
+| Execution | v |  |
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |
