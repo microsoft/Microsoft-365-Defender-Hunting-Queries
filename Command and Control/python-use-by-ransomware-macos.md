@@ -1,19 +1,19 @@
-# Reverse shell associated with ransomware on macOS
+# Python usage associated with ransomware on macOS
 
 This query was originally published in the threat analytics report, *EvilQuest signals the rise of Mac ransomware*.
 
 As of the time of this writing (October 2020), ransomware designed to target macOS is relatively rare. EvilQuest is one of the few examples of this kind of malware on the platform.
 
-The query below can help locate a reverse shell established by an attacker. The command the query searches for is associated with, but not definitely indicative of, EvilQuest infections.
+The query below can help locate an attempt to run Python in service of malicious activity by a remote operator. The command the query searches for is associated with, but not definitely indicative of, EvilQuest infections.
 
 Other queries related to EvilQuest ransomware can be found under the [See also](#see-also) section below.
 
 ## Query
 
 ```kusto
-union DeviceFileEvents, DeviceProcessEvents
-| where Timestamp >= ago(7d)
-| where ProcessCommandLine contains "bash -i >& /dev/tcp/"
+union DeviceFileEvents, DeviceProcessEvents  
+| where Timestamp >= ago(7d)  
+| where ProcessCommandLine contains "EIKKEIKK" and ProcessCommandLine contains "python"
 ```
 
 ## Category
@@ -23,7 +23,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |-|-|-|
 | Initial access |  |  |
-| Execution |  |  |
+| Execution | v |  |
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |
@@ -31,7 +31,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
-| Command and control | v |  |
+| Command and control |  |  |
 | Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
