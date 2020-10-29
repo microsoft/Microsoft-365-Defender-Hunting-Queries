@@ -2,9 +2,9 @@
 
 This query was originally published in the threat analytics report, *EvilQuest signals the rise of Mac ransomware*.
 
-EvilQuest is Mac-based ransomware. As of the time of this writing (October 2020), ransomware designed to target macOS is relatively rare. EvilQuest is one of the few examples of this kind of malware on the platform.
+As of the time of this writing (October 2020), ransomware designed to target macOS is relatively rare. EvilQuest is one of the few examples of this kind of malware on the platform.
 
-The example below can help locate a reverse shell established by an attacker. The command the query searches for is associated with, but not definitely indicative of, EvilQuest infections.
+The query below can help locate a reverse shell established by an attacker. The command the query searches for is associated with, but not definitely indicative of, EvilQuest infections.
 
 ## Query
 
