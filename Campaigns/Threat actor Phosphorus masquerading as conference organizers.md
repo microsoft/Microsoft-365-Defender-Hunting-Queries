@@ -1,6 +1,7 @@
 # Threat actor Phosphorus masquerading as conference organizers
 
 Identify prior activity from this campaign using IOCs shared by Microsoft’s Threat Intelligence Center, or MSTIC.
+
 Read more: https://blogs.microsoft.com/on-the-issues/2020/10/28/cyberattacks-phosphorus-t20-munich-security-conference/
 
 ## Query
