@@ -6,8 +6,7 @@ Adwind is a remote access tool (RAT) that takes advantage of the cross-platform 
 
 The query below checks for attempts to disguise Java class files (i.e., complied code with a *.class* extension). Although the behavior detected by this query is typical of attacks that use Adwind malware, unrelated attacks may use the same or similar defense evasion techniques.
 
-See [Hiding a Java class file](../Initial%20access/jar-attachments.md) for an additional query that detects behavior associated with Adwind attacks
-
+See [Detecting a JAR attachment](../Initial%20access/jar-attachments.md) for an additional query that detects behavior associated with Adwind attacks.
 
 ## Query
 
