@@ -20,8 +20,11 @@ DeviceProcessEvents
     or (FileName =~ 'cipher.exe' and ProcessCommandLine contains "/w") // Wiping drive free space
     or (FileName =~ 'schtasks.exe' and ProcessCommandLine has "/change" and ProcessCommandLine has @"\Microsoft\Windows\SystemRestore\SR" and ProcessCommandLine has "/disable") // Disabling system restore task
     or (FileName =~ 'fsutil.exe' and ProcessCommandLine has "usn" and ProcessCommandLine has "deletejournal" and ProcessCommandLine has "/d") // Deleting USN journal
-// If you are receiving too many false positive detections consider enabling \ editing the next line.
-//| where InitiatingProcessFileName in~ ('cmd.exe', 'powershell.exe', 'wscript.exe', 'gpscript.exe', 'cmd.exe', "wmiprvse.exe", 'javaw.exe', 'java.exe') or InitiatingProcessFolderPath startswith @"c:\users\" or InitiatingProcessFolderPath startswith @"c:\programdata\" or InitiatingProcessFolderPath contains @"\temp\"
+    or (FileName =~ 'icacls.exe' and ProcessCommandLine has @'"C:\*"' and ProcessCommandLine contains '/grant Everyone:F') // Attempts to re-ACL all files on the C drive to give everyone full control
+    or (FileName =~ 'powershell.exe' and (
+            ProcessCommandLine matches regex @'\s+-((?i)encod?e?d?c?o?m?m?a?n?d?|e|en|enc|ec)\s+' and replace(@'\x00','', base64_decode_tostring(extract("[A-Za-z0-9+/]{50,}[=]{0,2}",0 , ProcessCommandLine))) matches regex @".*(Win32_Shadowcopy).*(.Delete\(\)).*"
+        ) or ProcessCommandLine matches regex @".*(Win32_Shadowcopy).*(.Delete\(\)).*"
+    ) // This query looks for PowerShell-based commands used to delete shadow copies
 ```
 ## Category
 
@@ -48,9 +51,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-**Contributor:** Michael Melone
+**Contributor:** Michael Melone, with special thanks to Captain and @kshitijk_
 
-**GitHub alias:** mimelone
+**GitHub alias:** mjmelone
 
 **Organization:** Microsoft
 
