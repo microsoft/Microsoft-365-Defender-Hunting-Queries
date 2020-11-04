@@ -4,10 +4,11 @@ This query looks for a large number of network-based authentications using local
 
 ## Query
 ```
-DeviceLogonEvents
-| where AccountDomain == DeviceName and isnotempty( RemoteIP)
-| summarize LogonAttempts = count(), DistinctMachines = dcount(DeviceId), Successes = countif(ActionType == 'Success'), RemoteDeviceName = any(RemoteDeviceName)  by RemoteIP, Protocol, LogonType, AccountName
-| order by LogonAttempts desc, Successes desc
+LogonEvents
+| where ReportTime > ago(30d)
+| where AccountDomain == ComputerDnsName and isnotempty( RemoteIP) and RemoteIP !in ('::1','-', '0.0.0.0') and RemoteIP !startswith "127." and RemoteIP != LocalIP
+| summarize LogonAttempts = count(), DistinctMachines = dcount(MachineId), Successes = countif(ActionType == 'Success'), RemoteDeviceName = any(RemoteComputerName)  by RemoteIP, Protocol, LogonType, AccountName
+| order by Successes desc, LogonAttempts desc
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
