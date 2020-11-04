@@ -41,7 +41,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Discovery |  |  | 
 | Lateral movement |  |  | 
 | Collection |  |  | 
-| Command and control |  |  | 
+| Command and control | v |  | 
 | Exfiltration |  |  | 
 | Impact |  |  |
 | Vulnerability |  |  |
