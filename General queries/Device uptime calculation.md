@@ -1,5 +1,5 @@
 # Device uptime calculation  
-This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 15 minutes, we can consider device is tuned off.　Calculated uptime may include up to 30 minutes gap. Devices may be tuned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “Lasttimestamp”.  
+This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 15 minutes, we can consider device is tuned off.　Calculated uptime may include up to 30 minutes gap. Devices may be tuned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “Lasttimestamp”.  When the sigle independent DeviceInfo without any sequential DeviceInfo within 15 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
 
 ## Query
 ```
@@ -21,10 +21,11 @@ DeviceInfo
 ## Sample output  
 | Timestamp | LastTimeStamp | DurationAtLeast | DeviceName | DomainName | UserName |
 |:---------------:|:---------------:|:-------:|:-------:|:-------:|:-------:|
-| 10/29/2020 14:04:11.8370236Z | 10/29/2020 15:49:11 | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 10/29/2020 07:57:47.1895022Z | 10/29/2020 08:42:47 | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 10/28/2020 12:57:07.6546625Z | 10/28/2020 16:27:06 | 00.03:29:58 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 10/28/2020 12:11:03.4177443Z | 10/28/2020 12:41:03 | 00.00:30:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 11/4/2020 0:35:08 | 11/4/2020 0:35:08 | 00.00:00:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/29/2020 14:04:11 | 10/29/2020 15:49:11 | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/29/2020 07:57:47 | 10/29/2020 08:42:47 | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/28/2020 12:57:07 | 10/28/2020 16:27:06 | 00.03:29:58 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/28/2020 12:11:03 | 10/28/2020 12:41:03 | 00.00:30:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
 | 11/2/2020 05:05:28 | 11/2/2020 07:00:13 | 00.01:54:45 | desktop-pc1 | AzureAD | User01 |
 
 ## Category
