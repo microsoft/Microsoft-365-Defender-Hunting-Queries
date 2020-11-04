@@ -12,7 +12,7 @@ See [Detecting a JAR attachment](../Initial%20access/jar-attachments.md) for an 
 
 ```kusto
 union DeviceFileEvents, DeviceProcessEvents
-| where ProcessCommandLine contains "attrib +h +s +r " 
+| where ProcessCommandLine has "attrib +h +s +r " 
 and ProcessCommandLine contains ".class"
 ```
 
