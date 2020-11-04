@@ -6,7 +6,7 @@ This query looks for a large number of network-based authentications using local
 ```
 DeviceLogonEvents
 | where Timestamp > ago(30d)
-| where AccountDomain == DeviceName and ((isnotempty( RemoteIP) and RemoteIP !in ('::1','-', '0.0.0.0') and RemoteIP !startswith "127.") or tobool(parse_json(AdditionalFields).IsLocalLogon) == false)
+| where AccountDomain == DeviceName and isnotempty( RemoteIP) and RemoteIP !in ('::1','-', '0.0.0.0') and RemoteIP !startswith "127."
 | summarize LogonAttempts = count(), DistinctMachines = dcount(DeviceId), Successes = countif(ActionType == 'Success'), RemoteDeviceName = any(RemoteDeviceName)  by RemoteIP, Protocol, LogonType, AccountName
 | order by Successes desc, LogonAttempts desc
 ```
