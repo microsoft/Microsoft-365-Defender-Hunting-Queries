@@ -26,7 +26,7 @@ DeviceInfo
 | 10/29/2020 07:57:47 | 10/29/2020 08:42:47 | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
 | 10/28/2020 12:57:07 | 10/28/2020 16:27:06 | 00.03:29:58 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
 | 10/28/2020 12:11:03 | 10/28/2020 12:41:03 | 00.00:30:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 11/2/2020 05:05:28 | 11/2/2020 07:00:13 | 00.01:54:45 | desktop-pc1 | AzureAD | User01 |
+| 11/2/2020 05:05:28 | 11/2/2020 07:00:13 | 00.01:54:45 | vpc1 | AzureAD | User01 |
 
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
