@@ -18,7 +18,7 @@ DeviceInfo
 | project Timestamp,LastTimeStamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
 )
 ```
-## Sample output
+## Sample output  
 | Timestamp | LastTimeStamp | DurationAtLeast | DeviceName | DomainName | UserName |
 | 2020-10-29T14:04:11.8370236Z | 2020-10-29T15:49:11.8373325Z | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
 | 2020-10-29T07:57:47.1895022Z | 2020-10-29T08:42:47.1966788Z | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
