@@ -13,7 +13,7 @@ Other queries related to EvilQuest ransomware can be found under the [See also](
 ```kusto
 union DeviceFileEvents, DeviceProcessEvents
 | where Timestamp >= ago(7d)
-| where ProcessCommandLine contains "bash -i >& /dev/tcp/"
+| where ProcessCommandLine has "bash -i >& /dev/tcp/"
 ```
 
 ## Category
