@@ -20,12 +20,12 @@ DeviceInfo
 ```
 ## Sample output  
 | Timestamp | LastTimeStamp | DurationAtLeast | DeviceName | DomainName | UserName |
-|---------------|---------------|-------|-------|-------|-------|
-| 2020-10-29T14:04:11.8370236Z | 2020-10-29T15:49:11.8373325Z | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 2020-10-29T07:57:47.1895022Z | 2020-10-29T08:42:47.1966788Z | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 2020-10-28T12:57:07.6546625Z | 2020-10-28T16:27:06.5093301Z | 00.03:29:58 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 2020-10-28T12:11:03.4177443Z | 2020-10-28T12:41:03.4202037Z | 00.00:30:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
-| 2020-11-02T05:05:28.8783299Z | 2020-11-02T07:00:13.985568Z | 00.01:54:45 | desktop-pc1 | AzureAD | User01 |
+|:---------------:|:---------------:|:-------:|:-------:|:-------:|:-------:|
+| 10/29/2020 14:04:11.8370236Z | 10/29/2020 15:49:11 | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/29/2020 07:57:47.1895022Z | 10/29/2020 08:42:47 | 00.00:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/28/2020 12:57:07.6546625Z | 10/28/2020 16:27:06 | 00.03:29:58 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 10/28/2020 12:11:03.4177443Z | 10/28/2020 12:41:03 | 00.00:30:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
+| 11/2/2020 05:05:28 | 11/2/2020 07:00:13 | 00.01:54:45 | desktop-pc1 | AzureAD | User01 |
 
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
