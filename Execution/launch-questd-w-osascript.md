@@ -13,7 +13,7 @@ Other queries related to EvilQuest ransomware can be found under the [See also](
 ```kusto
 union DeviceFileEvents, DeviceProcessEvents  
 | where Timestamp >= ago(7d)  
-| where ProcessCommandLine contains "osascript -e do shell script \"launchctl load" and  
+| where ProcessCommandLine has "osascript -e do shell script \"launchctl load" and  
 ProcessCommandLine contains "questd"
 ```
 
