@@ -12,9 +12,9 @@ DeviceInfo
 | extend FinalSignal = NewerTimestamp - Timestamp > 16m
 | where FinalSignal or StartSignal
 | extend ParsedFields=parse_json(LoggedOnUsers)[0]
-| extend LastTimeStamp=iff(FinalSignal,Timestamp,prev(Timestamp,1))
+| extend LastTimestamp=iff(FinalSignal,Timestamp,prev(Timestamp,1))
 | where StartSignal
-| extend DurationAtLeast= format_timespan(LastTimeStamp-Timestamp,'dd.hh:mm:ss')
+| extend DurationAtLeast= format_timespan(LastTimestamp-Timestamp,'dd.hh:mm:ss')
 | project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
 )
 ```
