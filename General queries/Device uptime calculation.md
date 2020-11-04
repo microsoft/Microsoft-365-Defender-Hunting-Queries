@@ -1,5 +1,5 @@
 # Device uptime calculation  
-This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 15 minutes, we can consider device is tuned off.　Calculated uptime may include up to 30 minutes gap. Devices may be tuned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “Lasttimestamp”.  When the sigle independent DeviceInfo without any sequential DeviceInfo within 15 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
+This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 15 minutes, we can consider device is tuned off.　Calculated uptime may include up to 30 minutes gap. Devices may be tuned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “LastTimestamp”.  When the sigle independent DeviceInfo without any sequential DeviceInfo within 15 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
 
 ## Query
 ```
@@ -15,11 +15,11 @@ DeviceInfo
 | extend LastTimeStamp=iff(FinalSignal,Timestamp,prev(Timestamp,1))
 | where StartSignal
 | extend DurationAtLeast= format_timespan(LastTimeStamp-Timestamp,'dd.hh:mm:ss')
-| project Timestamp,LastTimeStamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
+| project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
 )
 ```
 ## Sample output  
-| Timestamp | LastTimeStamp | DurationAtLeast | DeviceName | DomainName | UserName |
+| Timestamp | LastTimestamp | DurationAtLeast | DeviceName | DomainName | UserName |
 |:---------------:|:---------------:|:-------:|:-------:|:-------:|:-------:|
 | 11/4/2020 0:35:08 | 11/4/2020 0:35:08 | 00.00:00:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
 | 10/29/2020 14:04:11 | 10/29/2020 15:49:11 | 00.01:45:00 | desktop-pc1 | DESKTOP-PC1 | localuser1 |
