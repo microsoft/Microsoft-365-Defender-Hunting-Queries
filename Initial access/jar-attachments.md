@@ -15,7 +15,7 @@ let mailsHTML = EmailAttachmentInfo
 | where FileType startswith "Jar"
 | distinct NetworkMessageId;
 EmailEvents
-| where NetworkMessageId in (mailsHTML) and AttachmentCount == 1
+| where NetworkMessageId in (mailsHTML) and AttachmentCount > 0
 ```
 
 ## Category
