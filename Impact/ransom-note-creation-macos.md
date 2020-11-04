@@ -13,7 +13,7 @@ Other queries related to EvilQuest ransomware can be found under the [See also](
 ```kusto
 union DeviceFileEvents, DeviceProcessEvents  
 | where Timestamp >= ago(7d)  
-| where ProcessCommandLine contains "say \\\"Your files are encrypted\\\" waiting until completion false"
+| where ProcessCommandLine has "say \\\"Your files are encrypted\\\" waiting until completion false"
 ```
 
 ## Category
