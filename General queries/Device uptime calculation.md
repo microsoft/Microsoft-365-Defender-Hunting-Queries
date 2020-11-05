@@ -4,8 +4,7 @@ This query calculates device uptime based on periodic DeviceInfo which is record
 ## Query
 ```
 DeviceInfo 
-| partition by DeviceId
-(order by Timestamp desc
+| partition by DeviceId (order by Timestamp desc
 | extend NewerTimestamp = prev(Timestamp,1,now(1d))
 | extend OlderTimestamp = next(Timestamp,1,0)
 | extend StartSignal = Timestamp - OlderTimestamp > 16m
@@ -15,8 +14,7 @@ DeviceInfo
 | where StartSignal
 | extend ParsedFields=parse_json(LoggedOnUsers)[0]
 | extend DurationAtLeast= format_timespan(LastTimestamp-Timestamp,'dd.hh:mm:ss')
-| project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
-)
+| project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName)
 ```
 ## Sample output  
 | Timestamp | LastTimestamp | DurationAtLeast | DeviceName | DomainName | UserName |
