@@ -5,12 +5,13 @@ This query will break down hostnames into their second and third level domain pa
 ## Query
 ```
 DeviceNetworkEvents
+| where Timestamp > ago(7d)
 | where isnotempty( RemoteUrl) and RemoteUrl contains "."
 | extend RemoteDomain = iff(RemoteUrl matches regex @'^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$', tolower(RemoteUrl), tostring(parse_url(RemoteUrl).Host))
 | extend DomainArray = split(RemoteDomain, '.')
 | extend SecondLevelDomain = strcat(tostring(DomainArray[-2]),'.', tostring(DomainArray[-1])), ThirdLevelDomain = strcat(tostring(DomainArray[-3]), '.', tostring(DomainArray[-2]),'.', tostring(DomainArray[-1]))
 | summarize ConnectionCount = count(), DistinctDevices = dcount(DeviceId) by SecondLevelDomain, ThirdLevelDomain, RemoteDomain
-| order by DistinctDevices asc, ConnectionCount desc
+| top 10000 by DistinctDevices asc
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
