@@ -10,7 +10,6 @@ Any tests which are reporting "BAD" as a result imply that the associated capabi
 ```
 DeviceTvmSecureConfigurationAssessment
 | where ConfigurationId in ('scid-91', 'scid-2000', 'scid-2001', 'scid-2002', 'scid-2003', 'scid-2010', 'scid-2011', 'scid-2012', 'scid-2013', 'scid-2014', 'scid-2016')
-| summarize arg_max(Timestamp, IsCompliant, IsApplicable) by DeviceId, ConfigurationId
 | extend Test = case(
     ConfigurationId == "scid-2000", "SensorEnabled",
     ConfigurationId == "scid-2001", "SensorDataCollection",
@@ -26,7 +25,7 @@ DeviceTvmSecureConfigurationAssessment
     "N/A"),
     Result = case(IsApplicable == 0, "N/A", IsCompliant == 1, "GOOD", "BAD")
 | extend packed = pack(Test, Result)
-| summarize Tests = make_bag(packed) by DeviceId
+| summarize Tests = make_bag(packed), DeviceName = any(DeviceName) by DeviceId
 | evaluate bag_unpack(Tests)
 ```
 ## Category
