@@ -6,7 +6,11 @@ DeviceProcessEvents
    or ProcessCommandLine has "DownloadFile"
    or ProcessCommandLine has "Invoke-WebRequest"
    or ProcessCommandLine has "Invoke-Shellcode"
-   or ProcessCommandLine contains "http:"
+   or ProcessCommandLine has "http"
    or ProcessCommandLine has "IEX"
+   or ProcessCommandLine has "System.Net.WebClient"
+   or ProcessCommandLine has "Net.WebClient"
+   or ProcessCommandLine has "Start-BitsTransfer"
+   or ProcessCommandLine has "mpcmdrun.exe"
 | project Timestamp, DeviceName, InitiatingProcessFileName, FileName, ProcessCommandLine
 | top 100 by Timestamp
