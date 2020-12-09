@@ -6,17 +6,17 @@ ToleranceInSeconds.
 ```
 let ToleranceInSeconds = 5;
 DeviceNetworkEvents
-| where LocalPort == 445
+| where LocalPort == 445 and isnotempty(RemoteIP)
 | join kind = inner DeviceLogonEvents on DeviceId
 | where Timestamp1 between (Timestamp .. datetime_add('second',ToleranceInSeconds,Timestamp)) and RemoteIP endswith RemoteIP1
 | join kind=inner (
-DeviceFileEvents
-| where InitiatingProcessFileName =~ 'System'
+    DeviceFileEvents
+    | where ActionType in ('FileModified','FileCreated') and (InitiatingProcessFileName =~ 'System' or InitiatingProcessFolderPath endswith "ntoskrnl.exe")
 ) on DeviceId
 | where Timestamp2 between (Timestamp .. datetime_add('second',ToleranceInSeconds,Timestamp))
 | join kind=inner DeviceProcessEvents on DeviceId, FolderPath
 | where Timestamp3 between (Timestamp .. datetime_add('second',ToleranceInSeconds,Timestamp))
-| project Timestamp, DeviceName, RemoteIP, RemotePort, AccountDomain, AccountName, AccountSid, Protocol, LogonId, RemoteDeviceName, IsLocalAdmin, RemotePort, FileName, FolderPath, SHA1, SHA256, MD5, ProcessCommandLine
+| project Timestamp, DeviceName, RemoteIP, RemotePort, AccountDomain, AccountName, AccountSid, Protocol, LogonId, RemoteDeviceName, IsLocalAdmin, FileName, FolderPath, SHA1, SHA256, MD5, ProcessCommandLine
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
