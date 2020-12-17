@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
 
-Microsoft detects the 2020 SolarWinds supply chain attack implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
+Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
 The following query detects network connection events involving DNS lookups associated with the Solarigate threat actor's command-and-control infrastructure.
 

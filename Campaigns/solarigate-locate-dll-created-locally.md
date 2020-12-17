@@ -2,7 +2,7 @@
 
 This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
 
-Microsoft detects the 2020 SolarWinds supply chain attack implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
+Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
 The following query locates malicious Solarigate-associated DLLs that have been created system or otherwise locally.
 
@@ -40,11 +40,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
-* [Locate SolarWinds processes launching suspicious PowerShell commands](solarigate-launching-base64-powershell.md)
-* [Locate SolarWinds processes launching command prompt with the echo command](solarigate-launching-cmd-echo.md)
-* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](solarigate-c2-lookup-from-nonbrowser.md)
-* [Locate Solarigate receiving DNS response](solarigate-c2-lookup-response.md)
+* [Locate SolarWinds processes launching suspicious PowerShell commands](../Campaigns/solarigate-launching-base64-powershell.md)
+* [Locate Solarigate-related malicious DLLs loaded in memory](../Campaigns/solorigate-locate-dll-loaded-in-memory.md)
+* [Locate SolarWinds processes launching command prompt with the echo command](../Campaigns/solarigate-launching-cmd-echo.md)
+* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/solarigate-c2-lookup-from-nonbrowser.md)
+* [Locate Solarigate receiving DNS response](../Campaigns/solarigate-c2-lookup-response.md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](../Campaigns/solarigate-possible-affected-software-orion.md)
 
 ## Contributor info
 
