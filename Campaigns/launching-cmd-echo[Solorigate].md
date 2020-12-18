@@ -6,7 +6,7 @@ Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.mi
 
 The following query detects events when SolarWinds processes attempted to launch the [cmd.exe](https://docs.microsoft.com/windows-server/administration/windows-commands/cmd) command prompt using the `echo` command. Using `echo` in this way is suspicious, as it is an indirect way of issuing commands, and may not be readily detected by certain kinds of security solutions.
 
-More Solarigate-related queries can be found listed under the [See-also](#see-also) section of this document.
+More Solorigate-related queries can be found listed under the [See-also](#see-also) section of this document.
 
 ## Query
 
@@ -41,12 +41,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
-* [Locate Solarigate-related malicious DLLs created in the system or locally](solarigate-locate-dll-created-locally.md)
-* [Locate SolarWinds processes launching suspicious PowerShell commands](solarigate-launching-base64-powershell.md)
-* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](solarigate-c2-lookup-from-nonbrowser.md)
-* [Locate Solarigate receiving DNS response](solarigate-c2-lookup-response.md)
-* [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](solarigate-possible-affected-software-orion.md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](solorigate-locate-dll-created-locally.md)
+* [Locate SolarWinds processes launching suspicious PowerShell commands](solorigate-launching-base64-powershell.md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](solorigate-c2-lookup-from-nonbrowser.md)
+* [Locate Solorigate receiving DNS response](solorigate-c2-lookup-response.md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](solorigate-possible-affected-software-orion.md)
 
 ## Contributor info
 
