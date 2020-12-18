@@ -7,7 +7,7 @@ https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-st
 How to grant tenant-wide admin consent to an application -
 https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent
 
-More Solarigate-related queries can be found listed under the [See also](#see-also) section of this document.
+More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
 ```
@@ -51,12 +51,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs loaded in memory](../Campaigns/locate-dll-loaded-in-memory[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs created in the system or locally](locate-dll-created-locally[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](../Campaigns/locate-dll-loaded-in-memory[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](locate-dll-created-locally[Solorigate].md)
 * [Locate SolarWinds processes launching suspicious PowerShell commands](../Campaigns/launching-base64-powershell[Solorigate].md)
 * [Locate SolarWinds processes launching command prompt with the echo command](../Campaigns/launching-cmd-echo[Solorigate].md)
-* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/c2-lookup-from-nonbrowser[Solorigate]..md)
-* [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](../Campaigns/possible-affected-software-orion[Solorigate].md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/c2-lookup-from-nonbrowser[Solorigate]..md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](../Campaigns/possible-affected-software-orion[Solorigate].md)
 * [Locate Solorigate receiving DNS response](../Campaigns/solorigate-c2-lookup-response.md)
 * [Detect new access credentials added to app or service](../Privilege%20escalation/new-access-credential[Solorigate].md)
 
