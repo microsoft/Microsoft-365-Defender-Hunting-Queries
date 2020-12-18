@@ -1,25 +1,19 @@
-# Locate SolarWinds processes launching suspicious PowerShell commands
+# Locate SolarWinds processes launching command prompt with the echo command
 
 This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
 
 Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
-The following query detects events when SolarWinds processes launched PowerShell commands that were possibly encoded in Base64. Attackers may encode PowerShell commands in Base64 to obfuscate malicious activity.
+The following query detects events when SolarWinds processes attempted to launch the [cmd.exe](https://docs.microsoft.com/windows-server/administration/windows-commands/cmd) command prompt using the `echo` command. Using `echo` in this way is suspicious, as it is an indirect way of issuing commands, and may not be readily detected by certain kinds of security solutions.
 
-More Solarigate-related queries can be found listed under the [See-also](#see-also) section of this document.
+More Solorigate-related queries can be found listed under the [See-also](#see-also) section of this document.
 
 ## Query
 
 ```kusto
 DeviceProcessEvents
 | where InitiatingProcessFileName =~ "SolarWinds.BusinessLayerHost.exe"
-| where FileName =~ "powershell.exe"
-// Extract base64 encoded string, ensure valid base64 length
-| extend base64_extracted = extract('([A-Za-z0-9+/]{20,}[=]{0,3})', 1, ProcessCommandLine)
-| extend base64_extracted = substring(base64_extracted, 0, (strlen(base64_extracted) / 4) * 4)
-| extend base64_decoded = replace(@'\0', '', make_string(base64_decode_toarray(base64_extracted)))
-//
-| where notempty(base64_extracted) and base64_extracted matches regex '[A-Z]' and base64_extracted matches regex '[0-9]'
+| where FileName == "cmd.exe" and ProcessCommandLine has "echo"
 ```
 
 ## Category
@@ -47,12 +41,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
-* [Locate Solarigate-related malicious DLLs created in the system or locally](solarigate-locate-dll-created-locally.md)
-* [Locate SolarWinds processes launching command prompt with the echo command](solarigate-launching-cmd-echo.md)
-* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](solarigate-c2-lookup-from-nonbrowser.md)
-* [Locate Solarigate receiving DNS response](solarigate-c2-lookup-response.md)
-* [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](solarigate-possible-affected-software-orion.md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](solorigate-locate-dll-created-locally.md)
+* [Locate SolarWinds processes launching suspicious PowerShell commands](solorigate-launching-base64-powershell.md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](solorigate-c2-lookup-from-nonbrowser.md)
+* [Locate Solorigate receiving DNS response](solorigate-c2-lookup-response.md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](solorigate-possible-affected-software-orion.md)
 
 ## Contributor info
 
