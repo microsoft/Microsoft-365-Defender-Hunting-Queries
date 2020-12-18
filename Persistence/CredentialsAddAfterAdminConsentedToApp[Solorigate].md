@@ -57,6 +57,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/solarigate-c2-lookup-from-nonbrowser.md)
 * [Locate Solarigate receiving DNS response](../Campaigns/solarigate-c2-lookup-response.md)
 * [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](../Campaigns/solarigate-possible-affected-software-orion.md)
+* [Detect tampering with federation trust settings](../Defense%20evasion/tampering-w-federation-trust-settings.md)
 
 ## Contributor info
 **Contributor:** Tal Maor

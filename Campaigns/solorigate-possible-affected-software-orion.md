@@ -49,6 +49,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Locate SolarWinds processes launching command prompt with the echo command](solorigate-launching-cmd-echo.md)
 * [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](solorigate-c2-lookup-from-nonbrowser.md)
 * [Locate Solorigate receiving DNS response](solorigate-c2-lookup-response.md)
+* [Detect tampering with federation trust settings](../Defense%20evasion/tampering-w-federation-trust-settings.md)
 
 ## Contributor info
 

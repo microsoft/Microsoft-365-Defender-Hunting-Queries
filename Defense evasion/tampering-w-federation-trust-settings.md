@@ -1,19 +1,24 @@
-# Locate SolarWinds processes launching command prompt with the echo command
+# Detect tampering with federation trust settings
 
 This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
 
 Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
-The following query detects events when SolarWinds processes attempted to launch the [cmd.exe](https://docs.microsoft.com/windows-server/administration/windows-commands/cmd) command prompt using the `echo` command. Using `echo` in this way is suspicious, as it is an indirect way of issuing commands, and may not be readily detected by certain kinds of security solutions.
+The following query detects when federation trust settings were changed for a domain. This method is not specific to just this threat actor or this attack.
 
 More Solorigate-related queries can be found listed under the [See-also](#see-also) section of this document.
 
 ## Query
 
 ```kusto
-DeviceProcessEvents
-| where InitiatingProcessFileName =~ "SolarWinds.BusinessLayerHost.exe"
-| where FileName == "cmd.exe" and ProcessCommandLine has "echo"
+let auditLookback = 1d;
+CloudAppEvents
+| where Timestamp > ago(auditLookback)
+| where ActionType =~ "Set federation settings on domain."
+| extend targetDetails = parse_json(ActivityObjects[1])
+| extend targetDisplayName = targetDetails.Name
+| extend resultStatus = extractjson("$.ResultStatus", tostring(RawEventData), typeof(string))
+| project Timestamp, ActionType, InitiatingUserOrApp=AccountDisplayName, targetDisplayName, resultStatus, InitiatingIPAddress=IPAddress, UserAgent
 ```
 
 ## Category
@@ -23,7 +28,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
-| Execution | v |  |
+| Execution |  |  |
 | Persistence |  |  |
 | Privilege escalation |  |  |
 | Defense evasion | v |  |
@@ -41,13 +46,13 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solorigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
-* [Locate Solorigate-related malicious DLLs created in the system or locally](solorigate-locate-dll-created-locally.md)
-* [Locate SolarWinds processes launching suspicious PowerShell commands](solorigate-launching-base64-powershell.md)
-* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](solorigate-c2-lookup-from-nonbrowser.md)
-* [Locate Solorigate receiving DNS response](solorigate-c2-lookup-response.md)
-* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](solorigate-possible-affected-software-orion.md)
-* [Detect tampering with federation trust settings](../Defense%20evasion/tampering-w-federation-trust-settings.md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](../Campaigns/solorigate-locate-dll-loaded-in-memory.md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](../Campaigns/solorigate-locate-dll-created-locally.md)
+* [Locate SolarWinds processes launching suspicious PowerShell commands](../Campaigns/solorigate-launching-base64-powershell.md)
+* [Locate SolarWinds processes launching command prompt with the echo command](../Campaigns/solorigate-launching-cmd-echo.md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/solorigate-c2-lookup-from-nonbrowser.md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](../Campaigns/solorigate-possible-affected-software-orion.md)
+* [Locate Solorigate receiving DNS response](../Campaigns/solorigate-c2-lookup-response.md)
 
 ## Contributor info
 
