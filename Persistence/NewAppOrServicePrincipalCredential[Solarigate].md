@@ -13,7 +13,7 @@ Query insprired by Azure Sentinel detection https://github.com/Azure/Azure-Senti
 let auditLookback = 1d;
 CloudAppEvents
 | where Timestamp > ago(auditLookback)
-| where ActionType in ("Add service principal.", "Add service principal credentials.", "Update application � Certificates and secrets management ")
+| where ActionType in ("Add service principal.", "Add service principal credentials.", "Update application - Certificates and secrets management ")
 | extend RawEventData = parse_json(RawEventData)
 | where RawEventData.ResultStatus =~ "success"
 | where AccountDisplayName has "@"
