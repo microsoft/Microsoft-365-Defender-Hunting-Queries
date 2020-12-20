@@ -6,7 +6,7 @@ Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.mi
 
 The following query detects events when SolarWinds processes launched PowerShell commands that were possibly encoded in Base64. Attackers may encode PowerShell commands in Base64 to obfuscate malicious activity.
 
-More Solarigate-related queries can be found listed under the [See-also](#see-also) section of this document.
+More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
 
@@ -47,12 +47,12 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
-* [Locate Solarigate-related malicious DLLs loaded in memory](solorigate-locate-dll-loaded-in-memory.md)
-* [Locate Solarigate-related malicious DLLs created in the system or locally](solarigate-locate-dll-created-locally.md)
-* [Locate SolarWinds processes launching command prompt with the echo command](solarigate-launching-cmd-echo.md)
-* [Locate Solarigate attempting DNS lookup of command-and-control infrastructure](solarigate-c2-lookup-from-nonbrowser.md)
-* [Locate Solarigate receiving DNS response](solarigate-c2-lookup-response.md)
-* [Get an inventory of SolarWinds Orion software possibly affected by Solarigate](solarigate-possible-affected-software-orion.md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](locate-dll-loaded-in-memory[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](locate-dll-created-locally[Solorigate].md)
+* [Locate SolarWinds processes launching command prompt with the echo command](launching-cmd-echo[Solorigate].md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](c2-lookup-from-nonbrowser[Solorigate]..md)
+* [Locate Solorigate receiving DNS response](c2-lookup-response[Solorigate].md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](possible-affected-software-orion[Solorigate].md)
 
 ## Contributor info
 
