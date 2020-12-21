@@ -49,4 +49,4 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-**Contributor:** Microsoft Threat Protection team
+**Contributor:** Microsoft 365 Defender team
