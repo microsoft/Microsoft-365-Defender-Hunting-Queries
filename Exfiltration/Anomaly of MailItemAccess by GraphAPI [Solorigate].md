@@ -1,12 +1,13 @@
-# Anomaly of MailItemAccess by GraphAPI [Solorigate] 
+# Anomaly Of MailItemAccess By GraphAPI [Solorigate] 
 The query is looking for anomaly in mailItemAccess that operated by Graph API.
-The anomaly used in standard deviation to find the anomaly. The query return all the clientIDs that the number of mail that sent(per day) bigger than average + 3*(standard deviation).
+The anomaly used in standard deviation to find the anomaly. The query return all the clientIDs that the number of mail that sent(per day) bigger than average + STDThreshold(2.5)*(standard deviation).
 
 https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-forensics-investigations?view=o365-worldwide#the-mailitemsaccessed-mailbox-auditing-action https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-forensics-investigations?view=o365-worldwide
 
 ## Query
 ```
 let starttime = 30d;
+let STDThreshold = 2.5;
 let allMailAccsessByGraphAPI = CloudAppEvents
 | where   ActionType == "MailItemsAccessed"
 | where Timestamp between (startofday(ago(starttime))..now())
@@ -20,7 +21,7 @@ let calculteAvgAndStdev=calculateNumberOfMailPerDay
 | summarize avg=avg(NumberOfMailPerDay),stev=stdev(NumberOfMailPerDay) by ClientAppId;
 calculteAvgAndStdev  | join calculateNumberOfMailPerDay on ClientAppId
 | sort by ClientAppId
-|  where NumberOfMailPerDay > avg + 3*stev
+|  where NumberOfMailPerDay > avg + STDThreshold * stev
 | project ClientAppId,Timestamp,NumberOfMailPerDay,avg,stev 
 ```
 ## Category
