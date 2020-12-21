@@ -1,5 +1,5 @@
 # Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]
-Credentials were added to an application by UserA, after the application has granted admin consent rights by UserB
+Credentials were added to an application by UserA, after the application was granted admin consent rights by UserB
 
 Solorigate - The actor has been observed adding credentials (x509 keys or password credentials) to one or more legitimate OAuth Applications or Service Principals, usually with existing Mail.Read or Mail.ReadWrite permissions, which grants the ability to read mail content from Exchange Online via Microsoft Graph or Outlook REST. Examples include mail archiving applications.
 https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
