@@ -1,4 +1,4 @@
-# OAuth App reading mail via GraphAPI [Solorigate]
+# OAuth Apps reading mail via GraphAPI [Solorigate]
 Review OAuth Applications whose behaviour changed versus a prior baseline period. 
 The following query returns OAuth Applications accessing user mail via Graph that did not do so in the preceding week.
 
