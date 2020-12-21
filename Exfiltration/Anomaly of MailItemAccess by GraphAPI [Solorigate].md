@@ -1,4 +1,4 @@
-# Anomaly Of MailItemAccess By GraphAPI [Solorigate] 
+# Anomaly of MailItemAccess by GraphAPI [Solorigate] 
 The query is looking for anomaly in mailItemAccess that operated by Graph API.
 The anomaly used in standard deviation to find the anomaly. The query return all the clientIDs that the number of mail that sent(per day) bigger than average + 3*(standard deviation).
 
