@@ -1,4 +1,4 @@
-# OAuth Applications accessing user mail via Graph [Solorigate]
+# OAuth Apps accessing user mail via Graph [Solorigate]
 
 Review all OAuth Applications accessing user mail via Graph. 
 This could return a significant number of results depending on how many applications are deployed in the environment. 
