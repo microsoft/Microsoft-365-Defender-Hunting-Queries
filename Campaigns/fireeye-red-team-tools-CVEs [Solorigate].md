@@ -1,4 +1,4 @@
-# FireEye Red Team Tools CVEs
+# FireEye Red Team Tools CVEs [Solorigate]
 Seach for the CVEs that should be prioritized and resolved to reduce the opportunity of succeed of the Red Team tools by FireEye
 ## Query
 ```
@@ -48,7 +48,6 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Malware, component |  |  |
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Dario Brambilla
+**GitHub alias:** darioongit
+**Organization:** Microsoft 365 Defender
