@@ -1,5 +1,6 @@
 # FireEye Red Team Tools CVEs [Solorigate]
-Seach for the CVEs that should be prioritized and resolved to reduce the opportunity of succeed of the Red Team tools by FireEye
+Search for the CVEs that should be prioritized and resolved to reduce the opportunity of succeed of the Red Team tools by FireEye
+https://github.com/fireeye/red_team_tool_countermeasures/blob/master/CVEs_red_team_tools.md
 ## Query
 ```
 let FireEyeCVE= dynamic(
