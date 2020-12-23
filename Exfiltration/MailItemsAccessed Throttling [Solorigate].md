@@ -16,13 +16,14 @@ https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-fore
 
 ## Query
 ```
-let starttime = 2d;
-let endtime = 1d;
+let starttime = 1d;
 CloudAppEvents
-| where Timestamp between (startofday(ago(starttime))..startofday(ago(endtime)))
+| where Timestamp between (startofday(ago(starttime))..now())
 | where ActionType == "MailItemsAccessed"
-| where isnotempty(RawEventData['ClientAppId']) and RawEventData['OperationProperties'][1] has "True" 
+| extend isThrottled=RawEventData['OperationProperties'][1]
+| where isnotempty(RawEventData['ClientAppId'] ) and isThrottled has "True" and RawEventData['AppId'] has "00000003-0000-0000-c000-000000000000"//GrapAPI Id
 | project Timestamp, RawEventData['OrganizationId'],AccountObjectId,UserAgent
+
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.

@@ -1,7 +1,7 @@
 # New access credential added to Application or Service Principal
 This query will find when a new credential is added to an application or service principal.
 
-Solarigate - The actor was able to gain sufficient access to add credentials to existing applications with mail read permissions. They used that access to exfiltrate email. https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
+Solorigate - The actor was able to gain sufficient access to add credentials to existing applications with mail read permissions. They used that access to exfiltrate email. https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
 
 Additional information on OAuth Credential Grants can be found in RFC 6749 Section 4.4 or https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow
 For further information on AuditLogs please see https://docs.microsoft.com/azure/active-directory/reports-monitoring/reference-audit-activities.
@@ -13,7 +13,7 @@ Query insprired by Azure Sentinel detection https://github.com/Azure/Azure-Senti
 let auditLookback = 1d;
 CloudAppEvents
 | where Timestamp > ago(auditLookback)
-| where ActionType in ("Add service principal.", "Add service principal credentials.", "Update application – Certificates and secrets management ")
+| where ActionType in ("Add service principal.", "Add service principal credentials.", "Update application - Certificates and secrets management ")
 | extend RawEventData = parse_json(RawEventData)
 | where RawEventData.ResultStatus =~ "success"
 | where AccountDisplayName has "@"

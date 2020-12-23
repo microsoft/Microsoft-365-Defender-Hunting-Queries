@@ -1,11 +1,13 @@
 # Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]
-Credentials were added to an application by UserA, after the application has granted admin consent rights by UserB
+Credentials were added to an application by UserA, after the application was granted admin consent rights by UserB
 
 Solorigate - The actor has been observed adding credentials (x509 keys or password credentials) to one or more legitimate OAuth Applications or Service Principals, usually with existing Mail.Read or Mail.ReadWrite permissions, which grants the ability to read mail content from Exchange Online via Microsoft Graph or Outlook REST. Examples include mail archiving applications.
 https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
 
 How to grant tenant-wide admin consent to an application -
 https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent
+
+More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
 ```
@@ -45,6 +47,16 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
+
+## See also
+
+* [Locate SolarWinds processes launching suspicious PowerShell commands](../Campaigns/launching-base64-powershell[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](../Campaigns/locate-dll-loaded-in-memory[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](../Campaigns/locate-dll-created-locally[Solorigate].md)
+* [Locate SolarWinds processes launching command prompt with the echo command](../Campaigns/launching-cmd-echo[Solorigate].md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/c2-lookup-from-nonbrowser[Solorigate]..md)
+* [Locate Solorigate receiving DNS response](../Campaigns/c2-lookup-response[Solorigate].md)
+* [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](../Campaigns/possible-affected-software-orion[Solorigate].md)
 
 ## Contributor info
 **Contributor:** Tal Maor
