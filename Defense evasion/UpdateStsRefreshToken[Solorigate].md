@@ -16,7 +16,7 @@ CloudAppEvents
 | extend tokenMinutesAdded = datetime_diff('minute',newStsRefreshValidFrom,oldStsRefreshValidFrom)
 | extend tokenMinutesRemaining = datetime_diff('minute',Timestamp,newStsRefreshValidFrom)
 | extend Role = parse_json(RawEventData.Actor[-1]).ID
-| distinct  AccountObjectId, AccountDisplayName, tostring(Role), IPAddress, IsAnonymousProxy, ISP, tokenMinutesAdded, tokenMinutesRemaining
+| distinct AccountObjectId, AccountDisplayName, tostring(Role), IPAddress, IsAnonymousProxy, ISP, tokenMinutesAdded, tokenMinutesRemaining
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
