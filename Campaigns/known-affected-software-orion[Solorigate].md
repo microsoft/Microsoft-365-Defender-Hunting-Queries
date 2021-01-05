@@ -40,6 +40,13 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## See also
 
+* [Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]](../Persistence/CredentialsAddAfterAdminConsentedToApp[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs loaded in memory](locate-dll-loaded-in-memory[Solorigate].md)
+* [Locate Solorigate-related malicious DLLs created in the system or locally](locate-dll-created-locally[Solorigate].md)
+* [Locate SolarWinds processes launching suspicious PowerShell commands](launching-base64-powershell[Solorigate].md)
+* [Locate SolarWinds processes launching command prompt with the echo command](launching-cmd-echo[Solorigate].md)
+* [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](c2-lookup-from-nonbrowser[Solorigate]..md)
+* [Locate Solorigate receiving DNS response](c2-lookup-response[Solorigate].md)
 * [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](possible-affected-software-orion[Solorigate].md)
 
 ## Contributor info
