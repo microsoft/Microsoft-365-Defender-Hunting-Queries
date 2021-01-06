@@ -57,6 +57,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](../Campaigns/c2-lookup-from-nonbrowser[Solorigate]..md)
 * [Locate Solorigate receiving DNS response](../Campaigns/c2-lookup-response[Solorigate].md)
 * [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](../Campaigns/possible-affected-software-orion[Solorigate].md)
+* [View data on software identified as affected by Solorigate](../Campaigns/known-affected-software-orion[Solorigate].md)
 
 ## Contributor info
 **Contributor:** Tal Maor

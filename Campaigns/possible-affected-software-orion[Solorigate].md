@@ -49,6 +49,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Locate SolarWinds processes launching command prompt with the echo command](launching-cmd-echo[Solorigate].md)
 * [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](c2-lookup-from-nonbrowser[Solorigate]..md)
 * [Locate Solorigate receiving DNS response](c2-lookup-response[Solorigate].md)
+* [View data on software identified as affected by Solorigate](known-affected-software-orion[Solorigate].md)
 
 ## Contributor info
 
