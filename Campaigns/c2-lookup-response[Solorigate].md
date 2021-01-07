@@ -14,6 +14,12 @@ More Solorigate-related queries can be found listed under the [See also](#see-al
 DeviceEvents
 | where ActionType == "DnsQueryResponse" //DNS Query Response
 and AdditionalFields has ".avsvmcloud"
+
+IdentityQueryEvents
+| where ActionType == "DNS query"
+| where QueryTarget has "appsync-api" or QueryTarget has "avsvmcloud.com"
+| project Timestamp, QueryTarget, DeviceName ,IPAddress,ReportId
+
 ```
 
 ## Category
@@ -51,4 +57,4 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-**Contributor:** Microsoft Threat Protection team
+**Contributor:** Microsoft 365 Defender team
