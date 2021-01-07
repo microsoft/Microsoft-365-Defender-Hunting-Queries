@@ -1,25 +1,19 @@
-# Locate Solorigate receiving DNS response
+# View data on software identified as affected by Solorigate
 
 This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
 
 Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
-The following query detects events when Solorigate received a DNS response after launching a lookup request to known command-and-control infrastructure.
+The following query searches Threat and Vulnerability Management (TVM) data for Orion software known to be affected by Solorigate.
 
 More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
 
 ```kusto
-DeviceEvents
-| where ActionType == "DnsQueryResponse" //DNS Query Response
-and AdditionalFields has ".avsvmcloud"
-
-IdentityQueryEvents
-| where ActionType == "DNS query"
-| where QueryTarget has "appsync-api" or QueryTarget has "avsvmcloud.com"
-| project Timestamp, QueryTarget, DeviceName ,IPAddress,ReportId
-
+DeviceTvmSoftwareInventoryVulnerabilities
+| where CveId == 'TVM-2020-0002'
+| project DeviceId, DeviceName, SoftwareVendor, SoftwareName, SoftwareVersion
 ```
 
 ## Category
@@ -37,9 +31,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Discovery |  |  |
 | Lateral movement |  |  |
 | Collection |  |  |
-| Command and control | v |  |
+| Command and control |  |  |
 | Exfiltration |  |  |
-| Impact |  |  |
+| Impact | v |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
@@ -52,9 +46,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Locate SolarWinds processes launching suspicious PowerShell commands](launching-base64-powershell[Solorigate].md)
 * [Locate SolarWinds processes launching command prompt with the echo command](launching-cmd-echo[Solorigate].md)
 * [Locate Solorigate attempting DNS lookup of command-and-control infrastructure](c2-lookup-from-nonbrowser[Solorigate]..md)
+* [Locate Solorigate receiving DNS response](c2-lookup-response[Solorigate].md)
 * [Get an inventory of SolarWinds Orion software possibly affected by Solorigate](possible-affected-software-orion[Solorigate].md)
-* [View data on software identified as affected by Solorigate](known-affected-software-orion[Solorigate].md)
 
 ## Contributor info
 
-**Contributor:** Microsoft 365 Defender team
+**Contributor:** Microsoft Threat Protection team
