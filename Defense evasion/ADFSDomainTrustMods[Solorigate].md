@@ -1,5 +1,5 @@
 # Domain federation trust settings modified
-This query will find when federation trust settings are changed for a domain. Results will relate to when a new Active Directory Federated Service (ADFS) TrustedRealm object, such as a signing certificate, is added. 
+This query will find when federation trust settings are changed for a domain or when the domain is changed from managed to federated authentication. Results will relate to when a new Active Directory Federated Service (ADFS) TrustedRealm object, such as a signing certificate, is added. 
 Modification to domain federation settings should be rare, so confirm the added or modified target domain/URL is legitimate administrative behavior.
 
 Solorigate - The actor was observed modifying domain trust settings to subvert existing mechanisms and cause the domain to accept authorization tokens signed with actor-owned certificates. https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
@@ -12,14 +12,27 @@ Query insprired by Azure Sentinel detection https://github.com/Azure/Azure-Senti
 ## Query
 ```
 let auditLookback = 1d;
-CloudAppEvents
-| where Timestamp > ago(auditLookback)
-| where ActionType =~ "Set federation settings on domain."
-| extend targetDetails = parse_json(ActivityObjects[1])
-| extend targetDisplayName = targetDetails.Name
+(union isfuzzy=true 
+    (
+    CloudAppEvents
+    | where Timestamp > ago(auditLookback)
+    | where ActionType =~ "Set federation settings on domain."
+    ),
+    (
+    CloudAppEvents
+    | where Timestamp > ago(auditLookback)
+    | where ActionType =~ "Set domain authentication."
+    | extend modifiedProperties = parse_json(RawEventData).ModifiedProperties
+    | mvexpand modifiedProperties
+    | extend newDomainValue=tostring(parse_json(modifiedProperties).NewValue)
+    | where newDomainValue has "Federated"
+    )
+)
 | extend resultStatus = extractjson("$.ResultStatus", tostring(RawEventData), typeof(string))
+| extend targetDisplayName = parse_json(RawEventData).Target[0].ID
 | project Timestamp, ActionType, InitiatingUserOrApp=AccountDisplayName, targetDisplayName, resultStatus, InitiatingIPAddress=IPAddress, UserAgent
 ```
+
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
@@ -28,7 +41,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Execution |  |  |
 | Persistence |  |  | 
 | Privilege escalation |  |  |
-| Defense evasion | V |  | 
+| Defense evasion | V | T1484.002 | 
 | Credential Access |  |  | 
 | Discovery |  |  | 
 | Lateral movement |  |  | 
