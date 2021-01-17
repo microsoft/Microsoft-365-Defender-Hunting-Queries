@@ -16,7 +16,10 @@ CloudAppEvents
 | where ActionType in ("Add service principal.", "Add service principal credentials.", "Update application - Certificates and secrets management ")
 | extend RawEventData = parse_json(RawEventData)
 | where RawEventData.ResultStatus =~ "success"
-| where AccountDisplayName has "@"
+// Select only users or applications initiating the credential changes
+| extend ActorDetails = RawEventData.Actor
+| mvexpand ActorDetails
+| where ActorDetails has "@"
 | extend targetDetails = parse_json(ActivityObjects[1])
 | extend targetId = targetDetails.Id
 | extend targetType = targetDetails.Type
@@ -31,6 +34,7 @@ CloudAppEvents
 | where keyUsage == "Verify"
 | project-away keyEvents
 | project Timestamp, ActionType, InitiatingUserOrApp=AccountDisplayName, InitiatingIPAddress=IPAddress, UserAgent, targetDisplayName, targetId, targetType, keyDisplayName, keyType, keyUsage, keyIdentifier
+
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
