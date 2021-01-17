@@ -14,7 +14,7 @@ print Series = 'Tracking the Adversary with MTP Advanced Hunting', EpisodeNumber
 // SQL Equivalent: SELECT MalwareFilterVerdict, Count(*) FROM EmailAttachmentInfo GROUP BY MalwareFilterVerdict
 
 EmailAttachmentInfo 
-| summarize count() by MalwareFilterVerdict  
+| summarize count() by ThreatTypes  
 
 // --------------------------------------------
 
