@@ -162,7 +162,7 @@ LeftTable
 // Contains information about e-mail attachments
 
 EmailEvents
-| where PhishFilterVerdict == "Phish"
+| where ThreatTypes == "Phish"
 | join kind=leftouter EmailAttachmentInfo on NetworkMessageId, RecipientObjectId
 | take 100
 
@@ -265,8 +265,8 @@ LeftTable
 // remediation, phish zap, or malware zap
 
 EmailEvents
-| where PhishFilterVerdict == 'Phish' or MalwareFilterVerdict == 'Malware' and FinalEmailAction !in ('Replace attachment', 'Send to quarantine')
-| join kind=leftanti EmailPostDeliveryEvents on InternetMessageId 
+| where ThreatTypes in ('Phish', 'Malware') and EmailAction !in ('Replace attachment', 'Send to quarantine')
+| join EmailPostDeliveryEvents on NetworkMessageId , RecipientEmailAddress  
 
 // For all of the joins, check out: https://docs.microsoft.com/en-us/azure/kusto/query/joinoperator
 
