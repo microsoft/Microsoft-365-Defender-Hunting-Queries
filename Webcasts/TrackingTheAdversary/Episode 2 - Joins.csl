@@ -266,7 +266,7 @@ LeftTable
 
 EmailEvents
 | where ThreatTypes in ('Phish', 'Malware') and EmailAction !in ('Replace attachment', 'Send to quarantine')
-| join EmailPostDeliveryEvents on NetworkMessageId , RecipientEmailAddress  
+| join kind=leftanti EmailPostDeliveryEvents on NetworkMessageId , RecipientEmailAddress  
 
 // For all of the joins, check out: https://docs.microsoft.com/en-us/azure/kusto/query/joinoperator
 
