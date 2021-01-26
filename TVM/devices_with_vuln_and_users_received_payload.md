@@ -25,7 +25,7 @@ DeviceInfo
 | project UserName = ParsedFields.UserName
 | summarize makelist(tolower(UserName));
 let all_email_addresses_aff_users=
-AccountInfo
+IdentityInfo
 | where tolower(AccountName) in (all_affected_users)
 | summarize makelist(tolower(EmailAddress));
 EmailAttachmentInfo
