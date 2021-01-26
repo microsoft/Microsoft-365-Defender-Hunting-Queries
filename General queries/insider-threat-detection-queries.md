@@ -6,7 +6,7 @@ Intent:
 
  Definition of Insider Threat:
 
-    The potential for an individual who has or had authorized access to an organization’s assets to use their access, either maliciously or unintentionally, to act in a way that could negatively affect the organization.
+  "The potential for an individual who has or had authorized access to an organization’s assets to use their access, either maliciously or unintentionally, to act in a way that could negatively affect the organization."
 
 This collection of queries describes the different indicators that could be used to model and look for patterns suggesting an increased risk of an individual becoming a potential insider threat.
 
@@ -33,6 +33,7 @@ LogonEvents
     InitiatingProcessFileName in ("7z.exe", "7zG.exe", "AxCrypt.exe", "BitLocker.exe", "Diskcryptor.exe", "GNUPrivacyGuard.exe", "GPG4Win.exe", "PeaZip.exe", "VeraCrypt.exe", "WinRAR.exe", "WinZip.exe")
     and FolderPath matches regex ".*Confidential|Restricted.*" 
 | project Timestamp, InitiatingProcessAccountName, FileName, FolderPath, InitiatingProcessFileName, DeviceName
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Use of Steganography Application
@@ -50,6 +51,7 @@ DeviceFileEvents
 };
 union ProcessQuery, FileQuery
 | project Timestamp, DeviceName, InitiatingProcessAccountName, FileName, InitiatingProcessFileName, InitiatingProcessParentFileName, InitiatingProcessCommandLine
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Screenshots
@@ -65,6 +67,7 @@ DeviceProcessEvents
 //This eventtype exists, but seems to be a bit noisy
 DeviceEvents
 | where ActionType startswith "ScreenshotTaken"
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Personal Email Account
@@ -74,6 +77,7 @@ let webmailURLs = pack_array ("mail.google.com", "mail.yahoo.com", "mail.protonm
 DeviceNetworkEvents 
 | where Timestamp > ago(30d)
 and RemoteUrl has_any (webmailURLs
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Access after Termination
@@ -88,6 +92,7 @@ DeviceNetworkEvents
 | where Timestamp  > ReleaseTime
 | project Timestamp , DeviceName, InitiatingProcessAccountName
 | sort by Timestamp  desc
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Download Large File Volume over VPN
@@ -99,6 +104,7 @@ DeviceFileEvents
 | summarize TotalFiles=count() by bin(Timestamp, 5m), InitiatingProcessAccountName 
 |where TotalFiles >100
 | project TotalFiles,Timestamp,InitiatingProcessAccountName
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Usage of Source Control Management (SCM) Tool
@@ -108,6 +114,7 @@ let SCMTools = pack_array ("git.exe", "svn.exe", "hg.exe");
 DeviceProcessEvents
 | where FileName has_any (SCMTools) 
 or ProcessCommandLine  has_any (SCMTools) 
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Browse to Job Search website
@@ -128,6 +135,7 @@ let partialRemoteUrlToDetect = pack_array (
 DeviceNetworkEvents  
 | where Timestamp > ago(30d)
 and RemoteUrl has_any (partialRemoteUrlToDetect)
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Email to Competitor
@@ -136,6 +144,7 @@ let competitorDomains = pack_array("competitor", "company2");
 EmailEvents
 | where RecipientEmailAddress has_any (competitorDomains)
 | project TimeEmail = Timestamp, Subject, SenderFromAddress, RecipientEmailAddress, AccountName = tostring(split(SenderFromAddress, "@")[0]);
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Sensitive Information Copied
@@ -144,6 +153,7 @@ let sensitivepath = pack_array ("confidential", "restricted");
 DeviceFileEvents
 | where
    FolderPath has_any (sensitivepath) or FileName has_any (sensitivepath)
+   
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Administrative Remote Desktop
@@ -153,6 +163,7 @@ DeviceNetworkEvents
 | join ( DeviceLogonEvents ) on DeviceId 
 | where AccountName == "administrator"
 | project InitiatingProcessCommandLine, AccountDomain, AccountName, LogonType, IsLocalAdmin, RemoteDeviceName, AdditionalFields
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //SSH Connection from untrusted Subnet
@@ -161,10 +172,12 @@ DeviceNetworkEvents
 let subnet = "xx.xx.xx.0"; // Adjust for your "Trusted" or "Management" subnet
 DeviceNetworkEvents 
 | where RemotePort == 22 and LocalIP !contains (subnet)
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 // Concealment (Create/Delete Backdoor Account)
 DeviceEvents
 | where ActionType == "UserAccountCreated"
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Use of Suspicious Executable
@@ -174,6 +187,7 @@ let SuspiciousEXEs = pack_array ("dnscat2.exe", "dnscat.exe");
 DeviceProcessEvents
 | where ProcessCommandLine has_any (SuspiciousEXEs) or FileName has_any (SuspiciousEXEs)
 | project Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessParentFileName, ProcessCommandLine, InitiatingProcessCommandLine
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Open Scanner Software
@@ -183,6 +197,7 @@ let ScannerEXEs = pack_array ("WFS.exe");
 DeviceProcessEvents
 | where ProcessCommandLine has_any (ScannerEXEs) or FileName has_any (ScannerEXEs)
 | project Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessParentFileName, ProcessCommandLine, InitiatingProcessCommandLine
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //After-Hours Login
@@ -194,6 +209,7 @@ let EndTime = datetime("5:00:00 PM");
 DeviceLogonEvents
 | where InitiatingProcessAccountName != "system"
 | where Timestamp between ((EndTime) .. StartTime)
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //High Volume File Copy Operation
@@ -205,6 +221,7 @@ DeviceFileEvents
 | summarize TotalFiles=count() by bin(Timestamp, 5m), InitiatingProcessAccountName 
 |where TotalFiles >100
 | project TotalFiles,Timestamp,InitiatingProcessAccountName 
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Service Account Use
@@ -232,7 +249,6 @@ DeviceLogonEvents                               // Get all logon events...
 | where AccountName !contains "$"               // ...and not a machine logon. . .
 | where AccountName startswith ServiceAccountPrefix                // ...and not a machine logon. . .
 | where LogonType in (InteractiveTypes)         // Determine if the logon is interactive (True=1,False=0)...
-
 
 //Reference: https://github.com/microsoft/Microsoft-threat-protection-Hunting-Queries/blob/master/Lateral%20Movement/ServiceAccountsPerformingRemotePS.txt
 // --------------------------------------------------------------------------------------------------------------------------- //
@@ -272,6 +288,7 @@ eattach
 //| summarize outbound_emails_with_attachments=count()
 // or include this line if you want to know per sender
 //| summarize outbound_emails_with_attachments=count() by SenderFromAddress
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //Backdoor Account Usage
 //
@@ -286,6 +303,7 @@ DeviceEvents
     ) on AccountName 
 | where (End - Start) between (0min.. 30min)
 //Reference https://github.com/microsoft/Microsoft-threat-protection-Hunting-Queries/blob/master/Persistence/Create%20account.txt 
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //Usage of Cloud Storage//
 //
@@ -293,6 +311,7 @@ let CloudEXEs = pack_array ("dropbox.exe", "box.exe", "Googledrivesync.exe");
 DeviceNetworkEvents
 | where InitiatingProcessFileName has_any (CloudEXEs)
  and isnotempty(RemoteUrl)
+ 
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Examples that combine multiple indicators//
