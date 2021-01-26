@@ -76,7 +76,7 @@ DeviceEvents
 let webmailURLs = pack_array ("mail.google.com", "mail.yahoo.com", "mail.protonmail.com"); // Change or append additional webmail URLs
 DeviceNetworkEvents 
 | where Timestamp > ago(30d)
-and RemoteUrl has_any (webmailURLs
+and RemoteUrl has_any (webmailURLs)
 
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
