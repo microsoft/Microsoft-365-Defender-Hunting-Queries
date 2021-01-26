@@ -13,7 +13,7 @@ DeviceInfo
 | where MachineGroup == "My_MachineGroup" 
 | summarize make_list(DeviceName);
 let relevant_users=
-AccountInfo
+IdentityInfo
 | where EmailAddress endswith "@allowed.users"
 | summarize make_list(AccountName);
 DeviceLogonEvents
