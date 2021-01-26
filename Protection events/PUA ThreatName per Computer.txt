@@ -1,8 +1,8 @@
-//Today WDATP Alerts do not show PUA/WDAV ThreatName. This is a demonstration of how to get, for example, PUA Threat Names.
-MiscEvents
+//Today MDE Alerts do not show PUA/WDAV ThreatName. This is a demonstration of how to get, for example, PUA Threat Names.
+DeviceEvents
 | where ActionType == "AntivirusDetection"
 | extend ParsedFields=parse_json(AdditionalFields)
 | where ParsedFields.ThreatName contains "PUA"
-| project ComputerName, FileName, SHA1 , ThreatName=tostring(ParsedFields.ThreatName),
+| project DeviceName, FileName, SHA1 , ThreatName=tostring(ParsedFields.ThreatName),
           WasRemediated=tobool(ParsedFields.WasRemediated),
-          WasExecutingWhileDetected=tobool(ParsedFields.WasExecutingWhileDetected), EventTime 
+          WasExecutingWhileDetected=tobool(ParsedFields.WasExecutingWhileDetected), Timestamp 
