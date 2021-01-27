@@ -1,9 +1,4 @@
-// List alerts flagging attempts to delete backup files.
-​DeviceAlertEvents 
-| where Timestamp > ago(7d) 
-| where Title == "File backups were deleted" 
-
-// List alerts flagging attempts to delete backup files. MTP Schema
+// List alerts flagging attempts to delete backup files
 ​ AlertInfo | join AlertEvidence on AlertId 
 | where Timestamp > ago(7d) 
 | where Title == "File backups were deleted" 
