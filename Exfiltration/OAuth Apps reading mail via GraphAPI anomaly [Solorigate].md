@@ -17,7 +17,6 @@ CloudAppEvents
 }; 
 appMailReadActivity(ago(1d),now())                           // detection period 
 | join kind = leftanti appMailReadActivity(ago(7d),ago(2d))  // baseline period 
-
 on OAuthAppId 
 ```
 ## Category
