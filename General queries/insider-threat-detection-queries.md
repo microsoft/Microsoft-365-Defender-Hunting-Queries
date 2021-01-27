@@ -264,7 +264,7 @@ let okaySenders = dynamic(["postmaster@finnet.onmicrosoft.com"]);
 //
 let eattach = EmailAttachmentInfo
 | where SenderFromAddress !in (okaySenders)
-| project Timestamp, FileName, SenderFromAddress, NetworkMessageId, AttachmentId
+| project Timestamp, FileName, SenderFromAddress, NetworkMessageId
 // add list of extensions relevant to your organization
 | where FileName endswith ".cs" or
         FileName endswith ".c" or
