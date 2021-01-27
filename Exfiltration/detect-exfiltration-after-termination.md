@@ -5,7 +5,7 @@ This query can be used to explore any instances where a terminated individual (i
 ## Query
 
 ```
-// Look for any activity for terminated employee creating a NetworkCommunicationEvents after they announced termination or resignation
+// Look for any activity for terminated employee creating a DeviceNetworkEvents after they announced termination or resignation
 let TermAccount = 'departing.employee'; //Enter the departing employee's username
 let ReleaseTime = datetime("MM/DD/YYY 00:00:00"); //Enter the date the resignation or termination was announced
 DeviceNetworkEvents
