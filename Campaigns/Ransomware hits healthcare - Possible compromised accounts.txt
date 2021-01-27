@@ -1,6 +1,7 @@
 // Identify accounts that have logged on to affected endpoints
 // Check for specific alerts
-DeviceAlertEvents 
+AlertInfo 
+| where Timestamp > ago(7d)
 // Attempts to clear security event logs.
 | where Title in("Event log was cleared", 
 // List alerts flagging attempts to delete backup files.
@@ -13,6 +14,7 @@ DeviceAlertEvents
 "'Ploty' malware was detected", 
 "'Bynoco' malware was detected")
 | extend AlertTime = Timestamp
+| join AlertEvidence on AlertId 
 | distinct DeviceName, AlertTime, AlertId, Title
 | join DeviceLogonEvents on DeviceName
 // Creating 10 day Window surrounding alert activity
@@ -20,3 +22,5 @@ DeviceAlertEvents
 // Projecting specific columns
 | project Title, DeviceName, DeviceId, Timestamp, LogonType, AccountDomain, 
 AccountName, AccountSid, AlertTime, AlertId, RemoteIP, RemoteDeviceName
+
+
