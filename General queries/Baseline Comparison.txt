@@ -232,7 +232,7 @@ let RawIPCommunicationDelta=GetRawIPCommunications(SuspectedBadHostDeviceId, Sus
     GetRawIPCommunications(GoodHostDeviceId, GoodLeftTimestamp)
 ) on Entity;
 // Get the alerts for the bad machines (no delta, we care about all alerts)
-let Alerts=DeviceAlertEvents
+let Alerts=AlertInfo | join AlertEvidence on AlertId
 | where "Alert" in (ReturnSets)
 | where Timestamp > SuspectedBadLeftTimestamp
 | where DeviceId in (SuspectedBadHostDeviceId)
