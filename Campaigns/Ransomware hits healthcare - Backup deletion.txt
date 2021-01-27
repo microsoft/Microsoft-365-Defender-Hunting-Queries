@@ -1,4 +1,6 @@
 // List alerts flagging attempts to delete backup files
-​ AlertInfo | join AlertEvidence on AlertId 
+​ AlertInfo 
 | where Timestamp > ago(7d) 
 | where Title == "File backups were deleted" 
+| join AlertEvidence on AlertId 
+
