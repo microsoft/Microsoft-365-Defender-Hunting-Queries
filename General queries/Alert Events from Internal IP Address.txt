@@ -1,9 +1,9 @@
 // Determines DeviceId from internal IP address and outputs all alerts in events table associated to the DeviceId
 // Example use case is Firewall determines Internal IP with suspicious network activity. Query WDATP based on date/time and Internal IP and see associated alerts for the endpoint.  
-let PivotTime = datetime(2018-08-02 20:57:02); //Fill out time
+let PivotTime = datetime(2021-01-02 20:57:02); //Fill out time
 let TimeRangeStart = PivotTime-15m; // 15 Minutes Prior to Pivot Time
 let TimeRangeEnd = PivotTime+15m; // 15 Minutes After Pivot Time
-let IPAddress = "10.0.0.5";  // internal IP address to search
+let IPAddress = "172.16.40.8";  // internal IP address to search
 // Locate DeviceIds associated with IP
 let FindDeviceIdbyIP = DeviceNetworkInfo
 | where Timestamp between ((TimeRangeStart) ..TimeRangeEnd) 
@@ -11,25 +11,8 @@ let FindDeviceIdbyIP = DeviceNetworkInfo
 	and NetworkAdapterStatus == "Up"
 | project DeviceName, DeviceId, Timestamp, IPAddresses;
 // Query Alerts matching DeviceIds
-DeviceAlertEvents
-| join kind = leftsemi FindDeviceIdbyIP on DeviceId
-// Summarizes alerts by AlertId with min and max event times
-| summarize Title=any(Title), min(Timestamp), max(Timestamp), DeviceName=any(DeviceName) by AlertId
-
-// Determines DeviceId from internal IP address and outputs all alerts in events table associated to the DeviceId - MTP Schema
-// Example use case is Firewall determines Internal IP with suspicious network activity. Query WDATP based on date/time and Internal IP and see associated alerts for the endpoint.  
-let PivotTime = datetime(2018-08-02 20:57:02); //Fill out time
-let TimeRangeStart = PivotTime-15m; // 15 Minutes Prior to Pivot Time
-let TimeRangeEnd = PivotTime+15m; // 15 Minutes After Pivot Time
-let IPAddress = "10.0.0.5";  // internal IP address to search
-// Locate DeviceIds associated with IP
-let FindDeviceIdbyIP = DeviceNetworkInfo
-| where Timestamp between ((TimeRangeStart) ..TimeRangeEnd) 
-	and IPAddresses contains strcat("\"", IPAddress, "\"") 
-	and NetworkAdapterStatus == "Up"
-| project DeviceName, DeviceId, Timestamp, IPAddresses;
-// Query Alerts matching DeviceIds
-AlertInfo | join AlertEvidence on AlertId
-| join kind = leftsemi FindDeviceIdbyIP on DeviceId
+FindDeviceIdbyIP 
+| join kind=rightsemi AlertEvidence on DeviceId
+| join AlertInfo on AlertId
 // Summarizes alerts by AlertId with min and max event times
 | summarize Title=any(Title), min(Timestamp), max(Timestamp), DeviceName=any(DeviceName) by AlertId
