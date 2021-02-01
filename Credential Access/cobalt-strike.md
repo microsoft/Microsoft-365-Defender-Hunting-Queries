@@ -18,7 +18,6 @@ The following query identifies accounts that have logged on to compromised endpo
 ```Kusto
 // Check for specific alerts
 AlertInfo
-| join AlertEvidence on AlertId 
 // Attempts to clear security event logs.
 | where Title in("Event log was cleared", 
 // List alerts flagging attempts to delete backup files.
@@ -31,6 +30,7 @@ AlertInfo
 "\'Ploty\' malware was detected", 
 "\'Bynoco\' malware was detected")
 | extend AlertTime = Timestamp
+| join AlertEvidence on AlertId 
 | distinct DeviceName, AlertTime, AlertId, Title
 | join DeviceLogonEvents on $left.DeviceName == $right.DeviceName
 // Creating 10 day Window surrounding alert activity
