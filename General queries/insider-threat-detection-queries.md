@@ -22,6 +22,7 @@ Note: no single indicator should be used as a lone determinant of insider threat
 DeviceLogonEvents
 | where IsLocalAdmin ==0
 | where InitiatingProcessAccountName != "system"
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Zip/Encrypt Sensitive File
@@ -63,6 +64,7 @@ DeviceProcessEvents
 | summarize count(AccountName) by AccountName
 | where count_AccountName > PRINT_THRESHOLD
 | sort by count_AccountName desc
+
 //Secondary Query
 //This eventtype exists, but seems to be a bit noisy
 DeviceEvents
