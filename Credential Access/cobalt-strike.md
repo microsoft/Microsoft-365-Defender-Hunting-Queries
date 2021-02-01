@@ -30,6 +30,7 @@ AlertInfo
 "\'Ploty\' malware was detected", 
 "\'Bynoco\' malware was detected")
 | extend AlertTime = Timestamp
+| join AlertEvidence on AlertId 
 | distinct DeviceName, AlertTime, AlertId, Title
 | join DeviceLogonEvents on $left.DeviceName == $right.DeviceName
 // Creating 10 day Window surrounding alert activity
