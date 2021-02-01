@@ -19,9 +19,10 @@ Note: no single indicator should be used as a lone determinant of insider threat
 //
 //Local Administrator
 //
-LogonEvents
+DeviceLogonEvents
 | where IsLocalAdmin ==0
 | where InitiatingProcessAccountName != "system"
+
 // --------------------------------------------------------------------------------------------------------------------------- //
 //
 //Zip/Encrypt Sensitive File
@@ -59,10 +60,11 @@ union ProcessQuery, FileQuery
 //let PRINT_THRESHOLD = 3;  // adjust accordingly
 //-----
 DeviceProcessEvents 
-| where FileName in ("SnippingTool.exe", "ScreenSketch.exe") //and EventTime > ago(20d)
+| where FileName in ("SnippingTool.exe", "ScreenSketch.exe") //and Timestamp > ago(20d)
 | summarize count(AccountName) by AccountName
 | where count_AccountName > PRINT_THRESHOLD
 | sort by count_AccountName desc
+
 //Secondary Query
 //This eventtype exists, but seems to be a bit noisy
 DeviceEvents
@@ -83,7 +85,7 @@ and RemoteUrl has_any (webmailURLs)
 //Access after Termination
 //
 // Look for any activity by a terminated employee account creating a
-// NetworkCommunicationEvents after they were released
+// DeviceNetworkEvents after they were released
 let TermAccount = 'FORMER_EMPLOYEE_NAME';  // Could also use SID
 let ReleaseTime = datetime("M/D/Y H:M:S AM/PM");
 //
