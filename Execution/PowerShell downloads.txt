@@ -8,7 +8,6 @@ DeviceProcessEvents
    or ProcessCommandLine has "Invoke-Shellcode"
    or ProcessCommandLine has "http"
    or ProcessCommandLine has "IEX"
-   or ProcessCommandLine has "Net.WebClient"
    or ProcessCommandLine has "Start-BitsTransfer"
    or ProcessCommandLine has "mpcmdrun.exe"
 | project Timestamp, DeviceName, InitiatingProcessFileName, FileName, ProcessCommandLine
