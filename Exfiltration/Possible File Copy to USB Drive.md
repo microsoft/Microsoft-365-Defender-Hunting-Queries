@@ -15,8 +15,8 @@ let Connections =
 DeviceEvents
 | where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and ActionType == "PnpDeviceConnected"
 | extend parsed = parse_json(AdditionalFields)
-| project DeviceId,ConnectionTime = Timestamp, DriveClass = tostring(parsed.ClassName), UsbDeviceId = tostring(parsed.DeviceId), ClassId = tostring(parsed.DeviceId), DevicDescription = tostring(parsed.DeviceDescription), VendorIds = tostring(parsed.VendorIds)
-| where DriveClass == 'USB' and DevicDescription == 'USB Mass Storage Device';
+| project DeviceId,ConnectionTime = Timestamp, DriveClass = tostring(parsed.ClassName), UsbDeviceId = tostring(parsed.DeviceId), ClassId = tostring(parsed.DeviceId), DeviceDescription = tostring(parsed.DeviceDescription), VendorIds = tostring(parsed.VendorIds)
+| where DriveClass == 'USB' and DeviceDescription == 'USB Mass Storage Device';
 DeviceFileEvents
 | where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and FolderPath !startswith "c" and FolderPath !startswith @"\"
 | join kind=inner Connections on DeviceId
