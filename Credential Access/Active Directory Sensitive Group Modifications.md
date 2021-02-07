@@ -10,7 +10,7 @@ This advanced hunting query requires Defender for Identity be deployed due to it
 ```
 // Detects changes in Tier 0 group memberships
 // Command leverages MDI schema s
-// Execute from https://security.microsoft.com or through the MTP advanced hunting API
+// Execute from https://security.microsoft.com or through the M365D advanced hunting API
 let Events = materialize (
 IdentityDirectoryEvents
 | where ActionType == 'Group Membership changed'
@@ -54,7 +54,7 @@ let Tier0Groups = datatable(TargetGroup:string)
 Tier0Groups
 | join (union Tier0Adds, Tier0Removes) on TargetGroup
 | project Timestamp, ActionType, ActivityType, ActorName, TargetAccount, TargetAccountUpn, TargetGroup
-// If you are setting up a detection rule in MTP, you'll need to add ReportId and AccountSid to the projected columns
+// If you are setting up a detection rule in M365D, you'll need to add ReportId and AccountSid to the projected columns
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
