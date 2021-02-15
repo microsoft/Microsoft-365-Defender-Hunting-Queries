@@ -21,8 +21,11 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exfiltration |  |  | 
 | Impact |  |  |
 | Vulnerability |  |  |
+| Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
+| Ransomware |  |  |
+
 
 ## Contributor info
 **Contributor:** < your name >
