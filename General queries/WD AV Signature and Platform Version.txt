@@ -15,6 +15,7 @@
 // THIS QUERY IS NOT OFFICIAL AND ENDORSED BY MICROSOFT
 // --------------------------------------------------------------------------------------------------------------------------- //
 // *CHANGELOG*
+// v4.3 - 
 // v4.2 - 10JUL2020
 // - Added code to prefer TVM signature version over command line parsing
 // V4.1 - 15JUN2020
@@ -32,30 +33,17 @@
 // V1 - Long, long time ago
 // - Initial query
 // --------------------------------------------------------------------------------------------------------------------------- //
-// Run TVM Signature Check
+let avmodetable = DeviceTvmSecureConfigurationAssessment
+| where ConfigurationId == "scid-2010" and isnotnull(Context)
+| extend avdata=parsejson(Context)
+| extend AVMode = iif(tostring(avdata[0][0]) == '0', 'Active' , iif(tostring(avdata[0][0]) == '1', 'Passive' ,iif(tostring(avdata[0][0]) == '4', 'EDR Blocked' ,'Unknown')))
+| project DeviceId, AVMode;
 DeviceTvmSecureConfigurationAssessment
-| where ConfigurationId == 'scid-2011'
-| summarize Timestamp = arg_max(Timestamp, DeviceName, Context) by DeviceId
-| project DeviceId, DeviceName, AntivirusSignatureVersionTvm = todynamic(Context)[0][0] // This gets the sig version from TVM
-| where isnotnull(AntivirusSignatureVersionTvm)
-| join kind=fullouter (
-    DeviceFileEvents 
-    // Find signature \ engine update activity
-    | where InitiatingProcessFileName =~ 'MpSigStub.exe' and InitiatingProcessCommandLine contains '/stub' and InitiatingProcessCommandLine contains '/payload'
-    | summarize Timestamp = arg_max(Timestamp, InitiatingProcessCommandLine) by DeviceId, DeviceName
-    | extend SplitCommand = split(InitiatingProcessCommandLine, ' ')
-    // Locate stub and payload versions
-    | extend EngineVersionLocation = array_index_of(SplitCommand, "/stub") + 1, DefinitionVersionLocation = array_index_of(SplitCommand, "/payload") + 1
-    | project DeviceName, DeviceId, AMEngineVersion = SplitCommand[EngineVersionLocation], AntivirusSignatureVersionCl = SplitCommand[DefinitionVersionLocation]
-) on DeviceId
-| project DeviceId = iff(isempty( DeviceId), DeviceId1, DeviceId), DeviceName = iff(isempty(DeviceName), DeviceName1, DeviceName), AMEngineVersion, AntivirusSignatureVersion = iff(isempty(AntivirusSignatureVersionTvm), AntivirusSignatureVersionCl, AntivirusSignatureVersionTvm) // Prefer TVM over command line for AV sig version
-| join kind=fullouter (
-    DeviceProcessEvents
-    // Find process creations for MsMpEng from the platform folder
-    | where FileName =~ 'MsMpEng.exe' and FolderPath contains @"\Microsoft\Windows Defender\Platform\"
-    | summarize arg_max(Timestamp, FolderPath) by DeviceId, DeviceName
-    // Go up two levels
-    | project DeviceId, DeviceName, AMServiceVersion = split(FolderPath, '\\')[-2]
-) on DeviceId
-// Re-projecting to make the UI happy
-| project DeviceId = iff(isempty(DeviceId), DeviceId1, DeviceId), DeviceName = iff(isempty(DeviceName), DeviceName1, DeviceName), AMEngineVersion, AntivirusSignatureVersion, AMServiceVersion
+| where ConfigurationId == "scid-2011" and isnotnull(Context)
+| extend avdata=parsejson(Context)
+| extend AVSigVersion = tostring(avdata[0][0])
+| extend AVEngineVersion = tostring(avdata[0][1])
+| extend AVSigLastUpdateTime = tostring(avdata[0][2])
+| project DeviceId, DeviceName, OSPlatform, AVSigVersion, AVEngineVersion, AVSigLastUpdateTime, IsCompliant, IsApplicable
+| join avmodetable on DeviceId
+| project-away DeviceId1
