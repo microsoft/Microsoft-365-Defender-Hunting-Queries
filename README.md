@@ -9,6 +9,8 @@ description: "Microsoft 365 Defender repository for Advanced Hunting"
 # Advanced hunting queries for Microsoft 365 Defender
 This repo contains sample queries for **[advanced hunting](https://security.microsoft.com/hunting) in [Microsoft 365 Defender](https://aka.ms/mtp-docs)**. With these sample queries, you can start to experience advanced hunting, including the types of data that it covers and the query language it supports. You can also explore a variety of attack techniques and how they may be surfaced through advanced hunting.
 
+Advanced hunting queries provide a great starting point for locating and investigating suspicious behavior, and they can be customized to fit your organization's unique environment. Further, you can use these queries to build custom detection rules if you determine that behaviors, events, or data from the advanced hunting query helps you surface potential threats.
+
 ---
 **NOTE:** Most of these queries can also be used in Microsoft Defender ATP. However, queries that search tables containing consolidated alert data as well as data about email, apps, and identities can only be used in Microsoft 365 Defender.
 
