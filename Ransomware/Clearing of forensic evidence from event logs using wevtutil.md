@@ -1,8 +1,15 @@
-# < Insert query name >
-< Provide query description and usage tips >
+# Clearing of forensic evidence from event logs using wevtutil
+
+This query checks for attempts to clear at least 10 log entries from event logs using wevtutil.
+
 ## Query
 ```
-< Insert query string here >
+// Look for use of wevtutil to clear multiple logs
+DeviceProcessEvents
+| where Timestamp > ago(1d)
+| where ProcessCommandLine has "WEVTUTIL" and ProcessCommandLine has "CL"
+| summarize LogClearCount = dcount(ProcessCommandLine), ClearedLogList = make_set(ProcessCommandLine) by DeviceId, bin(Timestamp, 5m)
+| where LogClearCount > 10
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
@@ -24,11 +31,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
-| Ransomware |  |  |
+| Ransomware | V |  |
 
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Microsoft 365 Defender

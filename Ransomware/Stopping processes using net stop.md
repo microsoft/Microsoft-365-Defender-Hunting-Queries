@@ -1,8 +1,15 @@
-# < Insert query name >
-< Provide query description and usage tips >
+# Stopping processes using net stop
+
+This query checks for attempts to stop at least 10 separate processes using the net stop command. Run query
+
 ## Query
 ```
-< Insert query string here >
+// Find attempts to stop processes using net stop
+DeviceProcessEvents
+| where Timestamp > ago(1d)
+| where FileName =~ "net.exe" and ProcessCommandLine has "stop"
+| summarize netStopCount = dcount(ProcessCommandLine), NetStopList = make_set(ProcessCommandLine) by DeviceId, bin(Timestamp, 2m)
+| where netStopCount > 10
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
@@ -24,11 +31,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
-| Ransomware |  |  |
+| Ransomware |V |  |
 
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Microsoft 365 Defender

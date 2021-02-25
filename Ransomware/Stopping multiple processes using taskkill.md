@@ -1,8 +1,13 @@
-# < Insert query name >
-< Provide query description and usage tips >
+# Stopping multiple processes using taskkill.exe
+This query checks for attempts to stop at least 10 separate processes using the taskkill.exe utility. Run query
 ## Query
 ```
-< Insert query string here >
+// Find attempts to stop processes using taskkill.exe
+DeviceProcessEvents
+| where Timestamp > ago(1d)
+| where FileName =~ "taskkill.exe" 
+| summarize taskKillCount = dcount(ProcessCommandLine), TaskKillList = make_set(ProcessCommandLine) by DeviceId, bin(Timestamp, 2m)
+| where taskKillCount > 10
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
@@ -24,11 +29,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
-| Ransomware |  |  |
+| Ransomware | V |  |
 
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Microsoft 365 Defender

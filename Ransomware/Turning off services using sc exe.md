@@ -1,8 +1,15 @@
-# < Insert query name >
-< Provide query description and usage tips >
+# Turning off services using sc.exe
+
+This query checks for attempts to turn off at least 10 existing services using sc.exe.
+
 ## Query
 ```
-< Insert query string here >
+// Look for sc.exe disabling services
+DeviceProcessEvents
+| where Timestamp > ago(1d)
+| where ProcessCommandLine has "sc" and ProcessCommandLine has "config" and ProcessCommandLine has "disabled"
+| summarize ScDisableCount = dcount(ProcessCommandLine), ScDisableList = make_set(ProcessCommandLine) by DeviceId, bin(Timestamp, 5m)
+| where ScDisableCount > 10
 ```
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
@@ -24,11 +31,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
-| Ransomware |  |  |
+| Ransomware | V |  |
 
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Microsoft 365 Defender
