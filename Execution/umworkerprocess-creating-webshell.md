@@ -17,8 +17,11 @@ More queries related to this threat can be found under the [See also](#See-also)
 
 ```Kusto
 DeviceFileEvents
-| where InitiatingProcessFileName == "UMWorkerProcess.exe" | where FileName != "CacheCleanup.bin" | where FileName !endswith ".txt"
-| where FileName !endswith ".LOG" | where FileName !endswith ".cfg" | where FileName != "cleanup.bin"
+| where InitiatingProcessFileName == "UMWorkerProcess.exe" 
+| where FileName !in~("CacheCleanup.bin", "cleanup.bin")
+| where FileName !endswith ".txt"
+| where FileName !endswith ".LOG" 
+| where FileName !endswith ".cfg"
 ```
 
 ## Category
