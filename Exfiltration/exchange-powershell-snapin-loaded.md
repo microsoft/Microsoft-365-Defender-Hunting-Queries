@@ -48,7 +48,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 * [Reverse shell loaded using Nishang Invoke-PowerShellTcpOneLine technique](../Execution/reverse-shell-nishang.md)
 * [Procdump dumping LSASS credentials](../Credential%20Access/procdump-lsass-credentials.md)
-* [7-ZIP used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
+* [7-ZIP used by attackers to prepare data for exfiltration](./7-zip-prep-for-exfiltration.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
 * [Exchange vulnerability creating web shells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](../Execution/umworkerprocess-unusual-subprocess-activity.md)
