@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query detects downloads of *powercat*, an exploitation tool for PowerShell. Although associated with these zero day attacks, powercat is a multi-purpose tool that is also used by other groups of attackers.
+The following query detects downloads of *powercat*, an exploitation tool for PowerShell. Although associated with these zero-day attacks, powercat is a multi-purpose tool that is also used by other groups of attackers.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 
