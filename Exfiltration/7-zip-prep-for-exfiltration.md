@@ -49,7 +49,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Procdump dumping LSASS credentials](../Credential%20Access/procdump-lsass-credentials.md)
 * [Exchange PowerShell snap-in being loaded](./exchange-powershell-snapin-loaded.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
-* [Exchange vulnerability creating webshells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
+* [Exchange vulnerability creating web shells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](../Execution/umworkerprocess-unusual-subprocess-activity.md)
 
 ## Contributor info

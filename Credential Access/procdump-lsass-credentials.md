@@ -46,10 +46,10 @@ This query can be used to detect the following attack techniques and tactics ([s
 ## See also
 
 * [Reverse shell loaded using Nishang Invoke-PowerShellTcpOneLine technique](../Execution/reverse-shell-nishang.md)
-* [7-zip used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
+* [7-ZIP used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
 * [Exchange PowerShell snap-in being loaded](../Exfiltration/exchange-powershell-snapin-loaded.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
-* [Exchange vulnerability creating webshells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
+* [Exchange vulnerability creating web shells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](../Execution/umworkerprocess-unusual-subprocess-activity.md)
 
 ## Contributor info
