@@ -1,4 +1,4 @@
-# Exchange vulnerability creating webshells via UMWorkerProcess
+# Exchange vulnerability creating web shells via UMWorkerProcess
 
 This query was originally published in the threat analytics report, "Exchange Server zero-days exploited in the wild".
 
@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query detects unusual file content being created by UMWorkerProcess, the Exchange Unified Messaging service. This might indicated that CVE-2021-26858 is being exploited to generate a webshell.
+The following query detects unusual file content being created by UMWorkerProcess, the Exchange Unified Messaging service. This might indicated that CVE-2021-26858 is being exploited to generate a web shell.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 
