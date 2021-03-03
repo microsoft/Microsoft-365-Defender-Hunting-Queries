@@ -1,4 +1,4 @@
-# 7-zip used by attackers to prepare data for exfiltration
+# 7-ZIP used by attackers to prepare data for exfiltration
 
 This query was originally published in the threat analytics report, "Exchange Server zero-days exploited in the wild".
 
@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query detects 7-zip activity associated with this threat. 7-zip is a legitimate tool used for file archiving; however, unusual 7-zip activity combined with other evidence might indicate that an attacker is compressing data for exfiltration.
+The following query detects 7-zip activity associated with this threat. 7-ZIP is a legitimate tool used for file archiving; however, unusual 7-ZIP activity combined with other evidence might indicate that an attacker is compressing data for exfiltration.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 

@@ -29,7 +29,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution | v |  |
-| Persistence |  |  |
+| Persistence | v |  |
 | Privilege escalation |  |  |
 | Defense evasion |  |  |
 | Credential Access |  |  |

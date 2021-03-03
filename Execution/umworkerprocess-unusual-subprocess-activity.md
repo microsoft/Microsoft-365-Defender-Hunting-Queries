@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query surfaces when unusual subprocesses were launched by MWorkerProcess, the Exchange Unified Messaging service. This might indicate exploitation of CVE-2021-26857 to run malicious code.
+The following query surfaces when unusual subprocesses were launched by MWorkerProcess, the Exchange Unified Messaging service. This might indicate exploitation of CVE-2021-26857 to run arbitrary code.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 
