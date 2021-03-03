@@ -16,7 +16,9 @@ More queries related to this threat can be found under the [See also](#See-also)
 ## Query
 
 ```Kusto
-DeviceProcessEvents | where FileName has_any ("procdump.exe", "procdump64.exe") | where ProcessCommandLine contains "lsass.exe"
+DeviceProcessEvents | where (FileName has_any ("procdump.exe", "procdump64.exe") and ProcessCommandLine has "lsass") or 
+// Looking for Accepteula flag or Write a dump file with all process memory
+(ProcessCommandLine has "lsass.exe" and (ProcessCommandLine has "-accepteula" or ProcessCommandLine contains "-ma"))
 ```
 
 ## Category
