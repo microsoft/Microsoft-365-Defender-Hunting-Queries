@@ -17,7 +17,8 @@ More queries related to this threat can be found under the [See also](#See-also)
 
 ```Kusto
 DeviceProcessEvents
-| where InitiatingProcessFileName == "UMWorkerProcess.exe" | where FileName != "wermgr.exe" | where FileName != "WerFault.exe"
+| where InitiatingProcessFileName == "UMWorkerProcess.exe"
+| where FileName !in~("wermgr.exe", "WerFault.exe")
 ```
 
 ## Category
