@@ -9,7 +9,7 @@ This advanced hunting query requires Defender for Identity be deployed due to it
 ## Query
 ```
 // Detects changes in Tier 0 group memberships
-// Command leverages MDI schema s
+// Command leverages MDI schema
 // Execute from https://security.microsoft.com or through the M365D advanced hunting API
 let Events = materialize (
 IdentityDirectoryEvents
@@ -21,15 +21,16 @@ let Tier0Adds = (
 Events
 | where ActivityType == "Added Account"
 | extend TargetGroup = tostring(AdditionalFields['TO.GROUP'])
-| extend TargetAccount = AdditionalFields['TARGET_OBJECT.USER']
-| extend ActorName = AdditionalFields['ACTOR.ENTITY_USER']
+| extend TargetObject = iff(isempty(tostring(AdditionalFields['TARGET_OBJECT.USER'])), tostring(AdditionalFields['TARGET_OBJECT.GROUP']), tostring(AdditionalFields['TARGET_OBJECT.USER']))
+| extend TargetType = iff(isempty(tostring(AdditionalFields['TARGET_OBJECT.USER'])), "Security Group", "User Account")
+//| extend TargetObject = AdditionalFields['TARGET_OBJECT.USER']
 );
 let Tier0Removes = (
 Events
 | where ActivityType == "Removed Account"
 | extend TargetGroup = tostring(AdditionalFields['FROM.GROUP'])
-| extend TargetAccount = AdditionalFields['TARGET_OBJECT.USER']
-| extend ActorName = AdditionalFields['ACTOR.ENTITY_USER']
+| extend TargetObject = iff(isempty(tostring(AdditionalFields['TARGET_OBJECT.USER'])),tostring(AdditionalFields['TARGET_OBJECT.GROUP']), tostring(AdditionalFields['TARGET_OBJECT.USER']))
+| extend TargetType = iff(isempty(tostring(AdditionalFields['TARGET_OBJECT.USER'])), "Security Group", "User Account")
 );
 let Tier0Groups = datatable(TargetGroup:string)
 [
@@ -53,7 +54,7 @@ let Tier0Groups = datatable(TargetGroup:string)
 ];
 Tier0Groups
 | join (union Tier0Adds, Tier0Removes) on TargetGroup
-| project Timestamp, ActionType, ActivityType, ActorName, TargetAccount, TargetAccountUpn, TargetGroup
+| project Timestamp, ActionType, ActivityType,TargetType, ActorUpn=AccountUpn, TargetObject, TargetAccountUpn, TargetGroup
 // If you are setting up a detection rule in M365D, you'll need to add ReportId and AccountSid to the projected columns
 ```
 ## Category
