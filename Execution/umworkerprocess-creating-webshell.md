@@ -56,6 +56,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Exchange PowerShell snap-in being loaded](../Exfiltration/exchange-powershell-snapin-loaded.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](./umworkerprocess-unusual-subprocess-activity.md)
+* [Base64-encoded Nishang commands for loading reverse shell](./reverse-shell-nishang-base64.md)
 
 ## Contributor info
 

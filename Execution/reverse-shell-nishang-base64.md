@@ -1,4 +1,4 @@
-# Exchange vulnerability launching subprocesses through UMWorkerProcess
+# Base64-encoded Nishang commands for loading reverse shell
 
 This query was originally published in the threat analytics report, "Exchange Server zero-days exploited in the wild".
 
@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query surfaces when unusual subprocesses were launched by MWorkerProcess, the Exchange Unified Messaging service. This might indicate exploitation of CVE-2021-26857 to run arbitrary code.
+The following query finds evidence of Base64-encoded commands used by the Nishang penetration testing framework to load a reverse TCP shell. This might indicate an attacker has remote access to the device.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 
@@ -17,8 +17,12 @@ More queries related to this threat can be found under the [See also](#See-also)
 
 ```Kusto
 DeviceProcessEvents
-| where InitiatingProcessFileName == "UMWorkerProcess.exe"
-| where FileName !in~("wermgr.exe", "WerFault.exe")
+| where FileName in("powershell.exe","powershell_ise.exe") and ProcessCommandLine contains "-e"
+| mvexpand SS = split(ProcessCommandLine, " ")
+| where SS matches regex "[A-Za-z0-9+/]{50,}[=]{0,2}"
+| extend DecodeString = base64_decodestring(tostring(SS))
+| extend FinalString = replace("\\0", "", DecodeString)
+| where FinalString has "tcpclient" and FinalString contains "$" and (FinalString contains "invoke" or FinalString contains "iex")
 ```
 
 ## Category
@@ -28,8 +32,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
-| Execution | v | An unusually large number of events launching wermgr.exe and WerFault.exe can also indicate a compromise due to the server crashing during deserialization. |
-| Persistence |  |  | 
+| Execution | v |  |
+| Persistence | v |  | 
 | Privilege escalation |  |  |
 | Defense evasion |  |  | 
 | Credential Access |  |  | 
@@ -37,23 +41,23 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Lateral movement |  |  | 
 | Collection |  |  | 
 | Command and control |  |  | 
-| Exfiltration |  |  | 
+| Exfiltration | v |  | 
 | Impact |  |  |
 | Vulnerability |  |  |
-| Exploit | v |  |
+| Exploit |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 | Ransomware |  |  |
 
 ## See also
 
-* [Reverse shell loaded using Nishang Invoke-PowerShellTcpOneLine technique](./reverse-shell-nishang.md)
+* [Reverse shell loaded using Nishang Invoke-PowerShellTcpOneLine technique](../Execution/reverse-shell-nishang.md)
 * [Procdump dumping LSASS credentials](../Credential%20Access/procdump-lsass-credentials.md)
 * [7-ZIP used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
 * [Exchange PowerShell snap-in being loaded](../Exfiltration/exchange-powershell-snapin-loaded.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
 * [Exchange vulnerability creating web shells via UMWorkerProcess](./umworkerprocess-creating-webshell.md)
-* [Base64-encoded Nishang commands for loading reverse shell](./reverse-shell-nishang-base64.md)
+* [Exchange vulnerability launching subprocesses through UMWorkerProcess](./umworkerprocess-unusual-subprocess-activity.md)
 
 ## Contributor info
 
