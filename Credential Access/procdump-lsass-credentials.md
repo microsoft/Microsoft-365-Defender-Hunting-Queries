@@ -53,7 +53,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
 * [Exchange vulnerability creating web shells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](../Execution/umworkerprocess-unusual-subprocess-activity.md)
-* [Base64-encoded Nishang commands for loading reverse shell](./reverse-shell-nishang-base64.md)
+* [Base64-encoded Nishang commands for loading reverse shell](../Execution/reverse-shell-nishang-base64.md)
 
 ## Contributor info
 
