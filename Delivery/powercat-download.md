@@ -50,6 +50,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [7-ZIP used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
 * [Exchange PowerShell snap-in being loaded](../Exfiltration/exchange-powershell-snapin-loaded.md)
 * [Exchange vulnerability creating web shells via UMWorkerProcess](../Execution/umworkerprocess-creating-webshell.md)
+* [Exchange Server IIS dropping web shells and other artifacts](../Execution/exchange-iis-worker-dropping-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](../Execution/umworkerprocess-unusual-subprocess-activity.md)
 * [Base64-encoded Nishang commands for loading reverse shell](../Execution/reverse-shell-nishang-base64.md)
 
