@@ -1,4 +1,4 @@
-# Exchange vulnerability creating web shells via UMWorkerProcess
+# Exchange Server IIS dropping web shells and other artifacts
 
 This query was originally published in the threat analytics report, "Exchange Server zero-days exploited in the wild".
 
@@ -9,7 +9,7 @@ In early March 2021, Microsoft released [patches](https://msrc-blog.microsoft.co
 * [CVE-2021-26858](https://nvd.nist.gov/vuln/detail/CVE-2021-26858)
 * [CVE-2021-27065](https://nvd.nist.gov/vuln/detail/CVE-2021-27065)
 
-The following query detects unusual file content being created by UMWorkerProcess, the Exchange Unified Messaging service. This might indicated that CVE-2021-26858 is being exploited to generate a web shell.
+The following query checks for the IIS worker process in Exchange Server dropping files that appear to be the web shells and other threat artifacts observed in known attacks.
 
 More queries related to this threat can be found under the [See also](#See-also) section of this page.
 
@@ -17,11 +17,15 @@ More queries related to this threat can be found under the [See also](#See-also)
 
 ```Kusto
 DeviceFileEvents
-| where InitiatingProcessFileName == "UMWorkerProcess.exe" 
-| where FileName !in~("CacheCleanup.bin", "cleanup.bin")
-| where FileName !endswith ".txt"
-| where FileName !endswith ".LOG" 
-| where FileName !endswith ".cfg"
+| where InitiatingProcessFileName == 'w3wp.exe' | where InitiatingProcessCommandLine contains "MSExchange"
+| where FolderPath has_any ("\\wwwroot\\", "HttpProxy\\owa\\","\\Temporary ASP.NET Files\\")
+| where not(FolderPath has_any("\\tmp\\","\\dl3\\"))
+| where FolderPath !endswith ".log" | where FolderPath !endswith ".json"
+| where FolderPath !endswith ".ini"
+| where FolderPath !endswith ".vb"
+| where FolderPath !endswith '.tmp'
+| where FolderPath !endswith '.xml'
+| where FolderPath !endswith '.js'
 ```
 
 ## Category
@@ -43,7 +47,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
-| Exploit | v |  |
+| Exploit | |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 | Ransomware |  |  |
@@ -55,10 +59,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [7-ZIP used by attackers to prepare data for exfiltration](../Exfiltration/7-zip-prep-for-exfiltration.md)
 * [Exchange PowerShell snap-in being loaded](../Exfiltration/exchange-powershell-snapin-loaded.md)
 * [Powercat exploitation tool downloaded](../Delivery/powercat-download.md)
-* [Exchange Server IIS dropping web shells and other artifacts](./exchange-iis-worker-dropping-webshell.md)
+* [Exchange vulnerability creating web shells via UMWorkerProcess](./umworkerprocess-creating-webshell.md)
 * [Exchange vulnerability launching subprocesses through UMWorkerProcess](./umworkerprocess-unusual-subprocess-activity.md)
 * [Base64-encoded Nishang commands for loading reverse shell](./reverse-shell-nishang-base64.md)
-
 
 ## Contributor info
 
