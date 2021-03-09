@@ -1,10 +1,12 @@
-# Anomaly of MailItemAccess by Other Users Mailbox [Solorigate].
-This query looks for users accessing multiple other user's mailboxes or accessing multiple folders in another users mailbox
+# Anomalous use of MailItemAccess on other users' mailbox [Nobelium]
 
-Query is inspired by:
-https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/OfficeActivity/AnomolousUserAccessingOtherUsersMailbox.yaml
+This query looks for users accessing multiple other users' mailboxes, or accessing multiple folders in another user's mailbox.
+
+This query is inspired by an Azure Sentinel [detection](https://github.com/Azure/Azure-Sentinel/blob/master/Hunting%20Queries/OfficeActivity/AnomolousUserAccessingOtherUsersMailbox.yaml).
+
 ## Query
-```
+
+```Kusto
 // Adjust this value to exclude historical activity as known good
 let LookBack = 30d;
 // Adjust this value to change hunting timeframe
@@ -26,8 +28,8 @@ let relevantMailItems = materialize (
     | mv-expand parse_json(Folders)
     | extend foldersPath = tostring(Folders.Path)  
     | where isnotempty(foldersPath)
-    | extend ClientInfoString = RawEventData['ClientInfoString']   
-    | extend MailBoxGuid = RawEventData['MailboxGuid']   
+    | extend ClientInfoString = RawEventData['ClientInfoString']
+    | extend MailBoxGuid = RawEventData['MailboxGuid']
     | extend ClientIP = iif(IPAddress startswith "[", extract("\\[([^\\]]*)", 1, IPAddress), IPAddress)
     | project Timestamp, ClientIP, UserId, MailboxOwnerUPN, tostring(ClientInfoString), foldersPath, tostring(MailBoxGuid)    
 );
@@ -42,13 +44,13 @@ let relevantMailItemsHunting =
 relevantMailItemsBaseLine 
     | join kind=rightanti relevantMailItemsHunting
     on MailboxOwnerUPN, UserId
-    | summarize FolderCount = dcount(tostring(foldersPath)), 
-                UserCount = dcount(MailBoxGuid), 
-                foldersPathSet = make_set(foldersPath), 
+    | summarize FolderCount = dcount(tostring(foldersPath)),
+                UserCount = dcount(MailBoxGuid),
+                foldersPathSet = make_set(foldersPath),
                 ClientInfoStringSet = make_set(ClientInfoString), 
-                ClientIPSet = make_set(ClientIP), 
-                MailBoxGuidSet = make_set(MailBoxGuid), 
-                MailboxOwnerUPNSet = make_set(MailboxOwnerUPN)  
+                ClientIPSet = make_set(ClientIP),
+                MailBoxGuidSet = make_set(MailBoxGuid),
+                MailboxOwnerUPNSet = make_set(MailboxOwnerUPN)
             by UserId
     | where UserCount > UserThreshold or FolderCount > FolderThreshold
     | extend Reason = case( 
@@ -58,27 +60,30 @@ relevantMailItemsBaseLine
                             )
     | sort by UserCount desc
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection | V |  | 
-| Command and control |  |  | 
-| Exfiltration | |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection | V |  |
+| Command and control |  |  |
+| Exfiltration | |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Stefan Sellmer
 **GitHub alias:** @stesell
 **Organization:** Microsoft 365 Defender

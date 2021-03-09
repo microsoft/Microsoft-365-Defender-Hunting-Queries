@@ -1,9 +1,10 @@
-# OAuth Apps reading mail via GraphAPI anomaly [Solorigate]
-Review OAuth Applications whose behaviour changed versus a prior baseline period. 
-The following query returns OAuth Applications accessing user mail via Graph that did not do so in the preceding week.
+# OAuth Apps reading mail via GraphAPI anomaly [Nobelium]
+
+Review OAuth Applications whose behaviour has changed as compared to a prior baseline period. The following query returns OAuth Applications accessing user mail via Graph that did not do so in the preceding week.
 
 ## Query
-```
+
+```kusto
 //Look for OAuth App reading mail via GraphAPI -- that did not read mail via graph API in prior week 
 let appMailReadActivity = (timeframeStart:datetime, timeframeEnd:datetime) { 
 CloudAppEvents 
@@ -19,25 +20,28 @@ appMailReadActivity(ago(1d),now())                           // detection period
 | join kind = leftanti appMailReadActivity(ago(7d),ago(2d))  // baseline period 
 on OAuthAppId 
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration | V |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration | V |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Microsoft 365 Defender team

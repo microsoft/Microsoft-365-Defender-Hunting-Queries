@@ -1,10 +1,12 @@
-# OAuth Apps reading mail both via GraphAPI and directly [Solorigate]
-As described in previous guidance[https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/] the actor may abuse legitimate existing OAuth Applications in the environment. 
-However the malicious access pattern may differ from the legitimate one.
-The following query returns OAuth Applications that access mail both directly and via Graph, allowing review of whether such dual access methods are expected.
+# OAuth Apps reading mail both via GraphAPI and directly [Nobelium]
+
+As described in (previous guidance)[https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/], Nobelium may re-purpose legitimate existing OAuth Applications in the environment to their own ends. However, malicious activity patterns may be discernable from  legitimate ones.
+
+The following query returns OAuth Applications that access mail both directly and via Graph, allowing review of whether such dual access methods follow expected use patterns.
 
 ## Query
-```
+
+```kusto
 // Look for OAuth Apps reading mail both via GraphAPI, and directly (not via GraphAPI) 
 // (one method may be legitimate and one suspect?) 
 let appsReadingMailDirectly = CloudAppEvents 
@@ -33,7 +35,9 @@ appsReadingMailDirectly
 on OAuthAppId 
 | project OAuthAppId 
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
@@ -54,4 +58,5 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Microsoft 365 Defender team

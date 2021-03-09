@@ -1,8 +1,11 @@
-# FireEye Red Team Tools CVEs [Solorigate]
-Search for the CVEs that should be prioritized and resolved to reduce the opportunity of succeed of the Red Team tools by FireEye
-https://github.com/fireeye/red_team_tool_countermeasures/blob/master/CVEs_red_team_tools.md
+# FireEye Red Team Tools CVEs [Nobelium]
+
+Search for the CVEs that should be prioritized and resolved to reduce the success of the FireEye Red Team tools compromised by the Nobelium activity group.
+See [red_team_tool_countermeasures](https://github.com/fireeye/red_team_tool_countermeasures/blob/master/CVEs_red_team_tools.md) on the [official FireEye repo](https://github.com/fireeye).
+
 ## Query
-```
+
+```Kusto
 let FireEyeCVE= dynamic(
 [
 "CVE-2019-11510", //pre-auth arbitrary file reading from Pulse Secure SSL VPNs - CVSS 10.0
@@ -28,27 +31,30 @@ DeviceTvmSoftwareVulnerabilitiesKB
 | join DeviceTvmSoftwareInventoryVulnerabilities on CveId
 | project-away CveId1, VulnerabilitySeverityLevel1, AffectedSoftware
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation | v |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration |  |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability | v |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Dario Brambilla
 **GitHub alias:** darioongit
 **Organization:** Microsoft 365 Defender

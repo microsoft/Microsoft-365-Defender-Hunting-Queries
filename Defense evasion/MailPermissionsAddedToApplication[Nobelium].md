@@ -1,11 +1,14 @@
 # Mail.Read or Mail.ReadWrite permissions added to OAuth application
+
 This query will find applications that have been granted Mail.Read or Mail.ReadWrite permissions in which the corresponding user recently consented to. It can help identify applications that have been abused to gain access to user email.
 
-Solorigate - The actor was observed modifying existing tenant application permissions to allow them to read user email through the Microsoft Graph API. https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
+The actor, Nobelium, was observed modifying existing tenant application permissions to allow them to read user email through the Microsoft Graph API. See [*Customer Guidance on Recent Nation-State Cyber Attacks*](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/).
 
-Query insprired by Azure Sentinel detection https://github.com/Azure/Azure-Sentinel/blob/master/Detections/AuditLogs/MailPermissionsAddedToApplication.yaml
+This query is insprired by an Azure Sentinel [detection](https://github.com/Azure/Azure-Sentinel/blob/master/Detections/AuditLogs/MailPermissionsAddedToApplication.yaml).
+
 ## Query
-```
+
+```Kusto
 let auditLookback = 1d;
 CloudAppEvents
 | where Timestamp > ago(auditLookback)
@@ -37,27 +40,30 @@ CloudAppEvents
 | where PermsTimestamp +2m >= ConsentTimestamp
 | project Timestamp, ActionType, InitiatingUser=AccountDisplayName, UserId, InitiatingIP=IPAddress, UserAgent, PermissionsAddedTo, AppName, AppId
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion | V |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration |  |  | 
+| Defense evasion | V |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Blake Strom
 **GitHub alias:** @bstrom
 **Organization:** Microsoft 365 Defender

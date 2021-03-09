@@ -1,8 +1,12 @@
-# fireeye-red-team-tools-HASHs [Solorigate]
-This query is searching for the HASHs of the Red Team Tools shared by FireEye
-https://github.com/fireeye/red_team_tool_countermeasures/blob/master/all-hashes.csv
+# FireEye Red Team tools HASHs [Nobelium]
+
+This query searches for the HASHs of the FireEye Red Team tools compromised by the Nobelium activity group.
+
+See [all-hashes.csv](https://github.com/fireeye/red_team_tool_countermeasures/blob/master/all-hashes.csv) on the [official FireEye repo](https://github.com/fireeye).
+
 ## Query
-```
+
+```Kusto
 let MD5Hash= dynamic(
     [
 '013c7708f1343d684e3571453261b586',
@@ -320,27 +324,30 @@ DeviceFileEvents
 | union DeviceImageLoadEvents
 | where SHA1 in(SHA1Hash) or SHA256 in(SHA256Hash) or MD5 in(MD5Hash)
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation | v |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration |  |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability | v |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Dario Brambilla
 **GitHub alias:** darioongit
 **Organization:** Microsoft 365 Defender

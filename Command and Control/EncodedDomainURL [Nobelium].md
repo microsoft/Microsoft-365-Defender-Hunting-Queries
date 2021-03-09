@@ -1,34 +1,37 @@
-# Solorigate Encoded Domain in URL
-Looks for a logon domain seen in Azure AD logs appearing in a DNS query encoded with the DGA encoding used in the Solorigate incident.
+# Nobelium encoded domain in URL
 
-Reference: https://blogs.microsoft.com/on-the-issues/2020/12/13/customers-protect-nation-state-cyberattacks/
+Looks for a logon domain seen in Azure AD logs appearing in a DNS query encoded with the DGA encoding used in the Nobelium campaign.
 
-Query insprired by Azure Sentinel Query https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Hunting%20Queries/DnsEvents/Solorigate-Encoded-Domain-URL.yaml
+See [*Important steps for customers to protect themselves from recent nation-state cyberattacks*](https://blogs.microsoft.com/on-the-issues/2020/12/13/customers-protect-nation-state-cyberattacks/) for more on the Nobelium campaign (formerly known as Solorigate).
+
+This query is insprired by an Azure Sentinel [detection](https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Hunting%20Queries/DnsEvents/Solorigate-Encoded-Domain-URL.yaml).
+
 ## Query
-```
+
+```Kusto
 let timeFrame = ago(1d);
 let relevantDeviceNetworkEvents = 
-  DeviceNetworkEvents  
-  | where Timestamp >= timeFrame      
+  DeviceNetworkEvents
+  | where Timestamp >= timeFrame
   | where RemoteUrl !has "\\" and RemoteUrl !has "/"
   | project-rename DomainName = RemoteUrl
   | summarize by DomainName;
-let relevantDeviceEvents =   
-  DeviceEvents 
-  | where Timestamp >= timeFrame        
-  | where ActionType == "DnsQueryResponse"      
+let relevantDeviceEvents =
+  DeviceEvents
+  | where Timestamp >= timeFrame
+  | where ActionType == "DnsQueryResponse"
   | extend query = extractjson("$.DnsQueryString", AdditionalFields)  
-  | where isnotempty(query)   
+  | where isnotempty(query)
   | project-rename DomainName = query
   | summarize by DomainName;
-let relevantIdentityQueryEvents =      
+let relevantIdentityQueryEvents =
   IdentityQueryEvents 
-  | where Timestamp >= timeFrame        
+  | where Timestamp >= timeFrame
   | where ActionType == "DNS query"
-  | where Protocol == "Dns"    
+  | where Protocol == "Dns"
   | project-rename DomainName = QueryTarget
   | summarize by DomainName;
-let DnsEvents =     
+let DnsEvents =
   relevantIdentityQueryEvents
   | union
   relevantDeviceNetworkEvents  
@@ -37,9 +40,9 @@ let DnsEvents =
   | summarize by DomainName;
 let dictionary = dynamic(["r","q","3","g","s","a","l","t","6","u","1","i","y","f","z","o","p","5","7","2","d","4","9","b","n","x","8","c","v","m","k","e","w","h","j"]);
 let regex_bad_domains =
-   AADSignInEventsBeta 
+   AADSignInEventsBeta
    //Collect domains from tenant from signin logs
-   | where Timestamp >= timeFrame  
+   | where Timestamp >= timeFrame
    | extend domain = tostring(split(AccountUpn, "@", 1)[0])
    | where domain != ""
    | summarize by domain
@@ -64,10 +67,10 @@ let regex_bad_domains =
    | summarize make_set(target_encoded)
    //Key to join to DNS
    | extend key = 1;
-DnsEvents  
+DnsEvents
   | extend key = 1
   //For each DNS query join the malicious domain list
-  | join kind=inner ( 
+  | join kind=inner (
       regex_bad_domains
   ) on key
   | project-away key
@@ -77,27 +80,30 @@ DnsEvents
   | extend match = indexof(DomainName, set_target_encoded)
   | where match > -1
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion | |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control | V |  | 
-| Exfiltration |  |  | 
+| Defense evasion | |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control | V |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Stefan Sellmer
 **GitHub alias:** @stesell
 **Organization:** Microsoft 365 Defender

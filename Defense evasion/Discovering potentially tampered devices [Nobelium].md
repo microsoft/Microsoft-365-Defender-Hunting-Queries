@@ -1,17 +1,20 @@
 # Discovering potentially tampered devices [Solorigate]
 
-To evade security software and analyst tools, the Solorigate malware enumerates the target system looking for certain running processes, loaded drivers, and registry keys, with the goal of disabling them.
+To evade security software and analyst tools, Nobelium malware enumerates the target system looking for certain running processes, loaded drivers, and registry keys, with the goal of disabling them.
 
-The Microsoft Defender for Endpoint sensor is one of the processes the malware attempts to disable. 
-Microsoft Defender for Endpoint has built-in protections against many techniques attackers use to disable endpoint sensors ranging from hardened OS protection, 
-anti-tampering policies, and detections for a variety of tampering attempts, including “Attempt to stop Microsoft Defender for Endpoint sensor”, “Tampering with Microsoft Defender for Endpoint sensor settings”, or “Possible sensor tampering in memory”.
+The Microsoft Defender for Endpoint sensor is one of the processes the malware attempts to disable.
 
-Successfully disabling Microsoft Defender for Endpoint can prevent the system from reporting observed activities. 
-However, the multitude of signals reported into Microsoft 365 Defender provides a unique opportunity to hunt for systems where the tampering technique used might have been successful. 
+Microsoft Defender for Endpoint has built-in protections against many techniques attackers use to disable endpoint sensors ranging from hardened OS protection, anti-tampering policies, and detections for a variety of tampering attempts, including “Attempt to stop Microsoft Defender for Endpoint sensor”, “Tampering with Microsoft Defender for Endpoint sensor settings”, or “Possible sensor tampering in memory”.
+
+Successfully disabling Microsoft Defender for Endpoint can prevent the system from reporting observed activities.
+
+However, the multitude of signals reported into Microsoft 365 Defender provides a unique opportunity to hunt for systems where the tampering technique used might have been successful.
+
 The following advanced hunting query can be used to locate devices that should be reporting but aren’t:
 
 ## Query
-```
+
+```Kusto
 // Times to be modified as appropriate
 let timeAgo=1d;
 let silenceTime=8h;
@@ -44,25 +47,28 @@ silentDevices
 | summarize ReportId=arg_max(Timestamp, ReportId), Timestamp=max(Timestamp), LocalIP=arg_max(Timestamp, LocalIP) by DeviceId
 | project DeviceId, ReportId=ReportId1, Timestamp, LocalIP=LocalIP1
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion | V |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration |  |  | 
+| Defense evasion | V |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Microsoft 365 Defender

@@ -1,16 +1,18 @@
-# Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Solorigate]
+# Credentials were added to an Azure AD application after 'Admin Consent' permissions granted [Nobelium]
+
 Credentials were added to an application by UserA, after the application was granted admin consent rights by UserB
 
-Solorigate - The actor has been observed adding credentials (x509 keys or password credentials) to one or more legitimate OAuth Applications or Service Principals, usually with existing Mail.Read or Mail.ReadWrite permissions, which grants the ability to read mail content from Exchange Online via Microsoft Graph or Outlook REST. Examples include mail archiving applications.
-https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/
+The Nobelium activity group has been observed adding credentials (x509 keys or password credentials) for one or more legitimate OAuth Applications or Service Principals, usually with existing Mail.Read or Mail.ReadWrite permissions, which grants the ability to read mail content from Exchange Online via Microsoft Graph or Outlook REST. Examples include mail archiving applications.
 
-How to grant tenant-wide admin consent to an application -
-https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent
+See [*Customer Guidance on Recent Nation-State Cyber Attacks*](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) for more on the Nobelium campaign (formerly known as Solorigate).
 
-More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
+See [*Grant tenant-wide admin consent to an application*](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent) for how to add admin consent to an application.
+
+More Nobelium-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
-```
+
+```Kusto
 CloudAppEvents
 | where Application == "Office 365"
 | where ActionType == "Consent to application."
@@ -28,21 +30,23 @@ CloudAppEvents
  ) on spnID 
 | where ConsentTime < AddSecretTime and AccountDisplayName <> AccountDisplayName1
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence | V |  | 
+| Persistence | V |  |
 | Privilege escalation |  |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration |  |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
@@ -60,6 +64,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 * [View data on software identified as affected by Solorigate](../Campaigns/known-affected-software-orion[Solorigate].md)
 
 ## Contributor info
+
 **Contributor:** Tal Maor
 **GitHub alias:** @talthemaor
 **Organization:** Microsoft 365 Defender

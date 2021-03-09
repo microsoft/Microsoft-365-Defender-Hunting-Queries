@@ -1,11 +1,12 @@
-# Anomaly Of MailItemAccess By GraphAPI [Solorigate] 
-The query is looking for anomaly in mailItemAccess that operated by Graph API.
-The anomaly used in standard deviation to find the anomaly. The query return all the clientIDs that the number of mail that sent(per day) bigger than average + STDThreshold(2.5)*(standard deviation).
+# Anomaly Of MailItemAccess By GraphAPI [Nobelium]
 
-https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-forensics-investigations?view=o365-worldwide#the-mailitemsaccessed-mailbox-auditing-action https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-forensics-investigations?view=o365-worldwide
+This query looks for anomalies in mail item access events made by Graph API. It uses standard deviation to determine if the number of events is anomalous. The query returns all clientIDs where the amount of mail sent per day was larger than value given by the formula, `average + STDThreshold(2.5)*(standard deviation)`.
+
+See [*The MailItemsAccessed mailbox auditing action*](https://docs.microsoft.com/en-us/microsoft-365/compliance/mailitemsaccessed-forensics-investigations?view=o365-worldwide#the-mailitemsaccessed-mailbox-auditing-action).
 
 ## Query
-```
+
+```kusto
 let starttime = 30d;
 let STDThreshold = 2.5;
 let allMailAccsessByGraphAPI = CloudAppEvents
@@ -24,27 +25,30 @@ calculteAvgAndStdev  | join calculateNumberOfMailPerDay on ClientAppId
 |  where NumberOfMailPerDay > avg + STDThreshold * stev
 | project ClientAppId,Timestamp,NumberOfMailPerDay,avg,stev 
 ```
+
 ## Category
+
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
 | Initial access |  |  |
 | Execution |  |  |
-| Persistence |  |  | 
+| Persistence |  |  |
 | Privilege escalation |  |  |
-| Defense evasion |  |  | 
-| Credential Access |  |  | 
-| Discovery |  |  | 
-| Lateral movement |  |  | 
-| Collection |  |  | 
-| Command and control |  |  | 
-| Exfiltration | V |  | 
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration | V |  |
 | Impact |  |  |
 | Vulnerability |  |  |
 | Misconfiguration |  |  |
 | Malware, component |  |  |
 
 ## Contributor info
+
 **Contributor:** Shilo Yair
 **GitHub alias:** shilo.yair
 **Organization:** Microsoft 365 Defender

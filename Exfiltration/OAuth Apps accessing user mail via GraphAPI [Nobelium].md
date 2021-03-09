@@ -1,7 +1,6 @@
-# OAuth Apps accessing user mail via GraphAPI [Solorigate]
+# OAuth Apps accessing user mail via GraphAPI [Nobelium]
 
-Review all OAuth Applications accessing user mail via Graph. 
-This could return a significant number of results depending on how many applications are deployed in the environment. 
+This query helps you review all OAuth Applications accessing user mail via Graph. It could return a significant number of results depending on how many applications are deployed in the environment.
 
 ## Query
 

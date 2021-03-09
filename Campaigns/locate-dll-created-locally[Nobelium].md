@@ -1,12 +1,14 @@
-# Locate Solorigate-related malicious DLLs created in the system or locally
+# Locate Nobelium-related malicious DLLs created in the system or locally
 
-This query was originally published in the threat analytics report, *Solorigate supply chain attack*.
+This query was originally published in the threat analytics report, (formerly *Solorigate supply chain attack*).
 
-Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as *Solorigate*. A threat actor silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
+Microsoft detects the [2020 SolarWinds supply chain attack](https://msrc-blog.microsoft.com/2020/12/13/customer-guidance-on-recent-nation-state-cyber-attacks/) implant and its other components as part of a campaign by the Nobelium activity group. Nobelium is the threat actor behind the attack against SolarWinds, which was previously referred to as [*Solorigate*](https://www.microsoft.com/security/blog/2020/12/18/analyzing-solorigate-the-compromised-dll-file-that-started-a-sophisticated-cyberattack-and-how-microsoft-defender-helps-protect/).
 
-The following query locates malicious Solorigate-associated DLLs that have been created system or otherwise locally.
+ Nobelium silently added malicious code to legitimate software updates for Orion, which is IT monitoring software provided by SolarWinds. In this way, malicious dynamic link libraries (DLLs) were distributed to SolarWinds customers.
 
-More Solorigate-related queries can be found listed under the [See also](#see-also) section of this document.
+The following query locates malicious Nobelium-associated DLLs that have been created in the system or locally.
+
+More Nobelium-related queries can be found listed under the [See also](#see-also) section of this document.
 
 ## Query
 
