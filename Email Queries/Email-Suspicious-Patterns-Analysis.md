@@ -1,7 +1,7 @@
 # Email-Suspicious-Patterns-Analysis
 This query will help you to Identify Suspicious Patterns
-  - Normal Email Received vs Spam, Phish, Malware [Categorized by Microsoft]
-  - Normal Email Received Moving Average vs Spam, Phish, Malware [Categorized by Microsoft] Moving Average
+  - Normal Email vs Spam, Phish, Malware [Categorized by Microsoft]
+  - Normal Email Moving Average vs Spam, Phish, Malware [Categorized by Microsoft] Moving Average
 ## Query
 
 ```
