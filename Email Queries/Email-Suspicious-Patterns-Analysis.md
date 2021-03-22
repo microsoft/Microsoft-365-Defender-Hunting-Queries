@@ -27,7 +27,7 @@ union EmailEvents, EmailAttachmentInfo
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
 |------------------------|----------|-------|
-| Initial access |  | v |
+| Initial access | v |  |
 | Execution |  |  |
 | Persistence |  |  | 
 | Privilege escalation |  |  |
