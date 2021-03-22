@@ -87,7 +87,7 @@ IdentityInfo
 EmailEvents
 | project NetworkMessageId, Subject, Timestamp, SenderFromAddress , SenderIPv4 , RecipientEmailAddress , AttachmentCount 
 | join kind=leftouter(EmailAttachmentInfo
-| project NetworkMessageId,FileName, FileType, MalwareFilterVerdict, SHA256, RecipientEmailAddress )
+| project NetworkMessageId,FileName, FileType, ThreatTypes, SHA256, RecipientEmailAddress )
 on NetworkMessageId
 
 // filter the left table as much as you can
@@ -96,13 +96,13 @@ EmailEvents
 | where AttachmentCount > 0
 |project NetworkMessageId, Subject, Timestamp, SenderFromAddress , SenderIPv4 , RecipientEmailAddress , AttachmentCount 
 | join kind=inner (EmailAttachmentInfo
-| project NetworkMessageId,FileName, FileType, MalwareFilterVerdict, SHA256, RecipientEmailAddress )
+| project NetworkMessageId,FileName, FileType, ThreatTypes, SHA256, RecipientEmailAddress )
 on NetworkMessageId, RecipientEmailAddress 
 
 // Smaller table on the left side, with kind = inner, as default join (innerunique) 
 // will remove left side duplications, so if a single email has more than one attachments we will miss it
 EmailAttachmentInfo
-| project NetworkMessageId, FileName, FileType, MalwareFilterVerdict, SHA256, RecipientEmailAddress
+| project NetworkMessageId, FileName, FileType, ThreatTypes, SHA256, RecipientEmailAddress
 | join kind=inner
 (EmailEvents
 | where AttachmentCount > 0
