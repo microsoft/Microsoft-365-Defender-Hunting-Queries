@@ -7,7 +7,7 @@ This query will help you to Identify Suspicious Patterns
 ```
 let startTime = now(-30d);
 let endTime = now();
-union EmailEvents, EmailAttachmentInfo
+EmailEvents
 | where Timestamp between ( startTime .. endTime )
 | where isnotempty(RecipientEmailAddress)
 | extend suspiciousEmailFlag = iff(ThreatTypes has_any ("Spam","Phish","Malware"),1,0)
