@@ -1,7 +1,7 @@
 # Appspot Phishing Abuse
 This query helps surface phishing campaigns associated with Appspot abuse. These emails frequently contain phishing links that utilize the recipients' own email address as a unique identifier in the URI.
 
-This campaign was published on Twitter by @MsftSecIntel at this link: https://twitter.com/MsftSecIntel/status/1374148156301004800  
+This campaign was published on Twitter by [@MsftSecIntel](https://twitter.com/MsftSecIntel) at this link: https://twitter.com/MsftSecIntel/status/1374148156301004800  
 ## Query
 ```
 EmailUrlInfo
