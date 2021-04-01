@@ -24,7 +24,7 @@ let outlookLinks =
     | project Timestamp, DeviceId, DeviceName, WasOutlookSafeLink, InitiatingProcessFileName,
             OpenedLink=iff(WasOutlookSafeLink, url_decode(tostring(ParsedUrl["Query Parameters"]["url"])), RemoteUrl);
 let alerts =
-    DeviceAlertEvents
+    AlertInfo | join AlertEvidence on AlertId
     | summarize (FirstDetectedActivity, Title)=argmin(Timestamp, Title) by AlertId, DeviceId
     // Filter alerts that include events from before the queried time period
     | where FirstDetectedActivity > minTimeRange;
