@@ -14,7 +14,7 @@
 
 ```
 let all_computers_with_vlcvln=
-DeviceTvmSoftwareInventoryVulnerabilities 
+DeviceTvmSoftwareVulnerabilities 
 | where SoftwareName contains "vlc" 
 | summarize makelist(DeviceName);
 let all_affected_users=
@@ -37,7 +37,7 @@ EmailAttachmentInfo
 // If these users opened those .mkv files
 
 let all_computers_with_vlcvln=
-DeviceTvmSoftwareInventoryVulnerabilities 
+DeviceTvmSoftwareVulnerabilities 
 | where SoftwareName contains "vlc" 
 | summarize makelist(DeviceName);
 DeviceFileEvents 
