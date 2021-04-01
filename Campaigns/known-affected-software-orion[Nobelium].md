@@ -13,7 +13,7 @@ More Nobelium-related queries can be found listed under the [See also](#see-also
 ## Query
 
 ```kusto
-DeviceTvmSoftwareInventoryVulnerabilities
+DeviceTvmSoftwareVulnerabilities
 | where CveId == 'TVM-2020-0002'
 | project DeviceId, DeviceName, SoftwareVendor, SoftwareName, SoftwareVersion
 ```
