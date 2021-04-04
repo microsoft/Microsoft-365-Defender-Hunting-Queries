@@ -28,7 +28,7 @@ let FireEyeCVE= dynamic(
 );
 DeviceTvmSoftwareVulnerabilitiesKB
 | where CveId in(FireEyeCVE)
-| join DeviceTvmSoftwareInventoryVulnerabilities on CveId
+| join DeviceTvmSoftwareVulnerabilities on CveId
 | project-away CveId1, VulnerabilitySeverityLevel1, AffectedSoftware
 ```
 
