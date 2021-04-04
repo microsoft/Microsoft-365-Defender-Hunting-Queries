@@ -13,7 +13,7 @@ More Nobelium-related queries can be found listed under the [See also](#see-also
 ## Query
 
 ```kusto
-DeviceTvmSoftwareInventoryVulnerabilities
+DeviceTvmSoftwareVulnerabilities
 | where SoftwareVendor == 'solarwinds'
 | where SoftwareName startswith 'orion'
 | summarize dcount(DeviceName) by SoftwareName
