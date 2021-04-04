@@ -4,7 +4,7 @@ This query lists files copied to USB external drives with USB drive information 
 ## Query
 ```
 let UsbDriveMount = DeviceEvents
-| where ActionType=="UsbDriveMount"
+| where ActionType=="UsbDriveMounted"
 | extend ParsedFields=parse_json(AdditionalFields)
 | project DeviceId, DeviceName, DriveLetter=ParsedFields.DriveLetter, MountTime=Timestamp,
 ProductName=ParsedFields.ProductName,SerialNumber=ParsedFields.SerialNumber,Manufacturer=ParsedFields.Manufacturer
