@@ -5,11 +5,20 @@ This query was originally published on Twitter, by [@MsftSecIntel](https://twitt
 The query helps detect emails associated with a campaign that has used open redirector URLs. The campaign's URLs begin with the distinct pattern, *hxxps://t[.]domain[.]tld/r/?*. Attackers use URL redirection to manipulate users into visiting a malicious website or to evade detection.
 
 ## Query
-
+Generic regex for all emails containing base "t-dot" redirector pattern:
 ```
 EmailUrlInfo
 | where Url matches regex @"s?\:\/\/(?:www\.)?t\.(?:[\w\-\.]+\/+)+(?:r|redirect)\/?\?"
 ```
+Specific regex for campaigns containing known malicious infrastructure as observed from late 2020 until at least April 2021:
+```
+EmailUrlInfo
+//This regex identifies emails containing the "T-Dot" redirector pattern in the URL
+| where Url matches regex @"s?\:\/\/(?:www\.)?t\.(?:[\w\-\.]+\/+)+(?:r|redirect)\/?\?" 
+    //This regex narrows in on emails that contain the known malicious domain pattern in the URL from the most recent campaigns
+    and Url matches regex @"[a-zA-Z]\-[a-zA-Z]{2}\.(xyz|club)"
+```
+
 
 ## Category
 
