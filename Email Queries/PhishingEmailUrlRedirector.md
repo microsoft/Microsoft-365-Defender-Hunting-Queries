@@ -2,7 +2,7 @@
 
 This query was originally published on Twitter, by [@MsftSecIntel](https://twitter.com/MsftSecIntel).
 
-The query helps detect emails associated with a campaign that has used open redirector URLs. The campaign's URLs begin with the distinct pattern, *hxxps://t[.]domain[.]tld/r/?*. Attackers use URL redirection to manipulate users into visiting a malicious website or to evade detection.
+The query helps detect emails associated with the open redirector URL campaign. The campaign's URLs begin with the distinct pattern, hxxps://t[.]domain[.]tld/r/?. Attackers use URL redirection to manipulate users into visiting a malicious website or to evade detection.
 
 ## Query
 Generic regex for all emails containing base "t-dot" redirector pattern:
