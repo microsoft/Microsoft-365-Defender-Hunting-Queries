@@ -1,4 +1,4 @@
-# Detect malicious use of RegAsm, RegSvcs, and InstallUtil by Snip3
+# Detect keywords associated with Snip3 campaign emails
 
 Snip3 is a family of related remote access trojans. Although the malware in this family contain numerous small variations, they all exhibit similar behaviors and techniques.
 
