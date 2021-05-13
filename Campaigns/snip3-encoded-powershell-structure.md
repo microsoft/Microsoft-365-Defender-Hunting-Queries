@@ -10,8 +10,8 @@ At present, this method of encoding is much more rare, being seen largely with l
 
 ```kusto
 DeviceFileEvents
-| where InitiatingProcessFileName == "powershell.exe"
-| where InitiatingProcessCommandLine has_all ("IEX","System.Text.Encoding","::UTF8.GetString(@")
+| where InitiatingProcessFileName =~ "powershell.exe"
+| where InitiatingProcessCommandLine has_all ("IEX","Text.Encoding","UTF8.GetString(@")
 | where InitiatingProcessCommandLine has_any ("Unrestricted","Hidden")
 ```
 
