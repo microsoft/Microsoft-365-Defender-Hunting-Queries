@@ -16,7 +16,7 @@ EmailUrlInfo
 //This regex identifies emails containing the "T-Dot" redirector pattern in the URL
 | where Url matches regex @"s?\:\/\/(?:www\.)?t\.(?:[\w\-\.]+\/+)+(?:r|redirect)\/?\?" 
     //This regex narrows in on emails that contain the known malicious domain pattern in the URL from the most recent campaigns
-    and Url matches regex @"[a-zA-Z]\-[a-zA-Z]{2}\.(xyz|club)"
+    and Url matches regex @"[a-zA-Z]\-[a-zA-Z]{2}\.(xyz|club|shop)"
 ```
 
 
