@@ -1,9 +1,10 @@
 # Abuse.ch Recent Threat Feed
 
-This query will hunt for files matching the current abuse.ch recent threat feed based on Sha256.
+This query will hunt for files matching the current abuse.ch recent threat feed based on Sha256. Currently the query is set up to analyze the last day worth of events, but this is configurable using the MaxAge variable.
 
 ## Query
 ```
+let MaxAge = ago(1d);
 let AbuseFeed = materialize (
     (externaldata(report:string)
     [@"https://bazaar.abuse.ch/export/csv/recent/"]
@@ -28,13 +29,22 @@ let AbuseFeed = materialize (
 );
 union (
     AbuseFeed
-    | join DeviceProcessEvents on SHA256
+    | join (
+        DeviceProcessEvents
+        | where Timestamp > MaxAge
+    ) on SHA256
 ), (
     AbuseFeed
-    | join DeviceFileEvents on SHA256
+    | join (
+        DeviceFileEvents
+        | where Timestamp > MaxAge
+    ) on SHA256
 ), ( 
     AbuseFeed
-    | join DeviceImageLoadEvents on SHA256
+    | join (
+        DeviceImageLoadEvents
+        | where Timestamp > MaxAge
+    ) on SHA256
 )
 ```
 ## Category
