@@ -1,26 +1,25 @@
 # Possible File Copy to USB Drive
 
-This query searches for file copies which occur within a period of time (by default 15 min) to volumes other than the C drive or UNC shares. By default, this query will
-search all devices. A single device can be specified by entering the DeviceName in the DeviceNameToSearch variable. Additionally, to change the period of time from when
-the USB device was inserted, adjust the TimespanInSeconds value.
+This query searches for file copies which occur within a period of time (by default 15 min) to volumes associated with USB drives. To change the period of time from when
+the USB device was inserted, adjust the Tolerance value.
 
 Happy hunting!
 
 ## Query
 
 ```
-let DeviceNameToSearch = ''; // DeviceName to search for. Leave blank to search all devices.
-let TimespanInSeconds = 900; // Period of time between device insertion and file copy
-let Connections =
+let Tolerance = 1h;
 DeviceEvents
-| where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and ActionType == "PnpDeviceConnected"
-| extend parsed = parse_json(AdditionalFields)
-| project DeviceId,ConnectionTime = Timestamp, DriveClass = tostring(parsed.ClassName), UsbDeviceId = tostring(parsed.DeviceId), ClassId = tostring(parsed.DeviceId), DeviceDescription = tostring(parsed.DeviceDescription), VendorIds = tostring(parsed.VendorIds)
-| where DriveClass == 'USB' and DeviceDescription == 'USB Mass Storage Device';
-DeviceFileEvents
-| where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and FolderPath !startswith "c" and FolderPath !startswith @"\"
-| join kind=inner Connections on DeviceId
-| where datetime_diff('second',Timestamp,ConnectionTime) <= TimespanInSeconds
+| where ActionType == "UsbDriveMounted"
+| extend AdditionalFields = parse_json(AdditionalFields)
+| evaluate bag_unpack(AdditionalFields)
+| project UsbSessionStart = Timestamp, DeviceId, ActionType, tostring(DriveLetter), tostring(Manufacturer), tostring(ProductName), tostring(ProductRevision), tostring(SerialNumber), tostring(Volume), DriveId = hash_sha256(strcat(Manufacturer,ProductName,ProductRevision,SerialNumber)), UsbSessionEnd = Timestamp + Tolerance
+| where isnotempty( DriveLetter)
+| join kind=inner (
+    DeviceFileEvents
+    | where FolderPath !startswith 'c:' and FolderPath !startswith @'\'
+) on DeviceId
+| where Timestamp between (UsbSessionStart .. UsbSessionEnd) and FolderPath startswith DriveLetter
 ```
 
 ## Category
