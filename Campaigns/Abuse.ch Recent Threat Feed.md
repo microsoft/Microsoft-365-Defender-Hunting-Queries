@@ -47,6 +47,30 @@ union (
     ) on SHA256
 )
 ```
+
+...or if you don't care about the details from Malware Bazaar you might consider this slightly more lightweight version
+
+```
+let MaxAge = ago(1d);
+let AbuseFeed = toscalar (
+    (externaldata(report:string)
+    [@"https://bazaar.abuse.ch/export/txt/sha256/recent/"]
+    with (format = "txt"))
+    | where report !startswith '#'
+    | summarize make_set(report)
+);
+union (
+    DeviceProcessEvents
+    | where Timestamp > MaxAge and SHA256 in (AbuseFeed)
+), (
+    DeviceFileEvents
+    | where Timestamp > MaxAge and SHA256 in (AbuseFeed)
+), ( 
+    DeviceImageLoadEvents
+    | where Timestamp > MaxAge and SHA256 in (AbuseFeed)
+)
+```
+
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
