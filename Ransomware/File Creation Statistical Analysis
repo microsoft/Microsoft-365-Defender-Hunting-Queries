@@ -1,0 +1,45 @@
+# File Creation Statistical Analysis [Standard Deviation, Moving Average]
+Ransomeware Note File Creation with ".txt" Extension
+## Query
+```
+let startTime = now(-7d);
+let endTime = now();
+DeviceFileEvents
+| where Timestamp between ( startTime .. endTime )
+| where isnotempty(FileName)
+| where FileName endswith ".txt" and ActionType == "FileCreated"
+| summarize FileCreatedByProcess = count() by InitiatingProcessFileName, Timestamp
+| summarize stdevFileCreatedByProcess = stdev(FileCreatedByProcess*10) by bin(Timestamp, 1h)
+| serialize
+| extend movAvg = (stdevFileCreatedByProcess + prev(stdevFileCreatedByProcess,1,0) + prev(stdevFileCreatedByProcess,2,0))/3.0
+| project stdevFileCreatedByProcess, movAvg, Timestamp
+| sort by Timestamp asc
+| render timechart
+```
+## Category
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+| Technique, tactic, or state | Covered? (v=yes) | Notes |
+|------------------------|----------|-------|
+| Initial access |  |  |
+| Execution |  |  |
+| Persistence |  |  | 
+| Privilege escalation |  |  |
+| Defense evasion |  |  | 
+| Credential Access |  |  | 
+| Discovery |  |  | 
+| Lateral movement |  |  | 
+| Collection |  |  | 
+| Command and control |  |  | 
+| Exfiltration |  |  | 
+| Impact |  | Y |
+| Vulnerability |  |  |
+| Exploit |  |  |
+| Misconfiguration |  |  |
+| Malware, component |  | Y |
+| Ransomware |  | Y |
+
+
+## Contributor info
+**Contributor:** AjatShatru
+**GitHub alias:** A-dd-Y
+**Contact info:** https://www.linkedin.com/in/ajatshatrux
