@@ -1,4 +1,4 @@
-# Potential distribution of ransomware
+# Distribution from remote location
 
 This query checks for alerts related to file drop and remote execution where the file name matches PsExec and similar tools used for distribution
 
