@@ -1,4 +1,4 @@
-# DarkSide ransomware process
+# DarkSide
 
 Use this query to look for running DarkSide ransomware behavior in the environment
 
