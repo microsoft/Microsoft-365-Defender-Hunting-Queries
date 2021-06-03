@@ -1,4 +1,4 @@
-# Turning off services using sc.exe
+# Devices with Cobalt Strike alerts
 
 Use this query to look for alerts related to suspected ransomware and Cobalt Strike activity, a tool used in numerous ransomware campaigns
 
