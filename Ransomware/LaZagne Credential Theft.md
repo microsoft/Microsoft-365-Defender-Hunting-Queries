@@ -1,4 +1,4 @@
-# LaZagne and similar tool credential theft activity
+# LaZagne Credential Theft
 
 Use this query to locate processes executing credential theft activity, often LaZagne in ransomware compromises.
 
