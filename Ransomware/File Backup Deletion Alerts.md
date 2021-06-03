@@ -1,4 +1,4 @@
-# Alerts for file backup deletion
+# File Backup Deletion Alerts
 
 This query checks alerts related to file backup deletion and enriches with additional alert evidence information
 
