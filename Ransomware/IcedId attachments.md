@@ -3,7 +3,7 @@
 Use this query to locate emails with subject indicators of a reply or forward, and the attachment is a .doc, or a .zip containing a .doc. Review results for suspicious emails.
 IcedId can lead to ransomware
 
-## IcedId attachments
+## Query
 ```
 // Identify a reply or forward via subject line let SubjectTerms = pack_array("RE:","FW:","FWD:","AW:","WG:"); 
 EmailEvents 
