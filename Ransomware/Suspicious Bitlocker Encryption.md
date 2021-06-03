@@ -1,4 +1,4 @@
-# Bitlocker as an encryption method for ransom
+# Suspicious Bitlocker Encryption
 
 Looks for potential instances of bitlocker modifying registry settings to allow encryption, where it's executed via a .bat file.
 
