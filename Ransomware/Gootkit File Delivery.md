@@ -1,4 +1,4 @@
-# Gootkit alerts and command and control information
+# Gootkit File Delivery
 
 This query surfaces alerts related to Gootkit and enriches with command and control information, which has been observed delivering ransomware.
 
