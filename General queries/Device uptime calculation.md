@@ -1,20 +1,25 @@
 # Device uptime calculation  
-This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 16 minutes, we can consider device is tuned off.　Calculated uptime may include up to 30 minutes gap. Devices may be tuned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “LastTimestamp”.  When the sigle independent DeviceInfo without any sequential DeviceInfo within 16 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
+This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 16 minutes, we can consider device is turned off.　Calculated uptime may include up to 30 minutes gap. Devices may be turned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “LastTimestamp”.  When the single independent DeviceInfo without any sequential DeviceInfo within 16 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
+
+## Updates on 6/8/2021
+I modified a previous query in a way of avoiding use of partitions. So now this query works for an environment with over 64 devices without device filters. But please consider to use other filters by using device groups, or timespan as well in a large environment in terms of query performance.
 
 ## Query
 ```
 DeviceInfo 
-| partition by DeviceId (order by Timestamp desc
+| order by DeviceId, Timestamp desc
+| extend FirstEntry = (prev(DeviceId,1) != DeviceId)
+| extend LastEntry = (next(DeviceId,1) != DeviceId)
 | extend NewerTimestamp = prev(Timestamp,1,now(1d))
 | extend OlderTimestamp = next(Timestamp,1,0)
-| extend StartSignal = Timestamp - OlderTimestamp > 16m
-| extend FinalSignal = NewerTimestamp - Timestamp > 16m
+| extend StartSignal = LastEntry or Timestamp - OlderTimestamp > 16m
+| extend FinalSignal = FirstEntry or NewerTimestamp - Timestamp > 16m
 | where FinalSignal or StartSignal
 | extend LastTimestamp=iff(FinalSignal,Timestamp,prev(Timestamp,1))
 | where StartSignal
 | extend ParsedFields=parse_json(LoggedOnUsers)[0]
 | extend DurationAtLeast= format_timespan(LastTimestamp-Timestamp,'dd.hh:mm:ss')
-| project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName)
+| project Timestamp,LastTimestamp,DurationAtLeast,DeviceName,DomainName=ParsedFields.DomainName,UserName=ParsedFields.UserName
 ```
 ## Sample output  
 | Timestamp | LastTimestamp | DurationAtLeast | DeviceName | DomainName | UserName |
