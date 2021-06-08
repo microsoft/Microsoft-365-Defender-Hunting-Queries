@@ -11,9 +11,9 @@ The query below can find instances of PSEXESVC being used to launch batch files,
 ```kusto
 // Searches for remote batch file launch using PSEXESVC.exe
 DeviceProcessEvents
-| where ProcessCommandLine has "DisableIOAVProtection"
+| where InitiatingProcessParentFileName startswith "psexe"
 | where InitiatingProcessCommandLine has ".bat"
-| where InitiatingProcessParentFileName has "PSEXESVC.exe"
+| where ProcessCommandLine has "DisableIOAVProtection"
 ```
 
 ## Category

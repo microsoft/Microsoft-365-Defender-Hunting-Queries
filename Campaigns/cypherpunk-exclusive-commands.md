@@ -11,8 +11,8 @@ The query below surfaces commands that follow the distinctive pattern Cypherpunk
 ```kusto
 // Searches for possible Cypherpunk ransomware activity
 DeviceProcessEvents
+| where InitiatingProcessParentFileName startswith "psexe"
 | where ProcessCommandLine has "Dvr /go"
-| where InitiatingProcessParentFileName has "PSEXESVC.exe"
 ```
 
 ## Category
