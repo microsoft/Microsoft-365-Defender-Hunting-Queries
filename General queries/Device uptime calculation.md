@@ -1,19 +1,15 @@
 # Device uptime calculation  
 This query calculates device uptime based on periodic DeviceInfo which is recorded every 15 minutes regardless of device’s network connectivity and uploaded once device gets online. If its interval is over 16 minutes, we can consider device is turned off.　Calculated uptime may include up to 30 minutes gap. Devices may be turned on up to 15 minutes earlier than the “timestamp”, and may be turned off up to 15 minutes later than the “LastTimestamp”.  When the single independent DeviceInfo without any sequential DeviceInfo within 16 minutes before or after is recorded, “DurationAtLeast” will be displayed as “00.00:00:00”.
 
-## Updates on 6/8/2021
-I modified a previous query in a way of avoiding use of partitions. So now this query works for an environment with over 64 devices without device filters. But please consider to use other filters by using device groups, or timespan as well in a large environment in terms of query performance.
+## Updates on 6/9/2021
+I modified a previous query in a way of avoiding use of partitions. So now this query works for an environment with over 64 devices without device filters. And I modified this to consider changes of “LoggedOnUsers” in periodic DeviceInfo entries. Please consider to use other filters by using device groups, or timespan as well in a large environment to meet with an upper limit, 10,000 results per query.
 
 ## Query
 ```
 DeviceInfo 
 | order by DeviceId, Timestamp desc
-| extend FirstEntry = (prev(DeviceId,1) != DeviceId)
-| extend LastEntry = (next(DeviceId,1) != DeviceId)
-| extend NewerTimestamp = prev(Timestamp,1,now(1d))
-| extend OlderTimestamp = next(Timestamp,1,0)
-| extend StartSignal = LastEntry or Timestamp - OlderTimestamp > 16m
-| extend FinalSignal = FirstEntry or NewerTimestamp - Timestamp > 16m
+| extend FinalSignal = (prev(DeviceId,1) != DeviceId) or (prev(LoggedOnUsers,1) != LoggedOnUsers) or (prev(Timestamp,1,now(1d)) - Timestamp > 16m)
+| extend StartSignal = (next(DeviceId,1) != DeviceId) or (next(LoggedOnUsers,1) != LoggedOnUsers) or (Timestamp - next(Timestamp,1,0) > 16m)
 | where FinalSignal or StartSignal
 | extend LastTimestamp=iff(FinalSignal,Timestamp,prev(Timestamp,1))
 | where StartSignal
