@@ -1,6 +1,6 @@
 # Cypherpunk remote execution through PSEXESVC
 
-This query was originally published in the threat analytics report, *XXX*.
+This query was originally published in the threat analytics report, *Cypherpunk ransomware leaves wake of tampered AVs*.
 
 Cypherpunk is a human-operated ransomware campaign named after the unusual *.cypherpunk* extension given to encrypted files. 
 
