@@ -1,6 +1,6 @@
 # Tomcat 8 process executing PowerShell command line to perform data exploitation activities and setting up scheduler tasks.
 
-This query was originally published in the threat analytics report, "☕⚡☕".
+This query was originally published in the threat analytics report, *Sysrv botnet evolution*.
 
 Sysrv is a Go-based botnet that targets both Windows and Linux servers, and steals resources to mine cryptocurrency.
 

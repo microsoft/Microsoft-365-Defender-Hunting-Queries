@@ -1,6 +1,6 @@
 # Oracle WebLogic process wlsvcX64.exe exploitation and execution of PowerShell script to download payloads
 
-This query was originally published in the threat analytics report, "☕⚡☕".
+This query was originally published in the threat analytics report, *Sysrv botnet evolution*.
 
 Sysrv is a Go-based botnet that targets both Windows and Linux servers, and steals resources to mine cryptocurrency.
 
