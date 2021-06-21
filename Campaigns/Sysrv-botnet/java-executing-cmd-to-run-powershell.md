@@ -4,7 +4,7 @@ This query was originally published in the threat analytics report, *Sysrv botne
 
 Sysrv is a Go-based botnet that targets both Windows and Linux servers, and steals resources to mine cryptocurrency.
 
-The following query finds instances of the Java process being used to execute cmd.exe and download and execute a PowerShell script. 
+The following query finds instances of the Java process being used to execute cmd.exe, and download and execute a PowerShell script.
 
 ## Query
 
