@@ -10,8 +10,8 @@ The query may return additional malware or campaigns not necessarily associated 
 
 ```kusto
 DeviceNetworkEvents 
-| where InitiatingProcessFileName in ("RevSvcs.exe","RegAsm.exe", "InstallUtil.exe") 
-| where InitiatingProcessCommandLine in ("\"RegAsm.exe\"","\"RevSvcs.exe\"","\"InstallUtil.exe\"") 
+| where InitiatingProcessFileName in ("RegSvcs.exe","RegAsm.exe", "InstallUtil.exe") 
+| where InitiatingProcessCommandLine in ("\"RegAsm.exe\"","\"RegSvcs.exe\"","\"InstallUtil.exe\"") 
 | where InitiatingProcessParentFileName endswith "Powershell.exe"
 ```
 
