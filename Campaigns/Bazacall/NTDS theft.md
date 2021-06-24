@@ -1,4 +1,4 @@
-# Bazacall MTDS.dit Theft
+# Bazacall NTDS.dit Theft
 Microsoft has observed compromises related to Bazacall resulting in theft of the Active Directory database using ntdsutil.exe. 
 
 ## Query
