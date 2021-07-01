@@ -5,7 +5,7 @@ Bazacall malware uses emails that contain a phone number for the user to call in
 This query looks for the subject lines associated with known Bazacall emails, using a regex to match on the fake account number pattern and a few keywords that are frequently used in these subjects.
 ```
 EmailEvents
-| where Subject matches regex @"[A-Z]{2}\d{15}"
+| where Subject matches regex @"[A-Z]{1,3}(?:\d{15}|\d{10})"
     and Subject has_any('trial', 'free', 'demo', 'membership', 'premium', 'gold')
 ```
 
