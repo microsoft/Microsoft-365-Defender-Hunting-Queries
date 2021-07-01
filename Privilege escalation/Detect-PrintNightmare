@@ -1,6 +1,7 @@
-# Detect CVE-2021-1675 (PrintNightmare) exploit
+# Detect PrintNightmare exploit
+# Assigned CVE likely to change as this is a differnet issue from CVE-2021-1675.
 
-This query locates possible activity that exploits CVE-2021-1675 (also known as PrintNightmare)
+This query locates possible activity that exploits PrintNightmare.
 
 ## Query
 
