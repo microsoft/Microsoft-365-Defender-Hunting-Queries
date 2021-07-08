@@ -2,11 +2,12 @@
 
 This query searches for a string pattern detected in evasive PowerShell usage. Jupyter or SolarMarker will iterate on this pattern multiple times to read data and call additional processes. This query is not fully specific to Jupyter or SolarMarker, and will also return other malicious malware, but is unlikely to return false positives.
 
-'''kusto
+## Query
+```
 DeviceProcessEvents
 | where FileName == "powershell.exe"
 | where ProcessCommandLine has_all("-ep bypass","-command","get-content","remove-item","iex")
-'''
+```
 
 ## Category
 
