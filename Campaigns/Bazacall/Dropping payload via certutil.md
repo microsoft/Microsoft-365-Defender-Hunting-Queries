@@ -1,4 +1,4 @@
-# BazaCall Excel file download domain pattern
+# BazaCall dropping payload via certutil.exe
 
 BazaCall is a campaign that manipulate users into calling a customer support center, where they are instructed to download an Excel file to unsubscribe from a phony service. When the user opens the Excel file, they are prompted to enable a malicious macro that infects their device with BazaLoader.
 
