@@ -1,5 +1,5 @@
 # Endpoint AV version report
-This query will identify the Microsoft Defender Antivirus Engine version and Microsoft Defender Antivirus Security Intelligence version (and timestamp), as well as the Microsoft Defender Antivirus Mode on the endpoint (Active, Passive, etc.).
+This query will identify the Microsoft Defender Antivirus Engine version and Microsoft Defender Antivirus Security Intelligence version (and timestamp), Product Update version (aka Platform update version) as well as the Microsoft Defender Antivirus Mode on the endpoint (Active, Passive, etc.).
 
 ## Query
 ```
@@ -14,7 +14,8 @@ DeviceTvmSecureConfigurationAssessment
 | extend AVSigVersion = tostring(avdata[0][0])
 | extend AVEngineVersion = tostring(avdata[0][1])
 | extend AVSigLastUpdateTime = tostring(avdata[0][2])
-| project DeviceId, DeviceName, OSPlatform, AVSigVersion, AVEngineVersion, AVSigLastUpdateTime, IsCompliant, IsApplicable
+| extend AVProductVersion = tostring(avdata[0][3])                      
+| project DeviceId, DeviceName, OSPlatform, AVSigVersion, AVEngineVersion, AVSigLastUpdateTime, AVProductVersion, IsCompliant, IsApplicable
 | join avmodetable on DeviceId
 | project-away DeviceId1
 
