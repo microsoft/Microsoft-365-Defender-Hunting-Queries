@@ -1,9 +1,16 @@
 # < Insert query name >
-< Provide query description and usage tips >
+< SolarWinds another zero-day KQL Detections >
 ## Query
 ```
-< Insert query string here >
-```
+//Check for network connections with SolarWInds IP's based on DeviceNetworkEvents
+let IPs = pack_array("98.176.196.89", "68.235.178.32", 
+"208.113.35.58","144.34.179.162","97.77.97.58"); 
+DeviceNetworkEvents
+| where RemotePort == 443
+| where Protocol == "Tcp" and ActionType == "ConnectionSuccess"
+| where Timestamp > ago(7d) 
+| where RemoteIP in(IPs)
+
 ## Category
 This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
 | Technique, tactic, or state | Covered? (v=yes) | Notes |
@@ -17,7 +24,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 | Discovery |  |  | 
 | Lateral movement |  |  | 
 | Collection |  |  | 
-| Command and control |  |  | 
+| Command and control V
 | Exfiltration |  |  | 
 | Impact |  |  |
 | Vulnerability |  |  |
@@ -28,7 +35,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 
 ## Contributor info
-**Contributor:** < your name >
-**GitHub alias:** < your github alias >
-**Organization:** < your org >
-**Contact info:** < email or website >
+**Contributor:** Shviam Malaviya
+**GitHub alias:** shivammalaviya
+**Organization:** Open-Systems
+**Contact info:** shivammalaviya@hotmail.com
