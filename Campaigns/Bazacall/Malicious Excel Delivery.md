@@ -5,7 +5,8 @@ Bazacall uses malicious Excel files to execute payloads on affected devices.
 This query looks for files that are downloaded from URL paths known to be associated with the Bazacall threat. 
 ```
 DeviceFileEvents
-| where FileOriginUrl  has "/cancel.php" and FileOriginReferrerUrl has "/account"
+| where FileOriginUrl has "/cancel.php" and FileOriginReferrerUrl has "/account"
+  or FileOriginUrl has "/download.php" and FileOriginReferrerUrl has "/case"
 ```
 
 
