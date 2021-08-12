@@ -1,5 +1,5 @@
 ## JNLP File Attachments
-JNLP file extensions are an uncommon filtype often used to deliver malware. 
+JNLP file extensions are an uncommon file type often used to deliver malware. 
 
 ## Query
 This query looks for email attachment name ending with a JNLP file extension.
