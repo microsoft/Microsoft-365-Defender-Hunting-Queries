@@ -1,3 +1,6 @@
+# Jupyter AKA SolarMarker
+Jupyter, otherwise known as SolarMarker, is a malware family and cluster of components known for it's info-stealing and backdoor capabilities that mainly proliferates through search engine optimization manipulation and malicious advertising in order to successfully encourage users to download malicious templates and documents. This malware has been popular since 2020 and currently is still active as of 2021. 
+
 # Deimos malware component execution
 
 The following query checks specifically for the AMSI Script Content, signaling that the Deimos malware is loading for execution. This is most often seen loaded by Jupyter, but may be in accompaniment of other malware or Jupyter variants as well. 
