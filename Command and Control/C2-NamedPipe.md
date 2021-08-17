@@ -1,11 +1,13 @@
 # Detects malicious SMB Named Pipes (used by common C2 frameworks)
 
-Detects the creation of a named pipe used by known APT malware.
+Detects the creation of a [named pipe](https://docs.microsoft.com/en-US/openspecs/windows_protocols/ms-wpo/4de75e21-36fd-440a-859b-75accc74487c) used by known APT malware.
 
 ## Query
 
 ```Kusto
-let minTimeRange = ago(1d);
+// maximum lookback time
+let minTimeRange = ago(7d);
+// this is what should be constantly tweaked with default C2 framework names, search uses has_any (wildcard)
 let badPipeNames = pack_array(
     '\\psexec',                                     // PSexec default pipe
     '\\paexec',                                     // PSexec default pipe
@@ -81,13 +83,13 @@ This query can be used to detect the following attack techniques and tactics ([s
 **Contributor:** @xknow_infosec
 
 Original Authors / Credits / Ressources:
-* 1) https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_psexec_pipes_artifacts.yml
-* 2) https://drive.google.com/file/d/1lKya3_mLnR3UQuCoiYruO3qgu052_iS_/view
-* 3) https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_namedpipes.yml
-* 4) https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_cobaltstrike.yml
-* 5) https://twitter.com/d4rksystem/status/1357010969264873472
-* 6) https://labs.f-secure.com/blog/detecting-cobalt-strike-default-modules-via-named-pipe-analysis/
-* 7) https://github.com/Neo23x0/sigma/issues/253
-* 8) https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_cred_dump_tools_named_pipes.yml
-* 9) https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_apt_turla_namedpipes.yml
-* 10) https://twitter.com/rpargman/status/1359961601160351744
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_psexec_pipes_artifacts.yml
+* https://drive.google.com/file/d/1lKya3_mLnR3UQuCoiYruO3qgu052_iS_/view
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_namedpipes.yml
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_cobaltstrike.yml
+* https://twitter.com/d4rksystem/status/1357010969264873472
+* https://labs.f-secure.com/blog/detecting-cobalt-strike-default-modules-via-named-pipe-analysis/
+* https://github.com/Neo23x0/sigma/issues/253
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_cred_dump_tools_named_pipes.yml
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_apt_turla_namedpipes.yml
+* https://twitter.com/rpargman/status/1359961601160351744
