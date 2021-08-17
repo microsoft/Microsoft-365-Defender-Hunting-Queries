@@ -1,13 +1,13 @@
 # Jupyter's evasive PowerShell executions
 
-The following query checks for instances of Jupyter or SolarMarker malware that launch a lengthy PowerShell script, which in turn reads from encoded strings to parse the next malicious script.  
+The following query checks for instances of Jupyter or SolarMarker malware that launch a lengthy PowerShell script, which in turn reads from encoded strings to parse the next malicious script. The initiating process name for this will almost always end in ".tmp" and reflect the original downloaded executable name. 
 
 ## Query
 ```
-DeviceProcessEvents 
-| where FileName == "powershell.exe" 
-| where InitiatingProcessFileName endswith ".tmp" and InitiatingProcessCommandLine has_all("/SL5=","Downloads",".exe") 
-| where ProcessCommandLine has_all("-command","=[System.Convert]::FromBase64String([System.IO.File]::ReadAllText($","));remove-item $",".length;$j++){$","$i++;if($i -ge $","=[System.Text.Encoding]::UTF8.GetString($")
+DeviceProcessEvents
+| where FileName =~ "powershell.exe"
+| where ProcessCommandLine has_all
+("-command","FromBase64String","));remove-item $",".length;$j++){$","$i++;if($i -ge $","-bxor","UTF8.GetString")
 ```
 
 ## Category
