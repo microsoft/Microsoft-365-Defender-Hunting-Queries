@@ -1,3 +1,6 @@
+# Jupyter AKA SolarMarker
+Jupyter, otherwise known as SolarMarker, is a malware family and cluster of components known for it's info-stealing and backdoor capabilities that mainly proliferates through search engine optimization manipulation and malicious advertising in order to successfully encourage users to download malicious templates and documents. This malware has been popular since 2020 and currently is still active as of 2021. 
+
 # Jupyter's evasive PowerShell executions
 
 The following query checks for instances of Jupyter or SolarMarker malware that launch a lengthy PowerShell script, which in turn reads from encoded strings to parse the next malicious script. The initiating process name for this will almost always end in ".tmp" and reflect the original downloaded executable name. 
