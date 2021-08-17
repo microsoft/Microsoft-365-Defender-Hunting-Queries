@@ -80,7 +80,7 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 ## Contributor info
 
-**Contributor:** @xknow_infosec
+**Contributor:** [@xknow_infosec](https://twitter.com/xknow_infosec)
 
 Original Authors / Credits / Ressources:
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_psexec_pipes_artifacts.yml
