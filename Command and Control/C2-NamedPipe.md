@@ -82,6 +82,8 @@ This query can be used to detect the following attack techniques and tactics ([s
 
 **Contributor:** [@xknow_infosec](https://twitter.com/xknow_infosec)
 
+This detection is a summary of knowledge already known. Defender for Endpoint lately just added a new ActionType for SMB named pipes (NamedPipeEvent), which would allow equal usecase now based on the same telemetry (for example Sysmon EventID 17/18).
+
 Original Authors / Credits / Ressources:
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_psexec_pipes_artifacts.yml
 * https://drive.google.com/file/d/1lKya3_mLnR3UQuCoiYruO3qgu052_iS_/view
