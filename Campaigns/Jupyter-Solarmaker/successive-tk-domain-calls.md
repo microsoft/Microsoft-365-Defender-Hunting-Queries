@@ -1,3 +1,6 @@
+# Jupyter AKA SolarMarker
+Jupyter, otherwise known as SolarMarker, is a malware family and cluster of components known for it's info-stealing and backdoor capabilities that mainly proliferates through search engine optimization manipulation and malicious advertising in order to successfully encourage users to download malicious templates and documents. This malware has been popular since 2020 and currently is still active as of 2021. 
+
 # Jupyter's SEO Delivery via .TK domains
 
 The following query checks for more than 5 instances of a .tk domain being contacted within a 10 minutes interval. This malware frequently will use anywhere from 5-10 .TK domains as well as other uncommon TLDs such as .blog, .site, .ml, and .gq., which will appear randomly generated and appear after a query to a hosting provider or advertising site from a search engine. Activity would be succeeded by the download of the malicious file. 
