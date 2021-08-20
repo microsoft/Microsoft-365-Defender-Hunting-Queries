@@ -1,4 +1,4 @@
-# Find Rclone usages
+# Find Rclone distribution files
 RClone (https://rclone.org/) is a tool to send/receive data between local and cloud storage. It is commonly used as an exfiltration vector.   
 This query find all the processes executed from a RClone distribution package, both for Win32 and Win64, via SHA1 hash of the binary and program properties.   
 All versions from 0.96 to 1.56 (from https://downloads.rclone.org/, latest on Aug 20, 2021) are considered.
