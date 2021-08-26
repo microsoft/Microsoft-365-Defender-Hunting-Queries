@@ -1,0 +1,54 @@
+// APT41 Resurfaces as Earth Baku With New Cyberespionage Campaign 
+// https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/earth-baku-returns?utm_source=trendmicroresearch&utm_medium=smk&utm_campaign=0821_EarthBaku1
+
+//File Activities
+let MaliciousFiles=pack_array(//SteathMutant and Payloadds 
+'24ac3cc305576493beefab026d1cb7cce84f3bfcbcc51cdb5e612c290499390a',
+'209521bc350e7f5b28decba46bad81090a13f42eed396db3ca9a97eaf7902fe8',
+'34f95e0307959a376df28bc648190f72bccc5b25e0e00e45777730d26abb5316',
+'b7b2aa801dea2ec2797f8cf43b99c4bf8d0c1effe532c0c800b40336e9012af2',
+'8284c44f87ab8471918da564152ffcc28348a671e3a9316876b075cdf03c3607',
+'e66adbc6ca13dab9915aca30360c86b75e63e9c0845ac89217299fed556810cc',
+'6c5192a478bd7eca95f83ab3ebf036d4c1ffcc81e0354fa05f02f5fe4e8bfdf5',
+'ce16e9a2d3722bb5f5b3636f307bd386ed24abafea72aeb6dd002d51eeca16df',
+'ce16e9a2d3722bb5f5b3636f307bd386ed24abafea72aeb6dd002d51eeca16df',
+'9269dc68d46630c0d534bf62a299037fd3a124a6459d97692c25ffb89ccd1f08',
+'04f6fc49da69838f5b511d8f996dc409a53249099bd71b3c897b98ad97fd867c',
+'730f4d8c1e774406105bbaad3cb4b466c27e0a50cf8345c236b42a80b437e2a8',
+//StealthVector and Payloads 
+'9e178bb966f101e8c8ed020fbb2fb5878e2a969f7eaf47bc990f0472e85a3533',
+'d9d269a199ca0841fc71fef045c3dc5701a5042bea46d05a657b6db43fe55acc',
+'8da88951322fa7f464c13cb4a173d0c178f5e34a57957c9117b393133dd19925',
+'e009ef76fb9402fe379280ed9c6a4d81748fb259475b9048937f3d7c7f0f0f32',
+'e2ae201bd6a7397dcc5036260122e7d67046569b90c4f1b79ef8e34914729888',
+'c1b587a922691c7e01db3e57f223fa2b5d2df2121736922ff97141571c550cfc',
+'02378f64fd1083491cf5558397aae763ff047a5fa9fcaf624d1710b86f440777',
+'560a96e4577d09eb13416e5c4d649c346ca11a2459f09c8a3495d7c377c1f31d',
+'91aa05e3666c7e2443fc1f0f0142f1829f5ec51e289c95b10811531da50eb2b3',
+'98f6be546c5191b67014e3d0f7f8df86715d970aa326a6a438d0be234daf8841',
+'477882b41e10aef0fcd0d5d33715dfb4eb7f8f3277057978ac77d3ec5914c6f9',
+'bf34dfb4140c00d23554b03ebb986b2734a2c396877681d526e2ac80b372268a',
+'d981edf78680f46616574b46ac3d0ab58a509430c155905761058152a24f091d'); 
+union DeviceFileEvents, DeviceProcessEvents 
+| where Timestamp > ago(14d) 
+| where SHA256 in(MaliciousFiles) or SHA256 in(MaliciousFiles)
+
+//Network activities 
+DeviceNetworkEvents 
+| where Timestamp > ago(30d) 
+| where RemoteUrl in ( 
+//'Malicious URL Indicators for APT41 Activities 2021', 
+'Ns.cloud01.tk',
+'Ns.cloud20.tk',
+'ns1.extrsports.ru',
+'www.microsofthelp.dns1.us',
+'update.microsoftdocs.workers.dev',
+'www.twitterproxy.com',
+'cdn.cloudfiare.workers.dev',
+'mssetting.com',
+'dns224.com',
+'cloudflare-ko.biguserup.workers.dev')  or RemoteIP  in ('45.138.157.78')
+
+//Contributor info
+//Contributor: Nirjhar Roy
+//GitHub alias:Phoenix9032
