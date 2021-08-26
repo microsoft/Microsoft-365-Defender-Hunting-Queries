@@ -1,6 +1,11 @@
-// APT41 Resurfaces as Earth Baku With New Cyberespionage Campaign 
+
+# Detect malicious files and network events associated with group known as "EarthBaku" 
+This query will detect the malicious files and domains used by the revamped new TTP by group called APT41  as they resurface as Earth Baku With New Cyberespionage Campaign below is the reference research 
 // https://www.trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/earth-baku-returns?utm_source=trendmicroresearch&utm_medium=smk&utm_campaign=0821_EarthBaku1
 
+
+## Query
+```
 //File Activities
 let MaliciousFiles=pack_array(//SteathMutant and Payloadds 
 '24ac3cc305576493beefab026d1cb7cce84f3bfcbcc51cdb5e612c290499390a',
@@ -48,7 +53,34 @@ DeviceNetworkEvents
 'mssetting.com',
 'dns224.com',
 'cloudflare-ko.biguserup.workers.dev')  or RemoteIP  in ('45.138.157.78')
+```
+## Category
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+| Technique, tactic, or state | Covered? (v=yes) | Notes |
+|------------------------|----------|-------|
+| Initial access | v |  |
+| Execution |  |  |
+| Persistence | v |  | 
+| Privilege escalation |  |  |
+| Defense evasion |  |  | 
+| Credential Access |  |  | 
+| Discovery |  |  | 
+| Lateral movement |  |  | 
+| Collection |  |  | 
+| Command and control | v |  | 
+| Exfiltration |  |  | 
+| Impact |  |  |
+| Vulnerability |  |  |
+| Exploit |  |  |
+| Misconfiguration |  |  |
+| Malware, component |  |  |
+| Ransomware |  |  |
 
-//Contributor info
-//Contributor: Nirjhar Roy
-//GitHub alias:Phoenix9032
+
+## Contributor info
+**Contributor:** Nirjhar Roy
+**GitHub alias:** Phoenix9032
+**Organization:** Personal Project
+**Contact info:** mjolnir.thors@gmail.com
+
+
