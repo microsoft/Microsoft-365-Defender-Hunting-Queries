@@ -69,7 +69,8 @@ let badPipeNames = pack_array(
     '\\rpc_',                                       // CobaltStrike malleable profile
     '\\demoagent_11',                               // CobaltStrike malleable profile   
     '\\demoagent_22',                               // CobaltStrike malleable profile
-    '\\srvsvc'                                      // EfsPotato Named Pipe https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_efspotato_namedpipe.yml
+    '\\srvsvc',                                     // EfsPotato Named Pipe https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_efspotato_namedpipe.yml
+    '\\6e7645c4-32c5-4fe3-aabf-e94c2f4370e7'        // LiquidSnake default pipe https://github.com/RiccardoAncarani/LiquidSnake
 );
 // these named pipes are known to be legit
 let goodPipeNames = pack_array(
