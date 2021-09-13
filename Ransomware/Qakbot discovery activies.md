@@ -6,13 +6,13 @@ Use this query to locate injected processes launching discovery activity. Qakbot
 ```
 DeviceProcessEvents 
 | where InitiatingProcessFileName in~('mobsync.exe','explorer.exe')
-| where (FileName =~ 'net.exe' and InitiatingProcessCommandLine has_all('view','/all'))
-     or (FileName =~ 'whoami.exe' and InitiatingProcessCommandLine has '/all')
-     or (FileName =~ 'nslookup.exe' and InitiatingProcessCommandLine has_all('querytype=ALL','timeout=10'))
-     or (FileName =~ 'netstat.exe' and InitiatingProcessCommandLine has '-nao')
-     or (FileName =~ 'arp.exe' and InitiatingProcessCommandLine has '-a')
-     or (FileName =~ 'ping.exe' and InitiatingProcessCommandLine has '-t' and InitiatingProcessCommandLine endswith '127.0.0.1')
-| summarize DiscoveryCommands = dcount(InitiatingProcessCommandLine), make_set(InitiatingProcessFileName), make_set(FileName), make_set(InitiatingProcessCommandLine) by DeviceId, bin(Timestamp, 5m)   
+| where (FileName =~ 'net.exe' and ProcessCommandLine has_all('view','/all'))
+     or (FileName =~ 'whoami.exe' and ProcessCommandLine has '/all')
+     or (FileName =~ 'nslookup.exe' and ProcessCommandLine has_all('querytype=ALL','timeout=10'))
+     or (FileName =~ 'netstat.exe' and ProcessCommandLine has '-nao')
+     or (FileName =~ 'arp.exe' and ProcessCommandLine has '-a')
+     or (FileName =~ 'ping.exe' and ProcessCommandLine has '-t' and ProcessCommandLine endswith '127.0.0.1')
+| summarize DiscoveryCommands = dcount(ProcessCommandLine), make_set(InitiatingProcessFileName), make_set(FileName), make_set(ProcessCommandLine) by DeviceId, bin(Timestamp, 5m)   
 | where DiscoveryCommands >= 3
 ```
 ## Category
