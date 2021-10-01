@@ -1,0 +1,160 @@
+Dean Pickering - Microsoft
+Attack Surface Reduction Rules: https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/attack-surface-reduction-rules?view=o365-worldwide
+
+1 - Block abuse of exploited vulnerable signed drivers:
+
+// Query of the DeviceEvents table to pull "Block abuse of exploited vulnerable signed drivers" ASR events
+DeviceEvents
+| where ActionType startswith "AsrVulnerableSignedDrivers"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, FolderPath, FileName
+
+
+2 - Block Adobe Reader from creating child processes:	
+
+// Query of the DeviceEvents table to pull "Block Adobe Reader from creating child processes" ASR events
+DeviceEvents
+| where ActionType startswith " AsrAdobeReaderChildProcess"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+3 - Block all Office applications from creating child processes:
+
+// Query of the DeviceEvents table to pull "Block Office applications from creating child processes" ASR events
+DeviceEvents
+| where ActionType startswith "AsrOfficeChildProcess"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+4 - Block credential stealing from the Windows local security authority subsystem:
+
+// Query of the DeviceEvents table to pull "Block credential stealing from the Windows local security authority subsystem" ASR events
+DeviceEvents
+| where ActionType startswith "AsrLsassCredentialTheft"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessParentFileName, InitiatingProcessFileName
+
+
+5 – Block executable content from email client and webmail:
+
+// Query of the DeviceEvents table to pull "Block executable content from email client and webmail" ASR events
+DeviceEvents
+| where ActionType startswith "AsrExecutableEmailContent"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+6 – Block executable files from running unless they meet a prevalence, age, or trusted list criterion:
+
+// Query of the DeviceEvents table to pull "Block executable files from running unless they meet a prevalence, age, or trusted list criterion" ASR events
+DeviceEvents
+| where ActionType startswith "AsrUntrustedExecutable"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, FolderPath, FileName
+
+
+7 – Block execution of potentially obfuscated scripts:
+
+// Query of the DeviceEvents table to pull "Block execution of potentially obfuscated scripts" ASR events
+DeviceEvents
+| where ActionType startswith "AsrObfuscatedScript"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, FolderPath, FileName
+
+
+8 – Block JavaScript or VBScript from launching downloaded executable content:
+
+// Query of the DeviceEvents table to pull "Block JavaScript or VBScript from launching downloaded executable content" ASR events
+DeviceEvents
+| where ActionType startswith "AsrScriptExecutableDownload"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, FolderPath, FileName
+
+
+9 - Block Office applications from creating executable content:
+
+// Query of the DeviceEvents table to pull "Block Office applications from creating executable content" ASR events
+DeviceEvents
+| where ActionType startswith "AsrExecutableOfficeContent"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+10 - Block Office applications from injecting code into other processes:
+
+// Query of the DeviceEvents table to pull "Block Office applications from injecting code into other processes" ASR events
+DeviceEvents
+| where ActionType startswith "AsrOfficeProcessInjection"
+| extend parsedfields = parse_json(AdditionalFields)	
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessParentFileName, InitiatingProcessFileName, InitiatingProcessCommandLine, FolderPath, FileName
+
+
+11 - Block Office communication application from creating child processes
+
+// Query of the DeviceEvents table to pull "Block Office communication application from creating child processes" ASR events
+DeviceEvents
+| where ActionType startswith "AsrOfficeCommAppChildProcess"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+12 - Block persistence through WMI event subscription:
+
+// Query of the DeviceEvents table to pull "Block persistence through WMI event subscription" ASR events
+DeviceEvents
+| where ActionType startswith "AsrPersistenceThroughWmi"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessFileName, FolderPath, FileName
+
+
+13 - Block process creations originating from PSExec and WMI commands:
+
+// Query of the DeviceEvents table to pull "Block process creations originating from PSExec and WMI commands" ASR events
+DeviceEvents
+| where ActionType startswith "AsrPsexecWmiChildProcess"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessParentFileName, InitiatingProcessFileName, FolderPath, FileName
+
+
+14 - Block untrusted and unsigned processes that run from USB:
+
+// Query of the DeviceEvents table to pull "Block untrusted and unsigned processes that run from USB" ASR events
+DeviceEvents
+| where ActionType startswith "AsrUntrustedUsbProcess"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, FolderPath, FileName
+
+
+15 - Block Win32 API calls from Office macro:
+
+// Query of the DeviceEvents table to pull "Block Win32 API calls from Office macro" ASR events
+DeviceEvents
+| where ActionType startswith "AsrOfficeMacroWin32ApiCalls"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessCommandLine, FileName
+
+
+16 - Use advanced protection against ransomware:
+// Query of the DeviceEvents table to pull "Use advanced protection against ransomware" ASR events
+DeviceEvents
+| where ActionType startswith "AsrRansomware"
+| extend parsedfields = parse_json(AdditionalFields)
+| extend IsAudit = tostring (parsedfields.IsAudit)
+| project Timestamp, DeviceName, AuditEvent=IsAudit, InitiatingProcessParentFileName, FolderPath, FileName
