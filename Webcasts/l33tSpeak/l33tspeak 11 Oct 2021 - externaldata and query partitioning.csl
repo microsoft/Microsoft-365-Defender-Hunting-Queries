@@ -1,0 +1,181 @@
+//////////////////
+// externaldata //
+//////////////////
+
+// ref: https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/externaldata-operator?pivots=azuredataexplorer
+// Imports data from a web request into Advanced Hunting for use as a table
+// - The data source must not require authentication (can use SAS tokens)
+// - Supports multiple formats (for full list: https://docs.microsoft.com/en-us/azure/data-explorer/ingestion-supported-formats)
+// - You need to specify the import schema
+
+// Call the function
+externaldata 
+// specify the column names and types
+(UrlDomain:string)
+// Specify the data source(s)
+[
+    @'https://raw.githubusercontent.com/hl-repos/CoViD-19-Observables/master/CoViD-19-Observables.txt'
+]
+// Specify the data format or other parameters (if needed)
+with (format='txt')
+
+// Example: searching for COVID phishing scams in e-mail
+externaldata (UrlDomain:string) 
+    [@'https://raw.githubusercontent.com/hl-repos/CoViD-19-Observables/master/CoViD-19-Observables.txt']
+| join kind=rightsemi EmailUrlInfo on UrlDomain
+
+// Example: importing a CSV file
+externaldata (IOC:string,FileName:string,Type:string,FirstSeenonVT:datetime)
+    [@'https://raw.githubusercontent.com/blacklotuslabs/IOCs/main/Reverserat_iocs.csv']
+    with (format='csv', ignorefirstrecord = true)
+
+
+// Example: identifying Azure subnets
+// ref: https://github.com/microsoft/Microsoft-365-Defender-Hunting-Queries/blob/master/General%20queries/Detect%20Azure%20RemoteIP.md
+let AzureSubnets = toscalar (
+    externaldata (xml:string)
+    [
+        @'https://download.microsoft.com/download/0/1/8/018E208D-54F8-44CD-AA26-CD7BC9524A8C/PublicIPs_20200824.xml'
+    ]
+    with (format="txt")
+    | extend Subnet = tostring(parse_xml(xml).IpRange.['@Subnet'])
+    | where isnotempty(Subnet)
+    | summarize make_set(Subnet)
+);
+let IsItAzure = (SourceData:(RemoteIP:string)) {
+    SourceData
+    | extend AzureSubnet = AzureSubnets
+    | mv-expand AzureSubnet to typeof(string)
+    | extend IsAzure = ipv4_is_in_range(RemoteIP, AzureSubnet)
+    | summarize IsAzure = max(IsAzure) by RemoteIP
+};
+DeviceNetworkEvents
+| take 10000
+| invoke IsItAzure()
+| where IsAzure == true
+
+// Example: Importing abuse.ch
+//ref: https://github.com/microsoft/Microsoft-365-Defender-Hunting-Queries/blob/master/Campaigns/Abuse.ch%20Recent%20Threat%20Feed.md
+
+let AbuseFeed = materialize (
+    (externaldata(report:string)
+    [@"https://bazaar.abuse.ch/export/csv/recent/"]
+    with (format = "txt"))
+    | where report !startswith '#'
+    | extend report = parse_csv(report)
+    | extend FirstSeenUtc = tostring(report[0])
+    | project FirstSeenUtc = todatetime(FirstSeenUtc)
+        ,SHA256 = trim('[ "]+',tostring(report[1]))
+        , MD5 = trim('[ "]+',tostring(report[2]))
+        , SHA1 = trim('[ "]+',tostring(report[3]))
+        , Reporter = trim('[ "]+',tostring(report[4]))
+        , FileName = trim('[ "]+',tostring(report[5]))
+        , FileType = trim('[ "]+',tostring(report[6]))
+        , MimeType = trim('[ "]+',tostring(report[7]))
+        , Signer = iff(report[8] == 'n/a', '', trim('[ "]+',tostring(report[8])))
+        , ClamAV = iff(report[9] == 'n/a', '', trim('[ "]+',tostring(report[9])))
+        , VTPercent = iff(report[10] == 'n/a', 0.0, todouble(report[10]))
+        , ImpHash = iff(report[11] == 'n/a', '', trim('[ "]+',tostring(report[11])))
+        , SSDeep = iff(report[12] == 'n/a', '', trim('[ "]+',tostring(report[12])))
+        , TLSH = iff(report[13] == 'n/a', '', trim('[ "]+',tostring(report[13])))
+);
+union (
+    AbuseFeed
+    | join DeviceProcessEvents on SHA256
+), (
+    AbuseFeed
+    | join DeviceFileEvents on SHA256
+), ( 
+    AbuseFeed
+    | join DeviceImageLoadEvents on SHA256
+)
+
+///////////////////////
+// Data Partitioning //
+///////////////////////
+
+// Technique used to slice up large amounts of data for export or analysis
+// Enables you to export reports that go beyond the interface limitation (10k UX \ 100k API)
+
+// hash()
+// ref: https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/hashfunction
+// - Returns a hash value of input
+// - Very fast
+// - Currently uses the xxhash algorithm
+// - An optional second parameter can be used to perform a mod operation to make groups
+// - NOT a cryptographic hash - plan for collisions!
+
+datatable (input:string)['foo','bar','baz','qux','quux']
+| extend HasedValue = hash(input)
+
+// Use the optional second parameter to group data into partitions
+
+datatable (input:string)['foo','bar','baz','qux','quux']
+| extend HasedValue = hash(input,3)
+
+// When parititioning data you will need to choose a partition key
+// Partition keys should be based on a reasonably distributed value
+
+// DeviceId as a partition key
+DeviceProcessEvents
+| extend Partition = hash(DeviceId,4)
+| summarize count(), dcount(DeviceId) by Partition
+
+// Timestamp as a partition key
+DeviceProcessEvents
+| extend Partition = hash(Timestamp,4)
+| summarize count(), dcount(DeviceId) by Partition
+
+// Recommendation - use variables for the current partition and number of partitions
+let PartitionNumber = 3;
+let PartitionCount = 5;
+DeviceProcessEvents
+| where hash(DeviceId, PartitionCount) == PartitionNumber
+| take 1000
+
+// If performing joins or summarizations make sure the parititon key you choose aligns
+// with the join or summarization!
+// In this example, the same filename may occur multiple times with different hashes
+let PartitionNumber = 0;
+let PartitionCount = 10;
+DeviceProcessEvents
+| where hash(SHA256, PartitionCount) == PartitionNumber
+| summarize count() by FileName, ProcessCommandLine
+
+// Partitioning is not usually perfectly distributed. Always be sure that every partition
+// in the set fits within the limit.
+
+DeviceProcessEvents 
+| extend PartitionNumber = hash(DeviceId,20)
+| summarize count() by PartitionNumber
+
+// My handy query to find the minimum workable partition size :)
+
+let Query = DeviceProcessEvents | take 100000;
+let KeyColumn = 'DeviceId';
+let MaxRows = 20000;
+let PartitionSizesToTry = 10;
+let StepSize = 1;
+let CleanedQuery = 
+    Query
+    | project Key = column_ifexists(KeyColumn,'ColumnDidNotExist')
+    | where Key != 'ColumnDidNotExist';
+let MaxRowsPerKey = toscalar(
+    CleanedQuery
+    | summarize NumberOfRows = count() by Key
+    | summarize max(NumberOfRows)
+);
+let MinPartitions = toscalar(
+    CleanedQuery
+    | summarize NumberOfRows = count(), DistinctKeys = dcount(Key,4)
+    | project (MaxRows / MaxRowsPerKey) * DistinctKeys
+);
+CleanedQuery
+| extend PartitionCount = range(MinPartitions, MinPartitions + (PartitionSizesToTry * StepSize), StepSize), Hash = hash(Key)
+| mv-expand PartitionCount to typeof(int)
+| extend PartitionNumber = Hash % PartitionCount
+| summarize RowCount = count() by PartitionCount, PartitionNumber
+| extend WillPartitionSizeWork = toint(RowCount <= MaxRows)
+| summarize WillItWork = min(WillPartitionSizeWork) by PartitionCount
+| where WillItWork == 1
+| summarize MinPartitionCount = min(PartitionCount)
