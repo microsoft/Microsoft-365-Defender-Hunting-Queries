@@ -21,7 +21,7 @@ and ProcessCommandLine has_any(
 "-ScanScheduleDay 8"), 1, 0) 
 | extend NetshFirewallTampering = iff(ProcessCommandLine has_all( "netsh", "advfirewall", "allprofiles state off"), 1, 0) 
 | extend BatExclusion = iff(ProcessCommandLine has_all("-ExclusionExtension", ".bat"), 1, 0) 
-| extend ExeExclusion = iff(ProcessCommandLine has_all("-ExclusionExtension", ".bat"), 1, 0) 
+| extend ExeExclusion = iff(ProcessCommandLine has_all("-ExclusionExtension", ".exe"), 1, 0) 
 | extend DisableControlledFolderAccess = iff(ProcessCommandLine has_all("-EnableControlledFolderAccess", "Disabled"), 1, 0) 
 | extend ScDeleteDefend = iff(ProcessCommandLine has_all("sc", "delete", "windefend"), 1, 0) 
 | extend BootTampering = iff(ProcessCommandLine has_all("bcdedit", "default") and ProcessCommandLine has_any ("recoveryenabled No", "bootstatuspolicy ignoreallfailures"), 1, 0) 
