@@ -1,5 +1,5 @@
 # Qakbot Craigslist Domains
-Qakbot operators have been observed using the Craigslist messaging system as a lure in malicious emails. These emails contain non-clickable links to malicious domains impersonating Craigslist, which the user is instructed to manually type into the address bar to access.
+Qakbot operators have been abusing the Craigslist messaging system to send malicious emails. These emails contain non-clickable links to malicious domains impersonating Craigslist, which the user is instructed to manually type into the address bar to access.
 
 ## Query
 This query looks for network connections to domains impersonating Craigslist which are associated with the delivery of Qakbot.
