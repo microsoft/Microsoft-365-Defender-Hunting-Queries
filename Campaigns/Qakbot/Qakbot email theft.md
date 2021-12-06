@@ -3,10 +3,18 @@
 
 ## Query
 Use this query to find email stealing activities ran by Qakbot that will use “ping.exe -t 127.0.0.1” to obfuscate subsequent actions. Email theft that occurs might be exfiltrated to operators and indicates that the malware completed a large portion of its automated activity without interruption. 
+
+Generic:
 ```
 DeviceFileEvents
 | where InitiatingProcessFileName =~ 'ping.exe'
 | where FileName endswith '.eml'
+```
+Specific:
+```
+DeviceFileEvents
+| where InitiatingProcessFileName =~ 'ping.exe' and InitiatingProcessCommandLine == 'ping.exe -t 127.0.0.1'
+    and InitiatingProcessParentFileName in~('msra.exe', 'mobsync.exe') and FolderPath endswith ".eml"
 ```
 
 ## Category
