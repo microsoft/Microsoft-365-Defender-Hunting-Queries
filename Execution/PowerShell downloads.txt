@@ -1,4 +1,4 @@
-// Finds PowerShell execution events that could involve a download.
+// Finds Windows PowerShell execution events that could involve a download.
 DeviceProcessEvents
 | where Timestamp > ago(7d)
 | where FileName in~ ("powershell.exe", "powershell_ise.exe")
