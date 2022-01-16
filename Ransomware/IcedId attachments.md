@@ -5,7 +5,8 @@ IcedId can lead to ransomware
 
 ## Query
 ```
-// Identify a reply or forward via subject line let SubjectTerms = pack_array("RE:","FW:","FWD:","AW:","WG:"); 
+// Identify a reply or forward via subject line 
+let SubjectTerms = pack_array("RE:","FW:","FWD:","AW:","WG:"); 
 EmailEvents 
 | where Subject has_any(SubjectTerms) 
 | where EmailDirection == "Inbound" // Join on those emails by file type (doc or zip>doc) 
