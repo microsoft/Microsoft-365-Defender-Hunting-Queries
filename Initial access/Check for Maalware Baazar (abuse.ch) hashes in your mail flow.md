@@ -15,7 +15,7 @@ abuse_sha256
 | join (EmailAttachmentInfo 
 | where Timestamp > ago(1d) 
 ) on $left.sha256_hash == $right.SHA256
-| project Timestamp,SenderFromAddress ,RecipientEmailAddress,FileName,FileType,SHA256,MalwareFilterVerdict,MalwareDetectionMethod
+| project Timestamp,SenderFromAddress ,RecipientEmailAddress,FileName,FileType,SHA256,ThreatTypes,DetectionMethods
 ```
 ## Category
 
