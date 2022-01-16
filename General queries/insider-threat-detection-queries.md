@@ -57,7 +57,7 @@ union ProcessQuery, FileQuery
 //
 //Screenshots
 //
-//let PRINT_THRESHOLD = 3;  // adjust accordingly
+let PRINT_THRESHOLD = 3;  // adjust accordingly
 //-----
 DeviceProcessEvents 
 | where FileName in ("SnippingTool.exe", "ScreenSketch.exe") //and Timestamp > ago(20d)
@@ -87,7 +87,7 @@ and RemoteUrl has_any (webmailURLs)
 // Look for any activity by a terminated employee account creating a
 // DeviceNetworkEvents after they were released
 let TermAccount = 'FORMER_EMPLOYEE_NAME';  // Could also use SID
-let ReleaseTime = datetime("M/D/Y H:M:S AM/PM");
+let ReleaseTime = datetime("01/16/2022 00:00:00");
 //
 DeviceNetworkEvents 
 | where InitiatingProcessAccountName =~ TermAccount
