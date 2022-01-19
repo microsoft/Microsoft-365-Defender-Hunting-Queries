@@ -34,8 +34,9 @@ EmailAttachmentInfo
 ```
 
 ```
+// 1.	A list of all devices that have this vulnerability
+// 2.	A list of all users that uses those devices
 // If these users opened those .mkv files
-
 let all_computers_with_vlcvln=
 DeviceTvmSoftwareVulnerabilities 
 | where SoftwareName contains "vlc" 
