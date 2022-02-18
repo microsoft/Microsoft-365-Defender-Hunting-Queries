@@ -1,0 +1,7 @@
+// Track user logons
+// @MattiasBorg
+// blog.sec-labs.com
+let UserName = "administrator";
+LogonEvents 
+| where AccountName == UserName
+| distinct EventTime, ComputerName, AccountDomain
