@@ -1,0 +1,22 @@
+//////////////////////////////////////////////////////////////////////
+// DNS Server Report
+//
+// This query identifies DNS activity from clients and identifies the
+// number of distinct machines and requests made from that DNS server.
+// Note that Defender ATP only records TCP connections today, so the
+// volume is likely to be a lot lower than normal (but its common for
+// a client to make a TCP DNS request on occasion, such as to register
+// its record or for very long FQDNs).  
+// It is likely that you'll see home routers or public wifi in the
+// mix, so take this report with a grain of salt.  It is handy for
+// identifying misconfigurations (servers pointing at an old DNS 
+// server for example) or the number of devices pointing to 
+// potentially unapproved public DNS sources.  This may also be an 
+// indicator of compromise if the attacker is trying to hide their
+// DNS-based C2 or prevent administrators from black-holing a C2 DNS 
+// domain.
+//////////////////////////////////////////////////////////////////////
+DeviceNetworkEvents
+| where RemotePort == 53 and ActionType in ('ConnectionRequest', 'ConnectionFailed', 'ConnectionSuccess')
+| summarize RequestCount = count(), DistinctMachineCount = dcount(DeviceId), RemoteUrl = max(RemoteUrl) by RemoteIP, Protocol
+| order by DistinctMachineCount asc
