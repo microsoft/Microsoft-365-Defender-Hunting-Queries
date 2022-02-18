@@ -41,7 +41,7 @@ DeviceLogonEvents
 //
 // Extend stegnames array with know steganography tools
 // We could also use the known hash for steganography tools and use those hashes in this table
-let stegnames = pack_array ("camouflage","crypture", "hidensend", "openpuff","picsel","slienteye","steg","xiao");
+let stegnames = pack_array ("camouflage","crypture", "hidensend", "openpuff","picsel","silenteye","steg","xiao");
 let ProcessQuery = view(){
 DeviceProcessEvents 
 | where ProcessCommandLine has_any (stegnames)
