@@ -9,12 +9,10 @@ The following query detects if Qakbot has injected code into the *ping.exe* proc
 ## Query
 
 ```Kusto
-DeviceProcessEvents
-| where FileName == "esentutl.exe"
-| where ProcessCommandLine has "WebCache"
-| where ProcessCommandLine has_any ("V01", "/s", "/d")
-| project ProcessCommandLine, InitiatingProcessParentFileName, 
-DeviceId, Timestamp
+DeviceImageLoadEvents
+| where InitiatingProcessFileName =~ "ping.exe"
+| where FileName =~ "vaultcli.dll"
+| project InitiatingProcessFileName, InitiatingProcessCommandLine, FileName, DeviceId, Timestamp
 ```
 
 ## Category
