@@ -6,7 +6,7 @@ CSV source is the Tor Project API, obtained with: https://github.com/Dylan-J/Tor
 ```
 let TorRelayData = (
     externaldata (Nickname:string,Fingerprint:string,EntryAddress:string,IPv4Address:string,IPv4Port:string,IPv6Address:string,AddressType:string,Hostname:string,CountryCode:string,IsRunning:bool,RelayPublishDate:string,LastChangedIPData:string)
-    [h@'https://msde.blob.core.windows.net/public/TorRelayIPs.csv'] with (ignoreFirstRecord=true,format="csv")
+    [h@'https://torinfo.blob.core.windows.net/public/TorRelayIPs.csv'] with (ignoreFirstRecord=true,format="csv")
     | where AddressType == "IPv4"
 );
 TorRelayData
