@@ -10,11 +10,10 @@ The following query detects possible use of the system process, *esentutl.exe*, 
 
 ```Kusto
 DeviceProcessEvents
-| where FileName == "esentutl.exe"
-| where ProcessCommandLine has "WebCache"
-| where ProcessCommandLine has_any ("V01", "/s", "/d")
-| project ProcessCommandLine, 
-InitiatingProcessParentFileName, DeviceId, Timestamp
+| where FileName =~ "esentutl.exe"
+| where ProcessCommandLine contains "WebCache"
+| where ProcessCommandLine contains "V01" or ProcessCommandLine contains @"/s" or ProcessCommandLine contains @"/d"
+| project ProcessCommandLine, InitiatingProcessParentFileName, DeviceId, Timestamp
 ```
 
 ## Category
