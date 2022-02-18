@@ -1,0 +1,37 @@
+# Detect PrintNightmare exploit
+# Assigned CVE likely to change as this is a differnet issue from CVE-2021-1675.
+
+This query locates possible activity that exploits PrintNightmare.
+
+## Query
+
+```Kusto
+DeviceFileEvents 
+| where FolderPath contains @"\system32\spool\drivers\x64\3\"
+| where FileName endswith ".dll"
+| where ActionType in ("FileCreated", "FileRenamed")
+| join kind=inner DeviceImageLoadEvents on DeviceId,DeviceName,FileName,InitiatingProcessFileName
+| where Timestamp1 >= Timestamp and FolderPath1 contains @"\system32\spool\drivers\x64\3\Old"
+```
+
+## Category
+
+This query can be used to detect the following attack techniques and tactics ([see MITRE ATT&CK framework](https://attack.mitre.org/)) or security configuration states.
+
+| Technique, tactic, or state | Covered? (v=yes) | Notes |
+|------------------------|----------|-------|
+| Initial access |  |  |
+| Execution | v |  |
+| Persistence |  |  |
+| Privilege escalation | v |  |
+| Defense evasion |  |  |
+| Credential Access |  |  |
+| Discovery |  |  |
+| Lateral movement |  |  |
+| Collection |  |  |
+| Command and control |  |  |
+| Exfiltration |  |  |
+| Impact |  |  |
+| Vulnerability |  |  |
+| Misconfiguration |  |  |
+| Malware, component |  |  |
