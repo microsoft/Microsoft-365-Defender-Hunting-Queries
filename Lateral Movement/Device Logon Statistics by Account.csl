@@ -1,0 +1,10 @@
+//////////////////////////////////////////////////////////////////
+// Device Logon Statistics by Account
+// 
+// This query provides logon statistics per account including the
+// number of logons that occurred, the number of successes, the 
+// number of attempts logged, the number of failures, and approx.
+// how many distinct devices the account logged on to.
+///////////////////////////////////////////////////////////////////
+DeviceLogonEvents
+| summarize LogonCount = count(), SuccessCount = countif(ActionType == 'LogonSuccess'), AttemptCount = countif(ActionType == 'LogonAttempted'), FailureCount = countif(ActionType == 'LogonFailed'), DistinctMachineCount = dcount(DeviceId) by AccountDomain, AccountName, AccountSid
