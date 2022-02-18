@@ -13,14 +13,15 @@ let DeviceNameToSearch = ''; // DeviceName to search for. Leave blank to search 
 let TimespanInSeconds = 900; // Period of time between device insertion and file copy
 let Connections =
 DeviceEvents
-| where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and ActionType == "PnpDeviceConnected"
-| extend parsed = parse_json(AdditionalFields)
-| project DeviceId,ConnectionTime = Timestamp, DriveClass = tostring(parsed.ClassName), UsbDeviceId = tostring(parsed.DeviceId), ClassId = tostring(parsed.DeviceId), DeviceDescription = tostring(parsed.DeviceDescription), VendorIds = tostring(parsed.VendorIds)
-| where DriveClass == 'USB' and DeviceDescription == 'USB Mass Storage Device';
+| where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and ActionType == "UsbDriveMounted"
+| extend AdditionalFields = parse_json(AdditionalFields)
+| project ConnectionTime = Timestamp, DeviceId, AdditionalFields
+| evaluate bag_unpack(AdditionalFields);
 DeviceFileEvents
 | where (isempty(DeviceNameToSearch) or DeviceName =~ DeviceNameToSearch) and FolderPath !startswith "c" and FolderPath !startswith @"\"
 | join kind=inner Connections on DeviceId
 | where datetime_diff('second',Timestamp,ConnectionTime) <= TimespanInSeconds
+| project Timestamp, DeviceId, DeviceName, FolderPath, SHA1, SHA256, MD5, LoggedOnUsers, ConnectionTime, BusType, Manufacturer, ProductName, ProductRevision, SerialNumber, Volume
 ```
 
 ## Category
