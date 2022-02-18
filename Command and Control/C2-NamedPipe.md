@@ -6,8 +6,8 @@ Detects the creation of a [named pipe](https://docs.microsoft.com/en-US/openspec
 
 ```Kusto
 // maximum lookback time
-let minTimeRange = ago(7d);
-// this is what should be constantly tweaked with default C2 framework names, search uses has_any (wildcard)
+let minTimeRange = ago(30d);
+// this is what should be constantly tweaked with default C2 framework names/malicious SMB named pipe names, search uses has_any (wildcard)
 let badPipeNames = pack_array(
     '\\psexec',                                     // PSexec default pipe
     '\\paexec',                                     // PSexec default pipe
@@ -46,13 +46,48 @@ let badPipeNames = pack_array(
     '\\msagent_',                                   // (target) CobaltStrike default named pipe
     '\\postex_ssh_',                                // CobaltStrike default named pipe
     '\\postex_',                                    // CobaltStrike default named pipe
-    '\\Posh'                                        // PoshC2 default named pipe
+    '\\Posh',                                       // PoshC2 default named pipe
+    '\\mojo.5688.8052.183894939787088877',          // CobaltStrike malleable profile https://gist.github.com/MHaggis/6c600e524045a6d49c35291a21e10752 & https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_susp_cobaltstrike_pipe_patterns.yml
+    '\\mojo.5688.8052.35780273329370473',           // CobaltStrike malleable profile
+    '\\mypipe-f',                                   // CobaltStrike malleable profile
+    '\\mypipe-h',                                   // CobaltStrike malleable profile
+    '\\ntsvcs',                                     // CobaltStrike malleable profile
+    '\\scerpc',                                     // CobaltStrike malleable profile
+    '\\win_svc',                                    // CobaltStrike malleable profile
+    '\\spoolss',                                    // CobaltStrike malleable profile
+    '\\msrpc_',                                     // CobaltStrike malleable profile
+    '\\win\\msrpc_',                                // CobaltStrike malleable profile
+    '\\wkssvc',                                     // CobaltStrike malleable profile
+    '\\f53f',                                       // CobaltStrike malleable profile
+    '\\windows.update.manager',                     // CobaltStrike malleable profile
+    '\\SearchTextHarvester',                        // CobaltStrike malleable profile
+    '\\DserNamePipe',                               // CobaltStrike malleable profile
+    '\\PGMessagePipe',                              // CobaltStrike malleable profile
+    '\\MsFteWds',                                   // CobaltStrike malleable profile
+    '\\f4c3',                                       // CobaltStrike malleable profile
+    '\\fullduplex_',                                // CobaltStrike malleable profile
+    '\\rpc_',                                       // CobaltStrike malleable profile
+    '\\demoagent_11',                               // CobaltStrike malleable profile   
+    '\\demoagent_22',                               // CobaltStrike malleable profile
+    '\\srvsvc',                                     // EfsPotato Named Pipe https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_efspotato_namedpipe.yml
+    '\\6e7645c4-32c5-4fe3-aabf-e94c2f4370e7'        // LiquidSnake default pipe https://github.com/RiccardoAncarani/LiquidSnake
+);
+// these named pipes are known to be legit
+let goodPipeNames = pack_array(
+    '\\Device\\NamedPipe\\wkssvc',                  // CobaltStrike malleable profile pipe should end with two numbers https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_susp_cobaltstrike_pipe_patterns.yml
+    '\\Device\\NamedPipe\\spoolss',                 // CobaltStrike malleable profile pipe should end with two numbers
+    '\\Device\\NamedPipe\\scerpc',                  // CobaltStrike malleable profile pipe should end with two numbers
+    '\\Device\\NamedPipe\\ntsvcs',                  // CobaltStrike malleable profile pipe should end with two numbers
+    '\\Device\\NamedPipe\\SearchTextHarvester',     // CobaltStrike malleable profile pipe should end with two numbers
+    '\\Device\\NamedPipe\\PGMessagePipe',           // CobaltStrike malleable profile pipe should end with two numbers
+    '\\Device\\NamedPipe\\MsFteWds'                 // CobaltStrike malleable profile pipe should end with two numbers
 );
 DeviceEvents
 | where ActionType == "NamedPipeEvent" and Timestamp > minTimeRange
 | extend ParsedFields=parse_json(AdditionalFields)
 | where ParsedFields.FileOperation == "File created"
 | where ParsedFields.PipeName has_any (badPipeNames)
+| where ParsedFields.PipeName !in (goodPipeNames)
 | project Timestamp, ActionType, DeviceName, InitiatingProcessAccountDomain, InitiatingProcessAccountName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, ParsedFields.FileOperation, ParsedFields.PipeName
 ```
 
@@ -85,6 +120,9 @@ This query can be used to detect the following attack techniques and tactics ([s
 This detection is a summary of knowledge already known. Credits only to original authors. Defender for Endpoint lately just added a new ActionType for SMB named pipes (NamedPipeEvent), which would allow new equal usecases now based on the same telemetry (for example replicating all Sysmon EventID 17/18 detections).
 
 Original Authors / Credits / Ressources:
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_susp_cobaltstrike_pipe_patterns.yml  
+* https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_cobaltstrike_re.yml
+* https://gist.github.com/MHaggis/6c600e524045a6d49c35291a21e10752
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_psexec_pipes_artifacts.yml
 * https://drive.google.com/file/d/1lKya3_mLnR3UQuCoiYruO3qgu052_iS_/view
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_mal_namedpipes.yml
@@ -95,3 +133,5 @@ Original Authors / Credits / Ressources:
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_cred_dump_tools_named_pipes.yml
 * https://github.com/SigmaHQ/sigma/blob/master/rules/windows/pipe_created/sysmon_apt_turla_namedpipes.yml
 * https://twitter.com/rpargman/status/1359961601160351744
+* https://svch0st.medium.com/guide-to-named-pipes-and-hunting-for-cobalt-strike-pipes-dc46b2c5f575
+* https://thedfirreport.com/2021/08/29/cobalt-strike-a-defenders-guide/
