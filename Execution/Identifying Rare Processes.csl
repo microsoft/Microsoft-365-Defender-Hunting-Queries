@@ -1,0 +1,53 @@
+///////////////////////////////////////////////////////////////////
+// Identifying rare processes for a machine based on FolderPath
+///////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by DeviceId, FolderPath
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on DeviceId, FolderPath
+| top 10000 by ProcessCount asc
+
+//////////////////////////////////////////////////////////////////
+// Identifying rare processes for a machine based on SHA256
+//////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by DeviceId, SHA256
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on DeviceId, SHA256
+| top 10000 by ProcessCount asc
+
+////////////////////////////////////////////////////////////////////////
+// Identifying rare processes for a machine based on ProcessCommandLine
+////////////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by DeviceId, ProcessCommandLine
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on DeviceId, ProcessCommandLine
+| top 10000 by ProcessCount asc
+
+////////////////////////////////////////////////////////////////////////
+// Identifying rare processes within your enterprise based on FolderPath
+////////////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by FolderPath
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on FolderPath
+| top 10000 by ProcessCount asc
+
+//////////////////////////////////////////////////////////////////
+// Identifying rare processes within your enterprise based on SHA256
+//////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by SHA256
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on SHA256
+| top 10000 by ProcessCount asc
+
+////////////////////////////////////////////////////////////////////////
+// Identifying rare processes for a machine based on ProcessCommandLine
+////////////////////////////////////////////////////////////////////////
+DeviceProcessEvents
+| summarize ProcessCount = count() by ProcessCommandLine
+| top 10000 by ProcessCount asc
+| join kind=inner DeviceProcessEvents on ProcessCommandLine
+| top 10000 by ProcessCount asc
